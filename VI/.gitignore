@@ -1,27 +1,24 @@
-# Ignore personal configuration files from parent directories
-/.aws
-/.azure
-/.bash_history
-/.bash_logout
-/.bashrc
-/.cache/
-/.config/
-/.docker/
-/.gitconfig
-/.lesshst
-/.local/
-/.motd_shown
-/.pgpass
-/.pki/
-/.profile
-/.psql_history
-/.semgrep/
-/.ssh/
-/.sudo_as_admin_successful
-/.viminfo
-/.zprofile
-/.zulip-dev-uuid
-
-# Ignore other untracked files in the parent directory
-../__MACOSX/
-../leic/
+../.aws
+        ../.azure
+        ../.bash_history
+        ../.bash_logout
+        ../.bashrc
+        ../.cache/
+        ../.config/
+        ../.docker/
+        ../.gitconfig
+        ../.lesshst
+        ../.local/
+        ../.motd_shown
+        ../.pgpass
+        ../.pki/
+        ../.profile
+        ../.psql_history
+        ../.semgrep/
+        ../.ssh/
+        ../.sudo_as_admin_successful
+        ../.viminfo
+        ../.zprofile
+        ../.zulip-dev-uuid
+        ../__MACOSX/
+        ../leic/
