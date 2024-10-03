@@ -1,0 +1,27 @@
+# Ignore personal configuration files
+.aws
+.azure
+.bash_history
+.bash_logout
+.bashrc
+.cache/
+.config/
+.docker/
+.gitconfig
+.lesshst
+.local/
+.motd_shown
+.pgpass
+.pki/
+.profile
+.psql_history
+.semgrep/
+.ssh/
+.sudo_as_admin_successful
+.viminfo
+.zprofile
+.zulip-dev-uuid
+
+# Ignore other untracked files
+__MACOSX/
+leic/
