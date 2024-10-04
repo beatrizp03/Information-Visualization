@@ -45,13 +45,10 @@ function createBarChart(data) {
     .enter()
     .append("rect")
     .attr("class", "dataItem")
-    .attr("class-type", "BarChart") //CHANGED
     .attr("x", margin)
     .attr("y", (d) => yScale(d.oscar_year))
     .attr("width", (d) => xScale(d.rating) - margin)
     .attr("height", yScale.bandwidth())
-    .attr("data-title", (d) => d.title)  //CHANGED
-    .attr("color", (d) => d.budget)  //CHANGED
     .style("fill", (d) => d3.interpolateBlues(colorScale(d.budget)))
     .style("stroke", "black")
     .style("stroke-width", 1)
@@ -177,11 +174,9 @@ function createScatterPlot(data) {
     .enter()
     .append("circle")
     .attr("class", "dataItem")
-    .attr("class-type", "ScatterPlot") //CHANGED
     .attr("r", 10)
     .attr("cx", (d) => xScale(d.budget))
     .attr("cy", (d) => yScale(d.rating))
-    .attr("data-title", (d) => d.title)  //CHANGED
     .style("fill", "steelblue")
     .style("stroke", "black")
     .style("stroke-width", 1)
@@ -255,11 +250,9 @@ function createLineChart(data) {
     .enter()
     .append("circle")
     .attr("class", "dataItem")
-    .attr("class-type", "LineChart") //CHANGED
     .attr("r", 5)
     .attr("cx", (d) => xScale(d.oscar_year))
     .attr("cy", (d) => yScale(d.budget))
-    .attr("data-title", (d) => d.title)  //CHANGED
     .style("fill", "steelblue")
     .style("stroke", "black")
     .style("stroke-width", 1)
@@ -544,31 +537,27 @@ function updateLineChart(data) {
 
 // Triggered events
 
-function mouseOverFunction(event, d) { //CHANGED
-  d3.selectAll(`[data-title='${d.title}']`)
-    .style("cursor", "pointer")
-    .style("fill", "#D0E4B7");
+function mouseOverFunction(event, d) {
+  d3.selectAll("circle.dataItem")
+    .filter(function (elem) {
+      return d.title == elem.title;
+    })
+    .style("fill", "red")
+    .style("stroke-width", 3);
+  d3.selectAll("rect.dataItem")
+    .filter(function (elem) {
+      elem["origColor"] = d3.select(this).style("fill");
+      return d.title == elem.title;
+    })
+    .style("fill", "red")
+    .style("stroke-width", 3);
 }
 
-function mouseLeaveFunction(event, d) { //CHANGED
-  const isBarChart = d3.select(event.target).attr("class-type").includes("BarChart");
-  const isScatterPlot = d3.select(event.target).attr("class-type").includes("ScatterPlot");
-  
-  if (isBarChart) {
-    d3.selectAll(`.BarChart [data-title='${d.title}']`)
-      .style("stroke-width", "1px")
-      .style("fill", (data) => {
-        const budgetScale = d3.scaleLinear()
-          .domain([d3.min(globalData, (d) => d.budget), d3.max(globalData, (d) => d.budget)])
-          .range([0, 1]);
-        return d3.interpolateBlues(budgetScale(data.budget));
-      });
-  } else if (isScatterPlot) {
-    d3.selectAll(`.ScatterPlot [data-title='${d.title}']`)
-      .style("stroke-width", "1px")
-      .style("fill", "steelblue"); // Example color for scatter plot normal
-  }
+function mouseLeaveFunction(event, d) {
   d3.selectAll("circle.dataItem")
-    .style("stroke-width", "1px")
-    .style("fill", "steelblue"); // Example color for scatter plot normal
+    .style("fill", "steelblue")
+    .style("stroke-width", 1);
+  d3.selectAll("rect.dataItem")
+    .style("fill", (d) => d.origColor)
+    .style("stroke-width", 1);
 }
