@@ -1,4 +1,4 @@
-.container {
+/*.container {
   display: grid;
   grid-template-columns: 1fr 1fr;
   grid-template-rows: 1fr 1fr;
@@ -6,8 +6,8 @@
   grid-template-areas:
     "BarChart ScatterPlot"
     "LineChart LineChart";
-}
-.BarChart {
+}*/
+/*.BarChart {
   grid-area: BarChart;
 }
 .LineChart {
@@ -15,18 +15,21 @@
 }
 .ScatterPlot {
   grid-area: ScatterPlot;
-}
+}*/
 html,
-body {
-  height: 100%;
+body, html {
   margin: 0;
-  font-family: Arial, sans-serif;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+  box-sizing: border-box;
 }
 .button-container {
+  background-color: lightyellow;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 10vh; /* Full viewport height */
+  height: 5vh; /* Full viewport height */
 }
 .button-container button {
   margin: 0 10px; /* Optional, for spacing between buttons */
@@ -34,4 +37,80 @@ body {
 
 button {
   font-size: 20px;
+}
+
+.grid-container {
+  display: grid;
+  grid-template-columns: 3fr 1fr; /* First column wider than the second */
+  grid-template-rows: 1.5fr 1fr; /* Two equal rows */
+  height: 100vh; /* 100% of viewport height */
+  padding: 10px;
+}
+
+.grid-item-world {
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 150%;
+  max-height: 150%;
+  margin: 10px;
+}
+
+.grid-item-line {
+  background-color: lightgoldenrodyellow;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 70%;
+  margin: 10px;
+}
+
+.grid-item-magnets {
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;    /* Horizontally center */
+  align-items: center;        /* Vertically center */
+  overflow: visible;          /* Ensure no scroll or hidden overflow */
+  margin: auto;               /* Center the item within the grid */
+  width: 100%;                /* Full container width */
+  height: 100%;               /* Full container height */
+  box-sizing: border-box;      /* Include padding/border in element's width/height */
+}
+
+.grid-item-radar {
+  background-color: lightgray;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 70%;
+  margin: 10px;
+}
+
+.grid-item-magnets img {
+  max-width: 100%;            /* Ensure the image scales down to fit */
+  max-height: 100%;           /* Ensure the image scales down to fit */
+  object-fit: contain;        /* Maintain aspect ratio, fitting inside the container */
+}
+
+.grid-item-world.map {
+  grid-column: 1 / 2; /* Take first column */
+  grid-row: 1 / 2;    /* Take first row */
+}
+
+.grid-item-magnets.bubble {
+  grid-column: 2 / 3; /* Take second column */
+  grid-row: 1 / 2;    /* Take first row */
+}
+
+.grid-item-line.line {
+  grid-column: 1 / 2; /* Take first column */
+  grid-row: 2 / 3;    /* Take second row */
+}
+
+.grid-item-radar.spider {
+  grid-column: 2 / 3; /* Take second column */
+  grid-row: 2 / 3;    /* Take second row */
 }

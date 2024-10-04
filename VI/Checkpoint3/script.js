@@ -5,9 +5,9 @@ var globalData;
 function init() {
   d3.json("data.json").then(function (data) {
     globalData = data;
-    createBarChart(globalData);
-    createScatterPlot(globalData);
-    createLineChart(globalData);
+    //createBarChart(globalData);
+    //createScatterPlot(globalData);
+    //createLineChart(globalData);
   });
 }
 
@@ -284,6 +284,7 @@ function createLineChart(data) {
     .attr("transform", "rotate(-90)")
     .text("Budget");
 }
+
 
 // Update visual idioms
 
