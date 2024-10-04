@@ -7,7 +7,7 @@ function init() {
     globalData = data;
     //createBarChart(globalData);
     //createScatterPlot(globalData);
-    //createLineChart(globalData);
+    createLineChart(globalData);
   });
 }
 
@@ -210,8 +210,8 @@ function createScatterPlot(data) {
 }
 
 function createLineChart(data) {
-  const svgWidth = window.innerWidth;
-  const svgHeight = 350;
+  const svgWidth = 800;
+  const svgHeight = 250;
   const margin = 70;
 
   const xScale = d3
@@ -223,12 +223,12 @@ function createLineChart(data) {
     .scaleLinear()
     .domain([0, d3.max(data, (d) => d.budget)].reverse())
     .range([margin * 0.09, svgHeight - margin]);
-  d3.select(".LineChart")
+  d3.select(".grid-item-line")
     .append("h3")
-    .style("margin-left", `${margin}px`)
+    .style("margin-left", `10px`)
     .text("Evolution of budget across the years");
   const svg = d3
-    .select(".LineChart")
+    .select(".grid-item-line")
     .append("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);

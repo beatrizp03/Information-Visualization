@@ -16,28 +16,6 @@
 .ScatterPlot {
   grid-area: ScatterPlot;
 }*/
-html,
-body, html {
-  margin: 0;
-  padding: 0;
-  height: 100%;
-  overflow: hidden; /* Prevent scrolling */
-  box-sizing: border-box;
-}
-.button-container {
-  background-color: lightyellow;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5vh; /* Full viewport height */
-}
-.button-container button {
-  margin: 0 10px; /* Optional, for spacing between buttons */
-}
-
-button {
-  font-size: 20px;
-}
 
 .grid-container {
   display: grid;
@@ -45,6 +23,10 @@ button {
   grid-template-rows: 1.5fr 1fr; /* Two equal rows */
   height: 100vh; /* 100% of viewport height */
   padding: 10px;
+  gap: 0px 0px;
+  grid-template-areas:
+    "grid-item-world grid-item-magnets"
+    "grid-item-line grid-item-radar";
 }
 
 .grid-item-world {
@@ -65,6 +47,7 @@ button {
   max-width: 100%;
   max-height: 70%;
   margin: 10px;
+  grid-area: grid-item-line;
 }
 
 .grid-item-magnets {
@@ -113,4 +96,27 @@ button {
 .grid-item-radar.spider {
   grid-column: 2 / 3; /* Take second column */
   grid-row: 2 / 3;    /* Take second row */
+}
+
+html,
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+  box-sizing: border-box;
+}
+.button-container {
+  background-color: lightyellow;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 5vh; /* Full viewport height */
+}
+.button-container button {
+  margin: 0 10px; /* Optional, for spacing between buttons */
+}
+
+button {
+  font-size: 20px;
 }
