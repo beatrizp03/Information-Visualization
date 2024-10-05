@@ -41,14 +41,57 @@
 
 .grid-item-line {
   background-color: lightgoldenrodyellow;
-  display: flex;
-  justify-content: center;
+  display: grid;
+  /*display: flex;*/
   overflow: hidden;
+  margin: 10px;
+  grid-template-columns: 1fr 1fr 3fr; /* First two columns equal width, third column double width */
+  grid-template-areas: 
+    "buttons sub-buttons line-chart";
+}
+
+.line-chart {
+  background-color: burlywood;
+  display: flex;
+  width: 700px;
   max-width: 100%;
   max-height: 70%;
   margin: 10px;
-  grid-area: grid-item-line;
 }
+
+.buttons {
+  background-color: gray;
+  display: flex;
+  width: 150px;
+  flex-direction: column;  
+  gap: 1px;
+  align-items: left; /* Centers buttons horizontally */
+}
+
+.sub-buttons {
+  background-color: blue;
+  display: flex;
+  flex-direction: column;  
+  gap: 1px;
+  align-items: left; /* Centers buttons horizontally */
+}
+
+.menu-btn {
+  width: 150px;  
+  height: 30px;   
+  background-color: #faaf0d; 
+  color: white; 
+  border: none; 
+  border-radius: 2.5px; 
+  cursor: pointer;  
+  text-align: center; 
+  align-items: center; 
+}
+
+.menu-btn:hover {
+  background-color: #f88018; 
+}
+
 
 .grid-item-magnets {
   background-color: lightgray;
@@ -89,8 +132,20 @@
 }
 
 .grid-item-line.line {
+  grid-column: 1 / 2; 
+  grid-row: 2 / 3;    
+}
+
+.line-chart {
+  grid-column: 3 / 4; /* Take first column */
+}
+
+.buttons {
   grid-column: 1 / 2; /* Take first column */
-  grid-row: 2 / 3;    /* Take second row */
+}
+
+.sub-buttons {
+  grid-column: 2 / 3; /* Take first column */
 }
 
 .grid-item-radar.spider {
@@ -120,3 +175,34 @@ body, html {
 button {
   font-size: 20px;
 }
+
+
+#country-container {
+  width: 130px; /* Fixed width for the country container */
+  max-height: 200px; /* Max height to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: border for visibility */
+  padding: 5px; /* Padding inside the container */
+  background-color: #f9f9f9; /* Background color */
+  align-items: left; 
+}
+
+.country-btn {
+  display: block; /* Button as block element */
+  width: 100%; /* Full width of the container */
+  margin: 2px 0; /* Vertical spacing */
+  padding: 3px; /* Padding for buttons */
+  background-color: #007BFF; /* Button color */
+  color: white; /* Button text color */
+  border: none; /* Remove default button border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer on hover */
+  font-size: 10px; /* Font size */
+  text-align: center; /* Center text */
+}
+
+.country-btn:hover {
+  background-color: #0056b3; /* Darker button on hover */
+}
+
+

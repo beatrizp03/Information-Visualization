@@ -17,13 +17,28 @@
     <div class="grid-container">
       <div class="grid-item-world"><img src="world.png" alt="Image world"></div>
       <div class="grid-item-magnets"><img src="magnets.png" alt="Image magnets"></div>
-      <div class="grid-item-line"></div>
-      <div class="grid-item-radar"><img src="radar.png" alt="Image radar"></div>
+      <div class="grid-item-line">
+        <div class="buttons">
+          <button class="menu-btn" >Africa</button>
+          <button class="menu-btn" >Asia</button>
+          <button class="menu-btn" >Europe</button>
+          <button class="menu-btn" >North America</button>
+          <button class="menu-btn" >Oceania</button>
+          <button class="menu-btn" >South America</button>
+        </div>
+        <div class="sub-buttons" id="country-container" style="display: none;"></div>
+        <div class="line-chart">
+          <svg width="50" height="150"></svg> 
+        </div>
+      </div>
+        <div class="grid-item-radar"><img src="radar.png" alt="Image radar"></div>
     </div>
     <!--<div class="container">
       <div class="BarChart"></div>
       <div class="LineChart"></div>
       <div class="ScatterPlot"></div>
     </div>-->
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <script src="script.js"></script>
   </body>
 </html>
