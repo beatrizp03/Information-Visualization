@@ -16,6 +16,16 @@
 .ScatterPlot {
   grid-area: ScatterPlot;
 }*/
+:root {
+  --color-africa: rgba(207, 175, 141, 0.8); /* Softer earthy brown with transparency */
+  --color-asia: rgba(203, 191, 21, 0.707); /* Bright but softer yellow with transparency */
+  --color-europe: rgba(163, 200, 224, 0.8); /* Soft blue with transparency */
+  --color-north-america: rgba(215, 76, 46, 0.8); /* Muted vibrant red with transparency */
+  --color-south-america: rgba(75, 143, 60, 0.8); /* Softer green with transparency */
+  --color-oceania: rgba(165, 125, 198, 0.8); /* Soft purple with transparency */
+}
+
+
 
 .grid-container {
   display: grid;
@@ -40,7 +50,7 @@
 }
 
 .grid-item-line {
-  background-color: lightgoldenrodyellow;
+  background-color: rgba(241, 236, 228, 0.867);
   display: grid;
   /*display: flex;*/
   overflow: hidden;
@@ -51,7 +61,7 @@
 }
 
 .line-chart {
-  background-color: burlywood;
+  background-color: rgba(241, 236, 228, 0.867);
   grid-column: 3 / 4;
   display: flex;
   width: 100%; /* Make sure the chart takes full width */
@@ -61,7 +71,7 @@
 
 
 .buttons {
-  background-color: gray;
+  background-color: rgba(128, 128, 128, 0.377);
   display: flex;
   width: 150px;
   flex-direction: column;  
@@ -89,9 +99,7 @@
   align-items: center; 
 }
 
-.menu-btn:hover {
-  background-color: #f88018; 
-}
+
 
 
 .grid-item-magnets {
@@ -171,8 +179,9 @@ body, html {
   margin: 0 10px; /* Optional, for spacing between buttons */
 }
 
+
 button {
-  font-size: 20px;
+  font-size: 18px;
 }
 
 
@@ -191,8 +200,8 @@ button {
   width: 100%; /* Full width of the container */
   margin: 2px 0; /* Vertical spacing */
   padding: 3px; /* Padding for buttons */
-  background-color: #007BFF; /* Button color */
-  color: white; /* Button text color */
+  background-color: rgba(182, 179, 179, 0.885); /* Button color */
+  color: black; /* Button text color */
   border: none; /* Remove default button border */
   border-radius: 5px; /* Rounded corners */
   cursor: pointer; /* Pointer on hover */
@@ -200,8 +209,41 @@ button {
   text-align: center; /* Center text */
 }
 
+.menu-btn.africa {
+  background-color: var(--color-africa); /* Softer earthy brown with 80% opacity */
+}
+
+.menu-btn.europe {
+  background-color: var(--color-europe); /* Soft blue with 80% opacity */
+}
+
+.menu-btn.asia {
+  background-color: var(--color-asia); /* Bright but softer yellow with 80% opacity */
+}
+
+.menu-btn.northamerica {
+  background-color: var(--color-north-america); /* Muted vibrant red with 80% opacity */
+}
+
+.menu-btn.southamerica {
+  background-color: var(--color-south-america); /* Softer green with 80% opacity */
+}
+
+.menu-btn.oceania {
+  background-color: var(--color-oceania); /* Soft purple with 80% opacity */
+}
+
+.menu-btn:hover {
+  opacity: 1; /* Full opacity on hover */
+  transform: scale(1.02); /* Slightly scale up */
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
 .country-btn:hover {
-  background-color: #0056b3; /* Darker button on hover */
+  opacity: 1; /* Full opacity on hover */
+  filter: brightness(1.1);
+  transform: scale(1.02); /* Slightly scale up */
+  transition: transform 0.2s ease; /* Smooth transition */
 }
 
 

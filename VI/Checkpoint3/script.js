@@ -183,16 +183,35 @@ const continents = {
   ]
 };
 
+
+const continentColors = {
+  Africa: 'rgba(207, 175, 141, 0.8)', 
+  Asia: 'rgba(203, 191, 21, 0.707)' ,
+  Europe: 'rgba(163, 200, 224, 0.8)', 
+  NorthAmerica: 'rgba(215, 76, 46, 0.8)', 
+  SouthAmerica: 'rgba(75, 143, 60, 0.8)',
+  Oceania: 'rgba(165, 125, 198, 0.8)'
+};
+
 let clickedList = [];
 var globalData1, globalData2;
 const buttons = document.querySelectorAll('.menu-btn');
 
 function init() {
   d3.csv("EMP_AVG_FINAL.csv").then(function (data1) {
-    globalData1 = data1;
+    globalData1 = data1.map(d => {
+      d.year = +d.year; 
+      return d;
+    }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
+
 
     d3.csv("dataset2_job_category.csv").then(function (data2) {
-      globalData2 = data2;
+       // Convert 'year' to number and sort the data by 'year'
+       globalData2 = data2.map(d => {
+        d.year = +d.year; // Convert year to a number
+        return d;
+      }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
+
       createLineChart(globalData1);
     });
   });
@@ -231,6 +250,7 @@ function showCountryButtons(continent_id) {
   if(continent_id == 0){ 
     countries = continents.Africa;
     continentName = "Africa";
+    
   } else if(continent_id == 1){   
     countries = continents.Asia;
     continentName = "Asia";
@@ -239,13 +259,13 @@ function showCountryButtons(continent_id) {
     continentName = "Europe";
   } else if(continent_id == 3){   
     countries = continents.NorthAmerica;
-    continentName = "North America";
+    continentName = "NorthAmerica";
   } else if(continent_id == 4){   
     countries = continents.Oceania;
     continentName = "Oceania";
   } else if(continent_id == 5){   
     countries = continents.SouthAmerica;
-    continentName = "South America";
+    continentName = "SouthAmerica";
   }
 
   //console.log(countries);
@@ -253,7 +273,7 @@ function showCountryButtons(continent_id) {
   countries.forEach(country => {
     const countryButton = document.createElement('button');
     countryButton.className = 'country-btn';
-    countryButton.textContent = country.name; // Ensure you are using country.name to display the name
+    countryButton.textContent = country.name; 
     /*countryButton.addEventListener('click', function() {
         console.log(`You clicked on ${country.code}`); // Use country.name here as well
         // Handle country button click
@@ -262,15 +282,21 @@ function showCountryButtons(continent_id) {
     countryButton.addEventListener('click', function() {
       const clickedItem = { continent: continentName, country: country.code };
       
-      // Check if the clickedItem already exists in the list
-      if (!clickedList.some(item => item.continent === clickedItem.continent && item.country === clickedItem.country)) {
-        clickedList.push(clickedItem); // Add if not in the list
+      const index = clickedList.findIndex(item => item.continent === clickedItem.continent && item.country === clickedItem.country);
+      
+      if (index === -1) {
+        // Country is not in the list, add it
+        clickedList.push(clickedItem);
+        countryButton.style.backgroundColor = continentColors[continentName];
         console.log(`Added: ${continentName} - ${country.code}`);
-        updateDashboard();
       } else {
-        console.log(`${continentName} - ${country.code} is already in the list`);
+        // Country is in the list, remove it
+        clickedList.splice(index, 1);
+        countryButton.style.backgroundColor = ''; // Reset background color or set it to default
+        console.log(`Removed: ${continentName} - ${country.code}`);
       }
-      //console.log(clickedList); // Debugging: Print the current list
+      
+      updateDashboard();
     });
     countryContainer.appendChild(countryButton);
   });
@@ -278,6 +304,9 @@ function showCountryButtons(continent_id) {
   // Show the country container (optional)
   countryContainer.style.display = 'block';
 }
+
+
+
 
 // Create visual idioms
 
@@ -867,9 +896,13 @@ function updateLineChart(data, countries_clicked) {
   console.log("HERE");
   console.log("CLICKED");
   console.log(clickedList);
-  console.log("COUNTRIES CLICKED");
-  console.log(countries_clicked);
-
+  //filter data
+  const filteredData = data.filter(d =>
+    clickedList.some(clicked => clicked.country === d.country)
+  );
+  console.log("filtered");
+  console.log(filteredData);
+  
   const xScale = d3
     .scalePoint()
     .domain(data.map((d) => d.year).reverse().sort((a, b) => a - b)) 
@@ -886,6 +919,7 @@ function updateLineChart(data, countries_clicked) {
     .select("svg")
     .attr("width", svgWidth)
     .attr("height", svgHeight);
+  
 
   const line = d3
     .line()
@@ -898,26 +932,34 @@ function updateLineChart(data, countries_clicked) {
     .exit()
     .remove();
 
-  // Filter data based on `countries_clicked`
-  const filteredData = data.filter(d =>
-    countries_clicked.some(clicked => clicked.country === d.country)
-  );  
 
-  console.log("FILTERED DATA");
-  console.log(filteredData);
+  function getContinentByCountry(countryCode) {
+    for (const [continent, countries] of Object.entries(continents)) {
+        if (countries.some(country => country.code === countryCode)) {
+            return continent; // Return the continent name if found
+        }
+    }
+    return null; 
+}
 
-  // Update the line for the full data
-  svg
-    .append("path")
-    .datum(filteredData, (d)=> d.country)
-    .attr("class", "line")
-    .transition()
-    .duration(1000)
-    .attr("d", line)
-    .attr("fill", "none")
-    .attr("stroke", "steelblue")
-    .attr("stroke-width", 2);
-  
+// Get the continent of the first country in the filtered data
+const firstCountryCode = filteredData[0]?.country; // Use optional chaining to prevent errors
+const continent = firstCountryCode ? getContinentByCountry(firstCountryCode) : null;
+const lineColor = continent ? continentColors[continent] : 'grey'; //
+
+
+
+ // Create the line
+    svg.append("path")
+        .datum(filteredData)
+        .attr("class", "line")
+        .transition()
+        .duration(1000)
+        .attr("d", line)
+        .attr("fill", "none")
+        .attr("stroke", lineColor)
+        .attr("stroke-width", 2)
+
 
   svg
     .selectAll("circle.dataItem")
@@ -925,7 +967,7 @@ function updateLineChart(data, countries_clicked) {
     .data(filteredData, (d)=> d.country)
     .transition()
     .duration(1000)
-    .attr("r", 5)
+    .attr("r", 1)
     .attr("cx", (d) => xScale(d.year))
     .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
     .end()
@@ -937,11 +979,11 @@ function updateLineChart(data, countries_clicked) {
         .enter()
         .append("circle")
         .attr("class", "dataItem")
-        .attr("r", 5)
+        .attr("r", 3.2)
         .attr("cx", (d) => xScale(d.year))
         .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
-        .style("fill", "steelblue")
-        .style("stroke", "black")
+        .style("fill", lineColor)
+        .style("stroke", lineColor)
         .style("stroke-width", 1)
         .style("opacity", 0) // Initially set opacity to 0
         .on("mouseover", mouseOverFunction)
@@ -970,7 +1012,7 @@ function updateLineChart(data, countries_clicked) {
     .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
 }
 
-// Triggered events
+//Triggered events
 
 function mouseOverFunction(event, d) {
   d3.selectAll("circle.dataItem")
@@ -984,14 +1026,14 @@ function mouseOverFunction(event, d) {
       elem["origColor"] = d3.select(this).style("fill");
       return d.title == elem.title;
     })
-    .style("fill", "red")
+    .style("fill", "black")
     .style("stroke-width", 3);
 }
 
 function mouseLeaveFunction(event, d) {
   d3.selectAll("circle.dataItem")
-    .style("fill", "steelblue")
-    .style("stroke-width", 1);
+    .style("fill", lineColor)
+    .style("stroke-width", -1);
   d3.selectAll("rect.dataItem")
     .style("fill", (d) => d.origColor)
     .style("stroke-width", 1);
