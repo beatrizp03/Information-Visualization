@@ -194,7 +194,7 @@ var globalData1, globalData2;
 const buttons = document.querySelectorAll('.menu-btn');
 
 function init() {
-  d3.csv("dataset1_salary_employmet_ratio.csv").then(function (data1) {
+  d3.csv("EMP_AVG_FINAL.csv").then(function (data1) {
     globalData1 = data1;
 
     d3.csv("dataset2_job_category.csv").then(function (data2) {
@@ -463,20 +463,23 @@ function createLineChart(data) {
   const margin = 60; 
 
   // Extract years from the data and convert them to numbers
-  const years = data
+  /*const years = data
     .map((d) => +d.year) 
-    .sort((a, b) => a - b); 
+    .sort((a, b) => a - b);*/
+    
+  const years = [...new Set(data.map((d) => +d.year))].sort((a, b) => a - b);
+
 
   // Create an x-scale using a point scale for the years
   const xScale = d3
     .scalePoint()
-    .domain(years) 
+    .domain(data.map((d) => d.year).reverse().sort((a, b) => a - b)) 
     .range([margin*1.5, svgWidth - margin]);
-
+    
   // Create a y-scale using a linear scale for the employment rate
   const yScale = d3
     .scaleLinear()
-    .domain([0, d3.max(data, (d) => d.ratio_employment_to_population)].reverse()) 
+    .domain([0, 100].reverse()) 
     .range([margin * 0.09, svgHeight - margin]); 
   
   // Create an SVG element to hold the chart
@@ -498,11 +501,11 @@ function createLineChart(data) {
   const line = d3
     .line()
     .x((d) => xScale(d.year)) 
-    .y((d) => yScale(d.ratio_employment_to_population)); 
+    .y((d) => yScale(d.average_employ_per_country_per_year)); 
 
-  /*
+  console.log(data)
   // Append the line path to the SVG
-  svg
+  /*svg
     .append("path")
     .datum(data) 
     .attr("class", "line")
@@ -510,19 +513,28 @@ function createLineChart(data) {
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2);
+  */
+  svg
+    .append("path")
+    .datum(data, (d) => d.country)// Filter to only include USA data
+    .attr("class", "line")
+    .attr("d", line) 
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 2);
+
 
   // (Optional) Commented out code for adding circles to the data points
-
   
-  svg
+  /*svg
     .selectAll("circle")
-    .data(data, (d) => d.country) // Bind data for circles
+    .data(data.filter(d => d.country === "USA")) // Filter to only include USA values
     .enter() // Handle entering data points
     .append("circle") // Append a circle for each data point
     .attr("class", "dataItem") // Class for styling
     .attr("r", 5) // Radius of the circles
     .attr("cx", (d) => xScale(d.year)) // Set x position based on year
-    .attr("cy", (d) => yScale(d.ratio_employment_to_population)) // Set y position based on employment ratio
+    .attr("cy", (d) => yScale(d.average_employ_per_country_per_year)) // Set y position based on employment ratio
     .style("fill", "steelblue") // Circle fill color
     .style("stroke", "black") // Circle border color
     .style("stroke-width", 1) // Circle border thickness
@@ -531,6 +543,23 @@ function createLineChart(data) {
     .append("title") // Tooltip on hover
     .text((d) => d.country); // Show country name
   */
+  svg
+    .selectAll("circle")
+    .data(data, (d) => d.country) // Bind data for circles
+    .enter() // Handle entering data points
+    .append("circle") // Append a circle for each data point
+    .attr("class", "dataItem") // Class for styling
+    .attr("r", 5) // Radius of the circles
+    .attr("cx", (d) => xScale(d.year)) // Set x position based on year
+    .attr("cy", (d) => yScale(d.average_employ_per_country_per_year)) // Set y position based on employment ratio
+    .style("fill", "steelblue") // Circle fill color
+    .style("stroke", "black") // Circle border color
+    .style("stroke-width", 1) // Circle border thickness
+    .on("mouseover", mouseOverFunction) // Function for mouseover event
+    .on("mouseleave", mouseLeaveFunction) // Function for mouseleave event
+    .append("title") // Tooltip on hover
+    .text((d) => d.country); // Show country name
+
 
   // Append x-axis to the SVG
   svg
@@ -544,7 +573,7 @@ function createLineChart(data) {
     .append("g")
     .attr("class", "yAxis")
     .attr("transform", `translate(${margin*1.5},0)`) 
-    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s"))); 
+    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
 
   // Append x-axis label
   svg
@@ -820,6 +849,9 @@ function updateLineChart(data) {
 function mouseOverFunction(event, d) {
   d3.selectAll("circle.dataItem")
     .filter(function (elem) {
+      console.log(d);
+      console.log(d.xScale);
+      console.log(d.yScale);
       return d.title == elem.title;
     })
     .style("fill", "red")
