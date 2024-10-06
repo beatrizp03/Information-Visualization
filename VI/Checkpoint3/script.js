@@ -183,6 +183,7 @@ const continents = {
   ]
 };
 
+let clickedList = [];
 var globalData1, globalData2;
 const buttons = document.querySelectorAll('.menu-btn');
 
@@ -202,7 +203,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   buttons.forEach(button => {
     button.addEventListener('click', function() {
-          console.log(`You clicked on ${this.textContent}`);
+          //console.log(`You clicked on ${this.textContent}`);
           const continent = this.textContent;
           console.log(`You clicked on ${continent}`);
           if(continent == "Africa") return showCountryButtons(0);
@@ -221,27 +222,55 @@ function showCountryButtons(continent_id) {
   const countryContainer = document.getElementById('country-container');
   countryContainer.innerHTML = ''; // Clear previous country buttons
   let countries = [];
+  let continentName = "";
 
-  console.log(continent_id);
+  //console.log(continent_id);
    
-  console.log(continents.Africa);
+  //console.log(continents.Africa);
 
-  if(continent_id == 0){ countries = continents.Africa;}
-  else if(continent_id == 1){   countries = continents.Asia;}
-  else if(continent_id == 2){  countries = continents.Europe;}
-  else if(continent_id == 3){   countries = continents.NorthAmerica;}
-  else if(continent_id == 4){   countries = continents.Oceania;}
-  else if(continent_id == 5){   countries = continents.SouthAmerica;}
+  if(continent_id == 0){ 
+    countries = continents.Africa;
+    continentName = "Africa";
+  } else if(continent_id == 1){   
+    countries = continents.Asia;
+    continentName = "Asia";
+  } else if(continent_id == 2){  
+    countries = continents.Europe;
+    continentName = "Europe";
+  } else if(continent_id == 3){   
+    countries = continents.NorthAmerica;
+    continentName = "North America";
+  } else if(continent_id == 4){   
+    countries = continents.Oceania;
+    continentName = "Oceania";
+  } else if(continent_id == 5){   
+    countries = continents.SouthAmerica;
+    continentName = "South America";
+  }
 
-  console.log(countries);
+  //console.log(countries);
 
   countries.forEach(country => {
     const countryButton = document.createElement('button');
     countryButton.className = 'country-btn';
     countryButton.textContent = country.name; // Ensure you are using country.name to display the name
-    countryButton.addEventListener('click', function() {
-        console.log(`You clicked on ${country.name}`); // Use country.name here as well
+    /*countryButton.addEventListener('click', function() {
+        console.log(`You clicked on ${country.code}`); // Use country.name here as well
         // Handle country button click
+    });*/
+
+    countryButton.addEventListener('click', function() {
+      const clickedItem = { continent: continentName, country: country.code };
+      
+      // Check if the clickedItem already exists in the list
+      if (!clickedList.some(item => item.continent === clickedItem.continent && item.country === clickedItem.country)) {
+        clickedList.push(clickedItem); // Add if not in the list
+        console.log(`Added: ${continentName} - ${country.code}`);
+        updateDashboard();
+      } else {
+        console.log(`${continentName} - ${country.code} is already in the list`);
+      }
+      //console.log(clickedList); // Debugging: Print the current list
     });
     countryContainer.appendChild(countryButton);
   });
@@ -249,7 +278,6 @@ function showCountryButtons(continent_id) {
   // Show the country container (optional)
   countryContainer.style.display = 'block';
 }
-
 
 // Create visual idioms
 
@@ -448,20 +476,11 @@ function createScatterPlot(data) {
     .attr("transform", "rotate(-90)")
     .text("Rating");
 }
-
 function createLineChart(data) {
   // Set the dimensions of the SVG container
   const svgWidth = 815;
   const svgHeight = 225;
   const margin = 60; 
-
-  // Extract years from the data and convert them to numbers
-  /*const years = data
-    .map((d) => +d.year) 
-    .sort((a, b) => a - b);*/
-    
-  const years = [...new Set(data.map((d) => +d.year))].sort((a, b) => a - b);
-
 
   // Create an x-scale using a point scale for the years
   const xScale = d3
@@ -474,13 +493,16 @@ function createLineChart(data) {
     .scaleLinear()
     .domain([0, 100].reverse()) 
     .range([margin * 0.09, svgHeight - margin]); 
+
+  // Clear the SVG before appending new elements
+  d3.select(".line-chart").select("svg").remove();
   
   // Create an SVG element to hold the chart
   const svg = d3
     .select(".line-chart") 
     .append("svg") 
     .attr("width", svgWidth) 
-    .attr("height", svgHeight); 
+    .attr("height", svgHeight);
 
   svg.append("text")
     .attr("x", svgWidth / 2) // Center the title horizontally
@@ -505,7 +527,7 @@ function createLineChart(data) {
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2);
-  */
+  
   svg
     .append("path")
     .datum(data, (d) => d.country)// Filter to only include USA data
@@ -514,7 +536,7 @@ function createLineChart(data) {
     .attr("fill", "none")
     .attr("stroke", "steelblue")
     .attr("stroke-width", 2);
-
+  */
 
   // (Optional) Commented out code for adding circles to the data points
   
@@ -534,7 +556,7 @@ function createLineChart(data) {
     .on("mouseleave", mouseLeaveFunction) // Function for mouseleave event
     .append("title") // Tooltip on hover
     .text((d) => d.country); // Show country name
-  */
+  
   svg
     .selectAll("circle")
     .data(data, (d) => d.country) // Bind data for circles
@@ -551,7 +573,7 @@ function createLineChart(data) {
     .on("mouseleave", mouseLeaveFunction) // Function for mouseleave event
     .append("title") // Tooltip on hover
     .text((d) => d.country); // Show country name
-
+  */
 
   // Append x-axis to the SVG
   svg
@@ -585,11 +607,10 @@ function createLineChart(data) {
     .text("Employment Rate"); 
 }
 
-
 // Update visual idioms
 
 function updateDashboard(button) {
-  d3.selectAll("button").attr("disabled", true);
+  /*d3.selectAll("button").attr("disabled", true);
   let newData;
   switch (button) {
     case "old":
@@ -604,10 +625,10 @@ function updateDashboard(button) {
 
     default:
       break;
-  }
-  updateBarChart(newData);
-  updateScatterPlot(newData);
-  updateLineChart(newData);
+  }*/
+  //updateBarChart(newData);
+  //updateScatterPlot(newData);
+  updateLineChart(globalData1 ,clickedList);
 }
 
 function updateBarChart(data) {
@@ -754,6 +775,7 @@ function updateScatterPlot(data) {
     .call(d3.axisBottom(xScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
 }
 
+/*
 function updateLineChart(data) {
   const svgWidth = window.innerWidth;
   const svgHeight = 350;
@@ -835,15 +857,124 @@ function updateLineChart(data) {
     .attr("transform", `translate(${margin},0)`)
     .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
 }
+*/
+
+function updateLineChart(data, countries_clicked) {
+  const svgWidth = 815;
+  const svgHeight = 225;
+  const margin = 60; 
+
+  console.log("HERE");
+  console.log("CLICKED");
+  console.log(clickedList);
+  console.log("COUNTRIES CLICKED");
+  console.log(countries_clicked);
+
+  const xScale = d3
+    .scalePoint()
+    .domain(data.map((d) => d.year).reverse().sort((a, b) => a - b)) 
+    .range([margin*1.5, svgWidth - margin]);
+    
+  // Create a y-scale using a linear scale for the employment rate
+  const yScale = d3
+    .scaleLinear()
+    .domain([0, 100].reverse()) 
+    .range([margin * 0.09, svgHeight - margin]); 
+
+  const svg = d3
+    .select(".line-chart") 
+    .select("svg")
+    .attr("width", svgWidth)
+    .attr("height", svgHeight);
+
+  const line = d3
+    .line()
+    .x((d) => xScale(d.year))
+    .y((d) => yScale(d.average_employ_per_country_per_year));
+
+  svg
+    .selectAll("circle.dataItem")
+    .data(data, (d) => d.country)
+    .exit()
+    .remove();
+
+  // Filter data based on `countries_clicked`
+  const filteredData = data.filter(d =>
+    countries_clicked.some(clicked => clicked.country === d.country)
+  );  
+
+  console.log("FILTERED DATA");
+  console.log(filteredData);
+
+  // Update the line for the full data
+  svg
+    .append("path")
+    .datum(filteredData, (d)=> d.country)
+    .attr("class", "line")
+    .transition()
+    .duration(1000)
+    .attr("d", line)
+    .attr("fill", "none")
+    .attr("stroke", "steelblue")
+    .attr("stroke-width", 2);
+  
+
+  svg
+    .selectAll("circle.dataItem")
+    // Filter data to only include items where the country is in the clickedList
+    .data(filteredData, (d)=> d.country)
+    .transition()
+    .duration(1000)
+    .attr("r", 5)
+    .attr("cx", (d) => xScale(d.year))
+    .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
+    .end()
+    .then(() => {
+      const allCircle = svg
+        .selectAll("circle.dataItem")
+        // Bind the filtered data (only clickedList countries) again for entering circles
+        .data(filteredData)
+        .enter()
+        .append("circle")
+        .attr("class", "dataItem")
+        .attr("r", 5)
+        .attr("cx", (d) => xScale(d.year))
+        .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
+        .style("fill", "steelblue")
+        .style("stroke", "black")
+        .style("stroke-width", 1)
+        .style("opacity", 0) // Initially set opacity to 0
+        .on("mouseover", mouseOverFunction)
+        .on("mouseleave", mouseLeaveFunction);
+  
+      // Apply a transition to the circles to make them fade in
+      allCircle.transition().duration(1000).style("opacity", 1);
+  
+      // Append a tooltip with the country name
+      allCircle.append("title").text((d) => d.country);
+    });
+  
+
+  // Update the axes
+  svg
+    .select("g.xAxis")
+    .transition()
+    .duration(1000)
+    .attr("transform", `translate(0,${svgHeight - margin})`)
+    .call(d3.axisBottom(xScale));
+
+  svg
+    .append("g")
+    .attr("class", "yAxis")
+    .attr("transform", `translate(${margin*1.5},0)`) 
+    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
+}
 
 // Triggered events
 
 function mouseOverFunction(event, d) {
   d3.selectAll("circle.dataItem")
     .filter(function (elem) {
-      console.log(d);
-      console.log(d.xScale);
-      console.log(d.yScale);
       return d.title == elem.title;
     })
     .style("fill", "red")
