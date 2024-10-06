@@ -194,7 +194,7 @@ var globalData1, globalData2;
 const buttons = document.querySelectorAll('.menu-btn');
 
 function init() {
-  d3.csv("dataset1_salary_employment_ratio.csv").then(function (data1) {
+  d3.csv("dataset1_salary_employmet_ratio.csv").then(function (data1) {
     globalData1 = data1;
 
     d3.csv("dataset2_job_category.csv").then(function (data2) {
@@ -215,9 +215,9 @@ document.addEventListener('DOMContentLoaded', function() {
           if(continent == "Africa") return showCountryButtons(0);
           else if(continent == "Asia") return showCountryButtons(1);
           else if(continent == "Europe") return showCountryButtons(2);
-          else if(continent == "NorthAmerica") return showCountryButtons(3);
+          else if(continent == "North America") return showCountryButtons(3);
           else if(continent == "Oceania") return showCountryButtons(4);
-          else if(continent == "SouthAmerica") return showCountryButtons(5);
+          else if(continent == "South America") return showCountryButtons(5);
           //showCountryButtons(continent);
       });
   });
@@ -458,7 +458,7 @@ function createScatterPlot(data) {
 
 function createLineChart(data) {
   // Set the dimensions of the SVG container
-  const svgWidth = 900;
+  const svgWidth = 815;
   const svgHeight = 225;
   const margin = 60; 
 
@@ -471,7 +471,7 @@ function createLineChart(data) {
   const xScale = d3
     .scalePoint()
     .domain(years) 
-    .range([margin*4, svgWidth - margin]); 
+    .range([margin*1.5, svgWidth - margin]);
 
   // Create a y-scale using a linear scale for the employment rate
   const yScale = d3
@@ -543,7 +543,7 @@ function createLineChart(data) {
   svg
     .append("g")
     .attr("class", "yAxis")
-    .attr("transform", `translate(${margin*4},0)`) 
+    .attr("transform", `translate(${margin*1.5},0)`) 
     .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s"))); 
 
   // Append x-axis label
@@ -558,7 +558,7 @@ function createLineChart(data) {
   svg
     .append("text")
     .attr("x", -svgHeight / 2 + margin / 2) // Position vertically and center
-    .attr("y", margin*3.5) 
+    .attr("y", margin*1) 
     .attr("text-anchor", "middle")
     .attr("transform", "rotate(-90)") 
     .text("Employment Rate"); 
