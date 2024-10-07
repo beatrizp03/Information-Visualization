@@ -148,8 +148,6 @@ const continents = {
     { name: "Uruguay", code: "URY" },
   ]
 };
-
-
 const continentColors = {
   Africa: 'rgba(207, 175, 141, 0.8)', 
   Asia: 'rgba(203, 191, 21, 0.707)' ,
@@ -160,7 +158,7 @@ const continentColors = {
 };
 
 let clickedList = [];
-var globalData1, globalData2;
+var globalData1, globalData2, globalData3;
 const buttons = document.querySelectorAll('.menu-btn');
 
 function init() {
@@ -170,15 +168,20 @@ function init() {
       return d;
     }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
 
-
     d3.csv("dataset2_job_category.csv").then(function (data2) {
        // Convert 'year' to number and sort the data by 'year'
        globalData2 = data2.map(d => {
         d.year = +d.year; // Convert year to a number
         return d;
       }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
-
-      createLineChart(globalData1);
+    d3.csv("average_ratio_employ_by_country.csv").then(function(data3){
+      globalData3 = data3.map(d => { 
+        d.year = +d.year;
+        return d;
+      }).sort((a, b) => a.year - b.year);
+    
+      createLineChart(globalData1, globalData3);
+     });
     });
   });
 }
@@ -210,7 +213,6 @@ function showCountryButtons(continent_id) {
   let continentName = "";
 
   //console.log(continent_id);
-   
   //console.log(continents.Africa);
 
   if(continent_id == 0){ 
@@ -410,7 +412,7 @@ function createBarChart(data) {
     .text(d3.max(data, (d) => d.budget / 1000000) + "M");
 }
 
-function createScatterPlot(data) {
+function createScatterPlot(data,) {
   const svgWidth = window.innerWidth / 2;
   const svgHeight = 350;
   const margin = 70;
@@ -471,16 +473,33 @@ function createScatterPlot(data) {
     .attr("transform", "rotate(-90)")
     .text("Rating");
 }
-function createLineChart(data) {
+function createLineChart(data, data_average) {
   // Set the dimensions of the SVG container
   const svgWidth = 815;
   const svgHeight = 225;
   const margin = 60; 
 
+  const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
+    continent,
+    year: parseInt(year, 10), // Convert year to a number
+    ratio_employment_to_population: parseFloat(ratio_employment_to_population) // Convert ratio to a number
+}));
+
+console.log(cleanedData[1]);
+// Group by continent
+const groupedByContinent = cleanedData.reduce((acc, current) => {
+  const { continent } = current;
+  if (!acc[continent]) {
+      acc[continent] = [];
+  }
+  acc[continent].push(current);
+  return acc;
+}, {});
+
   // Create an x-scale using a point scale for the years
   const xScale = d3
     .scalePoint()
-    .domain(data.map((d) => d.year).reverse().sort((a, b) => a - b)) 
+    .domain(cleanedData.map((d) => d.year).reverse().sort((a, b) => a - b)) 
     .range([margin*1.5, svgWidth - margin]);
     
   // Create a y-scale using a linear scale for the employment rate
@@ -511,7 +530,7 @@ function createLineChart(data) {
   const line = d3
     .line()
     .x((d) => xScale(d.year)) 
-    .y((d) => yScale(d.average_employ_per_country_per_year)); 
+    .y((d) => yScale(d.ratio_employment_to_population)); 
 
   // Append the line path to the SVG
   /*svg
@@ -569,7 +588,17 @@ function createLineChart(data) {
     .append("title") // Tooltip on hover
     .text((d) => d.country); // Show country name
   */
+// Append lines for each continent
+const colors = d3.scaleOrdinal(d3.schemeCategory10); // Color scale for different lines
 
+Object.entries(groupedByContinent).forEach(([continent, data]) => {
+    svg.append('path')
+        .datum(data) // Bind data for this continent
+        .attr('fill', 'none') // No fill
+        .attr('stroke', colors(continent)) 
+        .attr('stroke-width', 2) 
+        .attr('d', line); // Generate line
+});
   // Append x-axis to the SVG
   svg
     .append("g")
@@ -602,6 +631,8 @@ function createLineChart(data) {
     .text("Employment Rate"); 
 }
 
+
+
 // Update visual idioms
 
 function updateDashboard(button) {
@@ -623,7 +654,7 @@ function updateDashboard(button) {
   }*/
   //updateBarChart(newData);
   //updateScatterPlot(newData);
-  updateLineChart(globalData1 ,clickedList);
+  updateLineChart(globalData1 , globalData3, clickedList);
 }
 
 function updateBarChart(data) {
@@ -854,17 +885,17 @@ function updateLineChart(data) {
 }
 */
 
-function updateLineChart(data, countries_clicked) {
+function updateLineChart(data, data_average, countries_clicked) {
   const svgWidth = 815;
   const svgHeight = 225;
   const margin = 60; 
-
+  
   console.log("HERE");
   console.log("CLICKED");
   console.log(clickedList);
   //filter data
   const filteredData = data.filter(d =>
-    clickedList.some(clicked => clicked.country === d.country)
+    countries_clicked.some(clicked => clicked.country === d.country)
   );
   console.log("filtered");
   console.log(filteredData);
@@ -891,6 +922,8 @@ function updateLineChart(data, countries_clicked) {
     .line()
     .x((d) => xScale(d.year))
     .y((d) => yScale(d.average_employ_per_country_per_year));
+    
+  svg.selectAll('path').remove(); // This will remove all existing paths
 
   svg
     .selectAll("circle.dataItem")
