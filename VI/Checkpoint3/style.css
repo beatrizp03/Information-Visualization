@@ -95,7 +95,24 @@
   align-items: center; 
 }
 
+#clearLines {
+  background-color: #a4a3a349; 
+  color: white; 
+  border: none; 
+  padding: 10px 20px; /* Top and bottom padding, left and right padding */
+  text-align: center; /* Center the text */
+  text-decoration: none; /* No underline */
+  display: inline-block; /* Make it an inline block element */
+  font-size: 13px; /* Font size */
+  margin: 3px 2px; /* Margin around the button */
+  cursor: pointer; /* Pointer cursor on hover */
+  border-radius: 5px; /* Rounded corners */
+  transition: background-color 0.3s; /* Transition effect */
+}
 
+#clearLines:hover {
+  background-color: #858585bc; /* Darker red on hover */
+}
 
 
 .grid-item-magnets {
