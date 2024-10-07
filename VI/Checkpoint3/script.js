@@ -554,7 +554,7 @@ const groupedByContinent = cleanedData.reduce((acc, current) => {
 
   svg.append("text")
     .attr("x", svgWidth / 2) // Center the title horizontally
-    .attr("y", margin - 40) // Position it above the chart
+    .attr("y", margin - 49) // Position it above the chart
     .attr("text-anchor", "middle") // Center the text alignment
     .style("font-size", "16px") // Optional: Adjust font size
     .style("font-weight", "bold") // Optional: Make it bold

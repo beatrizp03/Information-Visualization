@@ -67,7 +67,7 @@
 
 
 .buttons {
-  background-color: rgba(128, 128, 128, 0.377);
+  /*background-color: rgba(128, 128, 128, 0.377);*/
   display: flex;
   width: 150px;
   flex-direction: column;  
@@ -96,14 +96,14 @@
 }
 
 #clearLines {
-  background-color: #a4a3a349; 
+  background-color: #47454549; 
   color: white; 
   border: none; 
   padding: 10px 20px; /* Top and bottom padding, left and right padding */
   text-align: center; /* Center the text */
   text-decoration: none; /* No underline */
   display: inline-block; /* Make it an inline block element */
-  font-size: 13px; /* Font size */
+  font-size: 16px; /* Font size */
   margin: 3px 2px; /* Margin around the button */
   cursor: pointer; /* Pointer cursor on hover */
   border-radius: 5px; /* Rounded corners */
@@ -111,7 +111,7 @@
 }
 
 #clearLines:hover {
-  background-color: #858585bc; /* Darker red on hover */
+  background-color: #414040bc; /* Darker red on hover */
 }
 
 
