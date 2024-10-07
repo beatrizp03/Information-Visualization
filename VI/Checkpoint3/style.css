@@ -40,7 +40,6 @@
 }
 
 .grid-item-world {
-  background-color: lightgray;
   display: flex;
   justify-content: center;
   overflow: hidden;
@@ -50,9 +49,7 @@
 }
 
 .grid-item-line {
-  background-color: rgba(241, 236, 228, 0.867);
   display: grid;
-  /*display: flex;*/
   overflow: hidden;
   margin: 10px;
   grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
@@ -61,7 +58,6 @@
 }
 
 .line-chart {
-  background-color: rgba(241, 236, 228, 0.867);
   grid-column: 3 / 4;
   display: flex;
   width: 100%; /* Make sure the chart takes full width */
@@ -103,7 +99,6 @@
 
 
 .grid-item-magnets {
-  background-color: lightgray;
   display: flex;
   justify-content: center;    /* Horizontally center */
   align-items: center;        /* Vertically center */
@@ -115,50 +110,20 @@
 }
 
 .grid-item-radar {
-  background-color: lightgray;
   display: flex;
   justify-content: center;
   overflow: hidden;
   max-width: 100%;
-  max-height: 70%;
+  max-height: 80%;
   margin: 10px;
 }
 
 .grid-item-magnets img {
-  max-width: 100%;            /* Ensure the image scales down to fit */
-  max-height: 100%;           /* Ensure the image scales down to fit */
+  max-width: 120%;            /* Ensure the image scales down to fit */
+  max-height: 120%;           /* Ensure the image scales down to fit */
   object-fit: contain;        /* Maintain aspect ratio, fitting inside the container */
 }
 
-
-/*.grid-item-world.map {
-  grid-column: 1 / 2; 
-  grid-row: 1 / 2;    
-}
-
-.grid-item-magnets.bubble {
-  grid-column: 2 / 3; 
-  grid-row: 1 / 2;    
-}
-
-.grid-item-line.line {
-  grid-column: 1 / 2; 
-  grid-row: 2 / 3;    
-}
-
-
-.buttons {
-  grid-column: 1 / 2; 
-}
-
-.sub-buttons {
-  grid-column: 2 / 3; 
-}
-
-.grid-item-radar.spider {
-  grid-column: 2 / 3; 
-  grid-row: 2 / 3;    
-}*/
 
 html,
 body, html {

@@ -157,6 +157,11 @@ const continentColors = {
   Oceania: 'rgba(165, 125, 198, 0.8)'
 };
 
+const countryNameMapping = Object.values(continents).flat().reduce((acc, { name, code }) => {
+  acc[code] = name;
+  return acc;
+}, {});
+
 let clickedList = [];
 var globalData1, globalData2, globalData3;
 const buttons = document.querySelectorAll('.menu-btn');
@@ -271,6 +276,15 @@ function showCountryButtons(continent_id) {
 
   // Show the country container (optional)
   countryContainer.style.display = 'block';
+}
+
+function getContinentByCountry(countryCode) {
+  for (const [continent, countries] of Object.entries(continents)) {
+      if (countries.some(country => country.code === countryCode)) {
+          return continent;
+      }
+  }
+  return null;
 }
 
 
@@ -524,7 +538,7 @@ const groupedByContinent = cleanedData.reduce((acc, current) => {
     .attr("text-anchor", "middle") // Center the text alignment
     .style("font-size", "16px") // Optional: Adjust font size
     .style("font-weight", "bold") // Optional: Make it bold
-    .text("TODO");
+    .text("Women's Employment Rate by Country and Year");
 
   // Create a line generator function
   const line = d3
@@ -598,19 +612,6 @@ Object.entries(groupedByContinent).forEach(([continent, data]) => {
         .attr('stroke', colors(continent)) 
         .attr('stroke-width', 2) 
         .attr('d', line) // Generate line
-        .on('mouseover', function() {
-          d3.select(this)
-              .attr('stroke-width', 4) // Increase the width on hover
-              .attr('stroke', colors(continent)); // Change color (optional, for highlight)
-          
-          // Optionally, you can show additional information like tooltips here
-      })
-      .on('mouseout', function(){
-        d3.select(this)
-              .attr('stroke-width', 2) // Increase the width on hover
-              .attr('stroke', colors(continent)); // Change color (optional, for highlight)
-          
-      })
         
 });
   // Append x-axis to the SVG
@@ -900,182 +901,142 @@ function updateLineChart(data) {
 function updateLineChart(data, data_average, countries_clicked) {
   const svgWidth = 815;
   const svgHeight = 225;
-  const margin = 60; 
-  
-  console.log("initial data",data.slice(0, 20));
-  const total_data = data.filter(d => d.age_group === 'AGE_10YRBANDS_TOTAL'&& d.level_education_standardised
-    == "TOTAL");
-  console.log("only_total",total_data.slice(0, 20));
+  const margin = 60;
 
-  const reducedData = total_data.map(({ country,year, ratio_employment_to_population }) => ({
-    country,
-    year: Number(year),
-    ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
+  const total_data = data.filter(d => d.age_group === 'AGE_10YRBANDS_TOTAL' && d.level_education_standardised == "TOTAL");
+
+  const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
+      country,
+      year: Number(year),
+      ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
   }));
-  console.log("Reduced Data:", reducedData);
 
   const final_data = reducedData.filter(d =>
-    countries_clicked.some(clicked => clicked.country === d.country)
-);
-  console.log("countries clicked",countries_clicked);
-  console.log("final", final_data)
+      countries_clicked.some(clicked => clicked.country === d.country)
+  );
 
- // Log the reduced data for debugging
+  // Get the full range of years from the dataset
+  const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);
+
+  // Ensure that the xScale includes all the years (from all countries)
   const xScale = d3
-    .scalePoint()
-    .domain(data.map((d) => d.year).reverse().sort((a, b) => a - b)) 
-    .range([margin*1.5, svgWidth - margin]);
-    
-  // Create a y-scale using a linear scale for the employment rate
+      .scalePoint()
+      .domain(allYears) // Use full range of years
+      .range([margin * 1.5, svgWidth - margin]);
+
   const yScale = d3
-    .scaleLinear()
-    .domain([0, 100].reverse()) 
-    .range([margin * 0.09, svgHeight - margin]); 
+      .scaleLinear()
+      .domain([0, 100])
+      .range([svgHeight - margin, margin * 0.09]);
 
   const svg = d3
-    .select(".line-chart") 
-    .select("svg")
-    .attr("width", svgWidth)
-    .attr("height", svgHeight);
+      .select(".line-chart")
+      .select("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
+
+  svg.selectAll('path').remove(); // This will remove all existing paths  
+
+  // Get unique countries and group data by country
+  const uniqueCountries = Array.from(new Set(final_data.map(d => d.country)));
+
+  const dataByCountry = uniqueCountries.map(country => ({
+      country,
+      data: final_data.filter(d => d.country === country)
+  }));
+
+  // Create lines for each country
+  dataByCountry.forEach(countryData => {
+      const firstCountryCode = countryData.country;
+      const continent = getContinentByCountry(firstCountryCode);
+      const lineColor = continentColors[continent] || 'grey';
+
+      const line = d3.line()
+          .x(d => xScale(d.year))
+          .y(d => yScale(d.ratio_employment_to_population));
+
+      svg.append("path")
+          .datum(countryData.data)
+          .attr("class", "line")
+          .attr("fill", "none")
+          .attr("stroke", lineColor)
+          .attr("stroke-width", 2)
+          .attr("d", line);
+  });
+
+  // Handle circles
+  svg.selectAll("circle.dataItem").remove(); // Clear previous circles
+
+  const allCircles = svg
+      .selectAll("circle.dataItem")
+      .data(final_data, d => d.country)
+      .enter()
+      .append("circle")
+      .attr("class", "dataItem")
+      .attr("r", 3.2)
+      .attr("cx", d => xScale(d.year))
+      .attr("cy", d => yScale(d.ratio_employment_to_population))
+      .style("fill", d => {
+          const continent = getContinentByCountry(d.country);
+          return continentColors[continent] || 'grey';
+      })
+      .style("stroke", d => {
+          const continent = getContinentByCountry(d.country);
+          return continentColors[continent] || 'grey';
+      })
+      .style("stroke-width", 1)
+      .style("opacity", 0) // Start with opacity 0
+      .on("mouseover", mouseOverFunction)
+      .on("mouseleave", mouseLeaveFunction);
+
+  // Transition to make circles visible
+  allCircles.transition().duration(1000).style("opacity", 1);
+
+  // Append tooltips
+  allCircles.append("title").text(d => countryNameMapping[d.country] || d.country); // Use mapping
   
+  // Update the x-axis with the full range of years
+  svg.append("g")
+      .attr("class", "xAxis")
+      .attr("transform", `translate(0,${svgHeight - margin})`)
+      .call(d3.axisBottom(xScale));
 
-  const line = d3
-    .line()
-    .x((d) => xScale(d.year))
-    .y((d) => yScale(d.ratio_employment_to_population));
-    
-  svg.selectAll('path').remove(); // This will remove all existing paths
-
-  svg
-    .selectAll("circle.dataItem")
-    .data(data, (d) => d.country)
-    .exit()
-    .remove();
-
-
-  function getContinentByCountry(countryCode) {
-    for (const [continent, countries] of Object.entries(continents)) {
-        if (countries.some(country => country.code === countryCode)) {
-            return continent; // Return the continent name if found
-        }
-    }
-    return null; 
+  // Update the y-axis
+  svg.append("g")
+      .attr("class", "yAxis")
+      .attr("transform", `translate(${margin * 1.5},0)`)
+      .call(d3.axisLeft(yScale).tickValues(d3.range(0, 101, 20)));
 }
 
-// Get the continent of the first country in the filtered data
 
 
+function mouseOverFunction(event, d) {
+  // Get the country code for the hovered line
+  const hoveredCountry = d.country;
 
-// Assuming final_data is already filtered and contains the necessary properties
-const uniqueCountries = Array.from(new Set(final_data.map(d => d.country))); // Get unique countries
+  // Highlight circles that correspond to the hovered country
+  d3.selectAll("circle.dataItem")
+      .filter(function (elem) {
+          return elem.country === hoveredCountry; // Match by country
+      })
+      .style("stroke", "black")
+      .style("stroke-width", 3);
 
-// Group data by country
-const dataByCountry = uniqueCountries.map(country => {
-    return {
-        country: country,
-        data: final_data.filter(d => d.country === country) // Filter data for the current country
-    };
-});
-
-// Create lines for each unique country
-dataByCountry.forEach(countryData => {
-    const firstCountryCode = countryData.country; // Use countryData to get the country code
-    const continent = firstCountryCode ? getContinentByCountry(firstCountryCode) : null;
-    const lineColor = continentColors[continent] || 'grey'; // Get color for the continent
-
-    const line = d3.line()
-        .x(d => xScale(d.year)) // Adjust this based on your scales
-        .y(d => yScale(d.ratio_employment_to_population)); // Adjust this based on your scales
-
-    // Create the line
-    svg.append("path")
-        .datum(countryData.data) // Bind data for the current country
-        .attr("class", "line")
-        .transition()
-        .duration(1000)
-        .attr("d", line) // Use the line function to create the path
-        .attr("fill", "none")
-        .attr("stroke", lineColor) // Set color for the current country
-        .attr("stroke-width", 2)
-});
-
-
-
-
-  // svg
-  //   .selectAll("circle.dataItem")
-  //   // Filter data to only include items where the country is in the clickedList
-  //   .data(filteredData, (d)=> d.country)
-  //   .transition()
-  //   .duration(1000)
-  //   .attr("r", 1)
-  //   .attr("cx", (d) => xScale(d.year))
-  //   .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
-  //   .end()
-  //   .then(() => {
-  //     const allCircle = svg
-  //       .selectAll("circle.dataItem")
-  //       // Bind the filtered data (only clickedList countries) again for entering circles
-  //       .data(filteredData)
-  //       .enter()
-  //       .append("circle")
-  //       .attr("class", "dataItem")
-  //       .attr("r", 3.2)
-  //       .attr("cx", (d) => xScale(d.year))
-  //       .attr("cy", (d) => yScale(d.average_employ_per_country_per_year))
-  //       .style("fill", lineColor)
-  //       .style("stroke", lineColor)
-  //       .style("stroke-width", 1)
-  //       .style("opacity", 0) // Initially set opacity to 0
-  //       .on("mouseover", mouseOverFunction)
-  //       .on("mouseleave", mouseLeaveFunction);
-  
-  //     // Apply a transition to the circles to make them fade in
-  //     allCircle.transition().duration(1000).style("opacity", 1);
-  
-  //     // Append a tooltip with the country name
-  //     allCircle.append("title").text((d) => d.country);
-  //   });
-  
-
-  // Update the axes
-  svg
-    .select("g.xAxis")
-    .transition()
-    .duration(1000)
-    .attr("transform", `translate(0,${svgHeight - margin})`)
-    .call(d3.axisBottom(xScale));
-
-  svg
-    .append("g")
-    .attr("class", "yAxis")
-    .attr("transform", `translate(${margin*1.5},0)`) 
-    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
 }
 
-//Triggered events
+function mouseLeaveFunction(event, d) {
+  const hoveredCountry = d.country; // Get the country of the hovered item
 
-// function mouseOverFunction(event, d) {
-//   d3.selectAll("circle.dataItem")
-//     .filter(function (elem) {
-//       return d.title == elem.title;
-//     })
-//     .style("fill", "red")
-//     .style("stroke-width", 3);
-//   d3.selectAll("rect.dataItem")
-//     .filter(function (elem) {
-//       elem["origColor"] = d3.select(this).style("fill");
-//       return d.title == elem.title;
-//     })
-//     .style("fill", "black")
-//     .style("stroke-width", 3);
-// }
+  // Reset circles for the hovered country
+  d3.selectAll("circle.dataItem")
+      .filter(function (elem) {
+          return elem.country === hoveredCountry; // Match by country
+      })
+      .style("stroke", (elem) => continentColors[getContinentByCountry(elem.country)] || 'grey') // Reset to original color
+      .style("stroke-width", 1); // Reset stroke width
 
-// function mouseLeaveFunction(event, d) {
-//   d3.selectAll("circle.dataItem")
-//     .style("fill", lineColor)
-//     .style("stroke-width", -1);
-//   d3.selectAll("rect.dataItem")
-//     .style("fill", (d) => d.origColor)
-//     .style("stroke-width", 1);
-// }
+}
+
+
+
+
