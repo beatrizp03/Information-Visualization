@@ -223,10 +223,6 @@ function clearLines() {
   document.querySelectorAll('.country-btn').forEach(button => {
     button.style.backgroundColor = ''; // Reset background color to default
   });
-
-  // Optionally hide the tooltip or any other UI elements
-  tooltip.style("opacity", 0); // Hide tooltip if any
-
   // Update the dashboard to reflect cleared selections
   updateDashboard();
 }
