@@ -114,13 +114,11 @@ const continents = {
     { name: "Dominican Republic", code: "DOM" },
     { name: "El Salvador", code: "SLV" },
     { name: "Guatemala", code: "GTM" },
-    { name: "Haiti", code: "HTI" },
     { name: "Honduras", code: "HND" },
     { name: "Jamaica", code: "JAM" },
     { name: "Mexico", code: "MEX" },
     { name: "Nicaragua", code: "NIC" },
     { name: "Panama", code: "PAN" },
-    { name: "Saint Lucia", code: "LCA" },
     { name: "Trinidad and Tobago", code: "TTO" },
     { name: "United States of America", code: "USA" }
   ],
@@ -167,7 +165,7 @@ var globalData1, globalData2, globalData3;
 const buttons = document.querySelectorAll('.menu-btn');
 
 function init() {
-  d3.csv("EMP_AVG_FINAL.csv").then(function (data1) {
+  d3.csv("dataset1_salary_employment_ratio.csv").then(function (data1) {
     globalData1 = data1.map(d => {
       d.year = +d.year; 
       return d;
@@ -179,7 +177,7 @@ function init() {
         d.year = +d.year; // Convert year to a number
         return d;
       }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
-    d3.csv("average_ratio_employ_by_country.csv").then(function(data3){
+    d3.csv("average_ratio_employ_by_continent.csv").then(function(data3){
       globalData3 = data3.map(d => { 
         d.year = +d.year;
         return d;
@@ -271,10 +269,11 @@ function showCountryButtons(continent_id) {
     const countryButton = document.createElement('button');
     countryButton.className = 'country-btn';
     countryButton.textContent = country.name; 
-    /*countryButton.addEventListener('click', function() {
-        console.log(`You clicked on ${country.code}`); // Use country.name here as well
-        // Handle country button click
-    });*/
+
+    const isSelected = clickedList.some(item => item.continent === continentName && item.country === country.code);
+    if (isSelected) {
+        countryButton.style.backgroundColor = continentColors[continentName]; // Set selected color if already clicked
+    }
 
     countryButton.addEventListener('click', function() {
       const clickedItem = { continent: continentName, country: country.code };
