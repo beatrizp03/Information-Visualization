@@ -4,18 +4,29 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="style.css" />
-    <script src="script.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
+    <script src="script.js"></script>
+    <script src="linechart.js"></script>
+    <script src="year_range_selection.js"></script>
     <title>Woman's Employment Rate Globaly Dashboard</title>
   </head>
+
+
   <body onload="init()">
     <div class="button-container">
-      <div class="year-changing"><img src="images/year_changing.png" alt="Year Changing"></div>
-      <!--<button onclick="updateDashboard('old')">Old Data</button>
-      <button onclick="updateDashboard('new')">New Data</button>
-      <button onclick="updateDashboard('all')">All Data</button>-->
-    </div>
+      <div class="container">
+          <div class="slider-track"></div>
+          <input type="range" min="2000" max="2023" value="2003" id="slider-1" oninput="slideOne()">
+          <input type="range" min="2000" max="2023" value="2020" id="slider-2" oninput="slideTwo()">
+          <div class="values">
+              <span id="range1">2003</span> <!-- Display for slider 1 -->
+              <span> &dash; </span>
+              <span id="range2">2020</span> <!-- Display for slider 2 -->
+          </div>
+      </div>
+  </div>
     <div class="grid-container">
+      
       <div class="grid-item-world"><img src="images/world_map.png" alt="Image world"></div>
       <div class="grid-item-magnets"><img src="images/magnets.png" alt="Image magnets"></div>
       <div class="grid-item-line">
@@ -35,9 +46,11 @@
 
         </div>
       </div>
+      
         <div class="grid-item-radar"><img src="images/radar.png" alt="Image radar"></div>
     </div>
     <script src="https://d3js.org/d3.v7.min.js"></script>
-    <script src="script.js"></script>
+    
+    
   </body>
 </html>
