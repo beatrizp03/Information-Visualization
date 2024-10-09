@@ -1,6 +1,3 @@
-
-
-
 function init() {
   sliderOne = document.getElementById("slider-1");
   sliderTwo = document.getElementById("slider-2");
@@ -15,7 +12,7 @@ function init() {
 
   var globalData1, globalData2, globalData3;
 
-d3.csv("datasets/dataset1_salary_employment_ratio.csv").then(function (data1) {
+  d3.csv("datasets/dataset1_salary_employment_ratio.csv").then(function (data1) {
   globalData1 = data1.map(d => {
     d.year = +d.year; 
     return d;
