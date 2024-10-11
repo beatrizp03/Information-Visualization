@@ -152,12 +152,23 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
 }
 
 .grid-item-world {
-  display: flex;
-  justify-content: center;
-  overflow: hidden;
-  max-width: 150%;
-  max-height: 150%;
-  margin: 10px;
+  width: 100%;
+  margin: 0 auto;
+}
+
+/* Scope the SVG and path styles to the map-container */
+.grid-item-world svg {
+  display: grid;
+  margin: 0 auto;
+}
+
+.grid-item-world path {
+  stroke: #fff;
+  stroke-width: 0.5;
+}
+
+.grid-item-world path:hover {
+  cursor: pointer;
 }
 
 .grid-item-line {

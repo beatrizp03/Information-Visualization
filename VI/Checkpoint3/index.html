@@ -7,6 +7,7 @@
     <script src="https://cdn.jsdelivr.net/npm/d3@7"></script>
     <script src="./script.js"></script>
     <script src="./linechart.js"></script>
+    <script src="./worldmap.js"></script>
     <script src="./year_range_selection.js"></script>
     <title>Woman's Employment Rate Globaly Dashboard</title>
   </head>
@@ -27,7 +28,8 @@
   </div>
     <div class="grid-container">
       
-      <div class="grid-item-world"><img src="images/world_map.png" alt="Image world"></div>
+      <div class="grid-item-world">
+      </div>
       <div class="grid-item-magnets"><img src="images/magnets.png" alt="Image magnets"></div>
       <div class="grid-item-line">
         <div class="buttons">
@@ -42,8 +44,7 @@
         </div>
         <div class="sub-buttons" id="country-container" style="display: none;"></div>
         <div class="line-chart">
-        <div id="tooltip" style="position: absolute; opacity: 0; background: white; border: 1px solid black; padding: 5px; border-radius: 4px; pointer-events: none;"></div>
-
+          <div id="tooltip" style="position: absolute; opacity: 0; background: white; border: 1px solid black; padding: 5px; border-radius: 4px; pointer-events: none;"></div>
         </div>
       </div>
       
