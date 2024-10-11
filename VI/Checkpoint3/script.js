@@ -32,6 +32,32 @@ function init() {
 
         
         createLineChart(globalData1, globalData3);
+
+        const categories = Array.from(new Set(globalData2.map(d => d.job_category)));
+        // Inside the d3.csv call
+        const employmentData = d3.rollup(
+          globalData2,  // Your dataset
+          leaves => {
+            const categoryEmployment = {};
+            leaves.forEach(l => categoryEmployment[l.job_category] = l.number_worker);
+            return categoryEmployment;
+          },
+          d => d.country  // Group by country
+        );
+
+        console.log("DATA");
+        console.log(employmentData);
+
+        // Convert the rollup to a format that can be used
+        const employmentDataArray = Array.from(employmentData, ([country, categoryEmployment]) => ({
+          country,
+          ...categoryEmployment
+        }));
+
+        console.log("ARRAY");
+        console.log(employmentDataArray);
+        // Create the magnet chart
+        createMagnetChart(employmentDataArray, categories);
       
       });
     });

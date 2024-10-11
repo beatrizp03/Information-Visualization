@@ -239,6 +239,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
 
 
 .grid-item-magnets {
+  background-color: wheat;
   display: flex;
   justify-content: center;    /* Horizontally center */
   align-items: center;        /* Vertically center */
@@ -276,9 +277,9 @@ body, html {
 .button-container {
   /*background-color: lightyellow;*/
   display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 5vh; /* Full viewport height */
+  justify-content: right;
+  align-items: right;
+  height: 2vh; /* Full viewport height */
 }
 .button-container button {
   margin: 0 10px; /* Optional, for spacing between buttons */
