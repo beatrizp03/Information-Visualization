@@ -274,9 +274,15 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   transition: background-color 0.3s; /* Add transition for hover effect */
 }
 
-.grid-item-magnets .switch_chart-buttons button:hover {
-  background-color: rgb(46, 1, 46, 0.8); /* Change background color on hover */
-  color: rgb(200, 170, 200);
+/*.grid-item-magnets .switch_chart-buttons button:hover {
+  background-color: rgba(0, 86, 255, 0.5); /* 50% transparency 
+  color: white; /* 50% transparency 
+  font-weight: bold;
+}*/
+
+.switch_chart-buttons button.active {
+  background-color: rgb(77, 127, 255, 0.9); /* 90% opacity for active button */
+  color: white;
   font-weight: bold;
 }
 

@@ -1,3 +1,4 @@
+/*
 const countries = [
   { code: "AFG", country: "Afghanistan" },
   { code: "ALB", country: "Albania" },
@@ -192,6 +193,198 @@ const countries = [
   { code: "ZMB", country: "Zambia" },
   { code: "ZWE", country: "Zimbabwe" }
 ];
+*/
+
+const countries = [
+  { code: "AFG", country: "Afghanistan" },
+  { code: "ALB", country: "Albania" },
+  { code: "AGO", country: "Angola" },
+  { code: "ARG", country: "Argentina" },
+  { code: "ARM", country: "Armenia" },
+  { code: "AUS", country: "Australia" },
+  { code: "AUT", country: "Austria" },
+  { code: "BHS", country: "Bahamas" },
+  { code: "BGD", country: "Bangladesh" },
+  { code: "BRB", country: "Barbados" },
+  { code: "BLR", country: "Belarus" },
+  { code: "BEL", country: "Belgium" },
+  { code: "BLZ", country: "Belize" },
+  { code: "BEN", country: "Benin" },
+  { code: "BTN", country: "Bhutan" },
+  { code: "BOL", country: "Bolivia" },
+  { code: "BIH", country: "Bosnia and Herzegovina" },
+  { code: "BWA", country: "Botswana" },
+  { code: "BRA", country: "Brazil" },
+  { code: "BRN", country: "Brunei Darussalam" },
+  { code: "BGR", country: "Bulgaria" },
+  { code: "BFA", country: "Burkina Faso" },
+  { code: "BDI", country: "Burundi" },
+  { code: "CPV", country: "Cabo Verde" },
+  { code: "KHM", country: "Cambodia" },
+  { code: "CMR", country: "Cameroon" },
+  { code: "CAN", country: "Canada" },
+  { code: "TCD", country: "Chad" },
+  { code: "CHL", country: "Chile" },
+  { code: "CHN", country: "China" },
+  { code: "COL", country: "Colombia" },
+  { code: "COM", country: "Comoros" },
+  { code: "COG", country: "Congo" },
+  { code: "COD", country: "Congo" },
+  { code: "COK", country: "Cook Islands" },
+  { code: "CRI", country: "Costa Rica" },
+  { code: "CIV", country: "Côte d'Ivoire" },
+  { code: "HRV", country: "Croatia" },
+  { code: "CYP", country: "Cyprus" },
+  { code: "CZE", country: "Czechia" },
+  { code: "DNK", country: "Denmark" },
+  { code: "DJI", country: "Djibouti" },
+  { code: "DOM", country: "Dominican Republic" },
+  { code: "ECU", country: "Ecuador" },
+  { code: "EGY", country: "Egypt" },
+  { code: "SLV", country: "El Salvador" },
+  { code: "EST", country: "Estonia" },
+  { code: "SWZ", country: "Eswatini" },
+  { code: "ETH", country: "Ethiopia" },
+  { code: "FJI", country: "Fiji" },
+  { code: "FIN", country: "Finland" },
+  { code: "FRA", country: "France" },
+  { code: "GMB", country: "Gambia" },
+  { code: "GEO", country: "Georgia" },
+  { code: "DEU", country: "Germany" },
+  { code: "GHA", country: "Ghana" },
+  { code: "GRC", country: "Greece" },
+  { code: "GRD", country: "Grenada" },
+  { code: "GTM", country: "Guatemala" },
+  { code: "GIN", country: "Guinea" },
+  { code: "GNB", country: "Guinea-Bissau" },
+  { code: "GUY", country: "Guyana" },
+  { code: "HTI", country: "Haiti" },
+  { code: "HND", country: "Honduras" },
+  { code: "HKG", country: "Hong Kong" },
+  { code: "HUN", country: "Hungary" },
+  { code: "ISL", country: "Iceland" },
+  { code: "IND", country: "India" },
+  { code: "IDN", country: "Indonesia" },
+  { code: "IRN", country: "Iran" },
+  { code: "IRQ", country: "Iraq" },
+  { code: "IRL", country: "Ireland" },
+  { code: "ISR", country: "Israel" },
+  { code: "ITA", country: "Italy" },
+  { code: "JAM", country: "Jamaica" },
+  { code: "JPN", country: "Japan" },
+  { code: "JOR", country: "Jordan" },
+  { code: "KEN", country: "Kenya" },
+  { code: "KIR", country: "Kiribati" },
+  { code: "KOR", country: "Korea" },
+  { code: "KGZ", country: "Kyrgyzstan" },
+  { code: "LAO", country: "Lao" },
+  { code: "LVA", country: "Latvia" },
+  { code: "LBN", country: "Lebanon" },
+  { code: "LSO", country: "Lesotho" },
+  { code: "LBR", country: "Liberia" },
+  { code: "LTU", country: "Lithuania" },
+  { code: "LUX", country: "Luxembourg" },
+  { code: "MDG", country: "Madagascar" },
+  { code: "MWI", country: "Malawi" },
+  { code: "MYS", country: "Malaysia" },
+  { code: "MDV", country: "Maldives" },
+  { code: "MLI", country: "Mali" },
+  { code: "MLT", country: "Malta" },
+  { code: "MHL", country: "Marshall Islands" },
+  { code: "MRT", country: "Mauritania" },
+  { code: "MUS", country: "Mauritius" },
+  { code: "MEX", country: "Mexico" },
+  { code: "FSM", country: "Micronesia" },
+  { code: "MDA", country: "Moldova" },
+  { code: "MNG", country: "Mongolia" },
+  { code: "MNE", country: "Montenegro" },
+  { code: "MSR", country: "Montserrat" },
+  { code: "MAR", country: "Morocco" },
+  { code: "MOZ", country: "Mozambique" },
+  { code: "MMR", country: "Myanmar" },
+  { code: "NAM", country: "Namibia" },
+  { code: "NRU", country: "Nauru" },
+  { code: "NPL", country: "Nepal" },
+  { code: "NLD", country: "Netherlands" },
+  { code: "NCL", country: "New Caledonia" },
+  { code: "NIC", country: "Nicaragua" },
+  { code: "NER", country: "Niger" },
+  { code: "NGA", country: "Nigeria" },
+  { code: "NIU", country: "Niue" },
+  { code: "MKD", country: "North Macedonia" },
+  { code: "NOR", country: "Norway" },
+  { code: "PAK", country: "Pakistan" },
+  { code: "PLW", country: "Palau" },
+  { code: "PSE", country: "Palestine" },
+  { code: "PAN", country: "Panama" },
+  { code: "PNG", country: "Papua New Guinea" },
+  { code: "PRY", country: "Paraguay" },
+  { code: "PER", country: "Peru" },
+  { code: "PHL", country: "Philippines" },
+  { code: "POL", country: "Poland" },
+  { code: "PRT", country: "Portugal" },
+  { code: "ROU", country: "Romania" },
+  { code: "RUS", country: "Russian Federation" },
+  { code: "RWA", country: "Rwanda" },
+  { code: "LCA", country: "Saint Lucia" },
+  { code: "WSM", country: "Samoa" },
+  { code: "STP", country: "Sao Tome and Principe" },
+  { code: "SAU", country: "Saudi Arabia" },
+  { code: "SEN", country: "Senegal" },
+  { code: "SRB", country: "Serbia" },
+  { code: "SYC", country: "Seychelles" },
+  { code: "SLE", country: "Sierra Leone" },
+  { code: "SGP", country: "Singapore" },
+  { code: "SVK", country: "Slovakia" },
+  { code: "SVN", country: "Slovenia" },
+  { code: "SLB", country: "Solomon Islands" },
+  { code: "SOM", country: "Somalia" },
+  { code: "ZAF", country: "South Africa" },
+  { code: "SGS", country: "South Georgia and the South Sandwich Islands" },
+  { code: "KSV", country: "South Sudan" },
+  { code: "ESP", country: "Spain" },
+  { code: "LKA", country: "Sri Lanka" },
+  { code: "SDN", country: "Sudan" },
+  { code: "SUR", country: "Suriname" },
+  { code: "SWE", country: "Sweden" },
+  { code: "CHE", country: "Switzerland" },
+  { code: "SYR", country: "Syrian Arab Republic" },
+  { code: "TZA", country: "Tanzania" },
+  { code: "THA", country: "Thailand" },
+  { code: "TLS", country: "Timor-Leste" },
+  { code: "TGO", country: "Togo" },
+  { code: "TON", country: "Tonga" },
+  { code: "TTO", country: "Trinidad and Tobago" },
+  { code: "TUN", country: "Tunisia" },
+  { code: "TUR", country: "Turkey" },
+  { code: "TKM", country: "Turkmenistan" },
+  { code: "TUV", country: "Tuvalu" },
+  { code: "UGA", country: "Uganda" },
+  { code: "UKR", country: "Ukraine" },
+  { code: "ARE", country: "United Arab Emirates" },
+  { code: "GBR", country: "United Kingdom" },
+  { code: "USA", country: "United States of America" },
+  { code: "URY", country: "Uruguay" },
+  { code: "UZB", country: "Uzbekistan" },
+  { code: "VUT", country: "Vanuatu" },
+  { code: "VEN", country: "Venezuela" },
+  { code: "VNM", country: "Viet Nam" },
+  { code: "WLF", country: "Wallis and Futuna" },
+  { code: "ESH", country: "Western Sahara" },
+  { code: "YEM", country: "Yemen" },
+  { code: "ZMB", country: "Zambia" },
+  { code: "ZWE", country: "Zimbabwe" },
+];
+
+const colorScale = d3.scaleQuantize()
+  .domain([0, 100])  // Employment ratio between 0 and 100%
+  .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges
+
+// To get the darkest blue color
+const darkestBlue = "#0056FF";
+const lighestBlue = "#B3C7FF";
+
+// #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
 /*
@@ -1004,7 +1197,8 @@ function createMagnetChart(employmentData, categories) {
     .attr("class", "magnet")
     .attr("width", magnetSize)
     .attr("height", magnetSize)
-    .attr("fill", "rgb(0, 0, 255, 0.75)") // Set to blue
+    //.attr("fill", "rgb(0, 0, 255, 0.75)") // Set to blue
+    .attr("fill", darkestBlue)
     .attr("x", d => d.x - magnetSize / 2)
     .attr("y", d => d.y - magnetSize / 2)
     .attr("rx", 5) // Set 5px border-radius for rounded corners
@@ -1033,42 +1227,46 @@ function createMagnetChart(employmentData, categories) {
       return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
     });
 
-  function magnetForce() {
-    employmentData.forEach(d => {
-      categories.forEach(category => {
-        const magnet = magnetCenters.find(m => m.category === category);
-        if (magnet) {
-          const categoryValue = +d[category]; // Convert to number
-          if (!isNaN(categoryValue) && categoryValue > 0) {
-            const distanceX = magnet.x - d.x;
-            const distanceY = magnet.y - d.y;
-
-            // Calculate distance from node to magnet
-            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
-            const strength = d.Total > 0 ? categoryValue / d.Total : 0;
-
-            // Scaling factor for smoother transitions
-            const scaledStrength = Math.min(strength * 0.1, 1);
-            const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
-            const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
-            const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
-            const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
-
-            if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
-              const repulsionStrength = 0.05; // Adjust as needed
-              const normDistanceX = distanceX / (distance || 1);
-              const normDistanceY = distanceY / (distance || 1);
-              d.vx -= normDistanceX * repulsionStrength;
-              d.vy -= normDistanceY * repulsionStrength;
-            } else {
-              d.vx += distanceX * scaledStrength;
-              d.vy += distanceY * scaledStrength;
-            }
-          }
-        }
+    function magnetForce() {
+      employmentData.forEach(d => {
+          categories.forEach(category => {
+              const categoryString = category.toString(); // Ensure category is a string
+              const magnet = magnetCenters.find(m => m.category === categoryString); // Find the corresponding magnet
+  
+              if (magnet) {
+                  const categoryValue = +d[categoryString]; // Access the value dynamically using bracket notation
+                  console.log("VALUE", categoryValue);
+  
+                  if (!isNaN(categoryValue) && categoryValue > 0) {
+                      const distanceX = magnet.x - d.x; // Calculate distance from node to magnet
+                      const distanceY = magnet.y - d.y;
+  
+                      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+                      const strength = categoryValue / 100; // Convert percentage to a value between 0 and 1
+  
+                      // Scale strength based on distance to ensure closer proximity
+                      const scaledStrength = Math.min(strength*0.25, 1); // Adding 1 to avoid division by zero
+                      const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
+                      const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
+                      const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
+                      const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
+  
+                      if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
+                          const repulsionStrength = 0.1; // Adjust as needed
+                          const normDistanceX = distanceX / (distance || 1);
+                          const normDistanceY = distanceY / (distance || 1);
+                          d.vx -= normDistanceX * repulsionStrength; // Apply repulsion if inside the magnet area
+                          d.vy -= normDistanceY * repulsionStrength;
+                      } else {
+                          // Modify attraction based on scaled strength
+                          d.vx += distanceX * scaledStrength; // Apply attraction
+                          d.vy += distanceY * scaledStrength;
+                      }
+                  }
+              }
+          });
       });
-    });
-  }    
+  }     
 
 // Change circle hover behavior
 const nodes = svg.selectAll(".node")
@@ -1077,7 +1275,8 @@ const nodes = svg.selectAll(".node")
   .append("circle")
   .attr("class", "node")
   .attr("r", 5)
-  .attr("fill", "rgb(200, 170, 200)") // Set default fill color
+  .attr("fill", lighestBlue)
+  //.attr("fill", "rgb(200, 170, 200)") // Set default fill color
   .on("mouseover", function(event, d) {
     d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
 
@@ -1130,7 +1329,8 @@ const nodes = svg.selectAll(".node")
     }, 2000);
   })
   .on("mouseout", function() {
-    d3.select(this).attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
+    d3.select(this)//attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
+      .attr("fill", lighestBlue)
     // Remove the country label when mouse out
     svg.selectAll(".country-label").remove();
   });

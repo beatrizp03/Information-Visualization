@@ -18,7 +18,7 @@ function init() {
       return d;
     }).sort((a, b) => a.year - b.year); // Sort by year in ascending order
 
-    d3.csv("datasets/dataset2_job_category.csv").then(function (data2) {
+    d3.csv("datasets/dataset2_job_category_percentage.csv").then(function (data2) {
       // Convert 'year' to number and sort the data by 'year'
       globalData2 = data2.map(d => {
         d.year = +d.year; // Convert year to a number
@@ -39,7 +39,7 @@ function init() {
           globalData2,  // Your dataset
           leaves => {
             const categoryEmployment = {};
-            leaves.forEach(l => categoryEmployment[l.job_category] = l.number_worker);
+            leaves.forEach(l => categoryEmployment[l.job_category] = l.worker_percentage);
             return categoryEmployment;
           },
           d => d.country  // Group by country
@@ -56,6 +56,8 @@ function init() {
 
         console.log("ARRAY");
         console.log(employmentDataArray);
+        console.log("CATEGORIES");
+        console.log(categories);
         // Create the magnet chart
         createMagnetChart(employmentDataArray, categories);
       
@@ -66,4 +68,26 @@ function init() {
   d3.csv("datasets/average_employment_ratio_by_country.csv").then(function(data){
     createWorldMap(data);
   });
+
+  // Automatically click the "Job Categories" button on page load
+  const jobChartBtn = document.getElementById("job_chart-btn");
+  jobChartBtn.classList.add("active"); // Add active styles
+
+  // Set up an event listener to toggle the active class between buttons
+  const salariesChartBtn = document.getElementById("salaries_chart-btn");
+
+  jobChartBtn.addEventListener("click", function() {
+      jobChartBtn.classList.add("active");
+      salariesChartBtn.classList.remove("active");
+      // Add your logic to switch to the "Job Categories" chart
+  });
+
+  salariesChartBtn.addEventListener("click", function() {
+      salariesChartBtn.classList.add("active");
+      jobChartBtn.classList.remove("active");
+      // Add your logic to switch to the "Salaries" chart
+  });
+
 }
+
+window.onload = init;
