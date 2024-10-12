@@ -108,6 +108,7 @@
     { name: "Iceland", code: "ISL" },
     { name: "Ireland", code: "IRL" },
     { name: "Italy", code: "ITA" },
+    { name: "Kosovo", code: "KOS" },
     { name: "Latvia", code: "LVA" },
     { name: "Lithuania", code: "LTU" },
     { name: "Luxembourg", code: "LUX" },
