@@ -12,7 +12,7 @@ function init() {
 
   var globalData1, globalData2, globalData3;
 
-  d3.csv("datasets/dataset1_salary_employment_ratio.csv").then(function (data1) {
+  d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
     globalData1 = data1.map(d => {
       d.year = +d.year; 
       return d;
@@ -63,7 +63,7 @@ function init() {
     });
   });
 
-  /*d3.csv("average_employment_ratio_by_country.csv").then(function(data){
+  d3.csv("datasets/average_employment_ratio_by_country.csv").then(function(data){
     createWorldMap(data);
-  });*/
+  });
 }
