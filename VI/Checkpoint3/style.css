@@ -239,7 +239,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
 
 
 .grid-item-magnets {
-  background-color: wheat;
+  position: relative; 
   display: flex;
   justify-content: center;    /* Horizontally center */
   align-items: center;        /* Vertically center */
@@ -249,6 +249,37 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   height: 100%;               /* Full container height */
   box-sizing: border-box;      /* Include padding/border in element's width/height */
 }
+
+.grid-item-magnets .switch_chart-buttons {
+  position: absolute; /* Position the button container absolutely */
+  top: 10px; /* Adjust this value as needed */
+  left: 10px; /* Adjust this value as needed */
+  z-index: 10; /* Ensure it appears above other content */
+  padding: 5px; /* Optional: add some padding */
+  border-radius: 5px; /* Optional: round the corners */
+  display: flex; /* Use flexbox to arrange buttons */
+  flex-direction: column; /* Stack buttons vertically */
+}
+
+.grid-item-magnets .switch_chart-buttons button {
+  width: 100px; /* Set the button width to 90px */
+  height: 20px; /* Set the button height to 20px */
+  font-size: 12px; /* Set font size to 12px */
+  margin: 1px 0;
+  background-color: rgba(50, 50, 50,0.8); /* Set background color to blue */
+  color: white; /* Set text color to white */
+  border: none; /* Remove default border */
+  border-radius: 3px; /* Add border radius for rounded corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: background-color 0.3s; /* Add transition for hover effect */
+}
+
+.grid-item-magnets .switch_chart-buttons button:hover {
+  background-color: rgb(46, 1, 46, 0.8); /* Change background color on hover */
+  color: rgb(200, 170, 200);
+  font-weight: bold;
+}
+
 
 .grid-item-radar {
   display: flex;
@@ -264,7 +295,6 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   max-height: 120%;           /* Ensure the image scales down to fit */
   object-fit: contain;        /* Maintain aspect ratio, fitting inside the container */
 }
-
 
 html,
 body, html {
@@ -284,7 +314,6 @@ body, html {
 .button-container button {
   margin: 0 10px; /* Optional, for spacing between buttons */
 }
-
 
 button {
   font-size: 18px;

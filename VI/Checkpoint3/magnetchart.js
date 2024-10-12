@@ -360,11 +360,17 @@ function createMagnetChart(employmentData, categories) {
 }
 */
 
+/*
 function createMagnetChart(employmentData, categories) {
   const width = 350;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
   const magnetSize = 65; // Magnet size
+  const magnetPadding = 20;
+  
+  const circles_width = 250;
+  const circles_height = 350;
+  const circles_margin = { top: 50, right: 50, bottom: 50, left: 50 };
 
   const svg = d3.select(".grid-item-magnets")
     .append("svg")
@@ -448,74 +454,68 @@ function createMagnetChart(employmentData, categories) {
     .style("align-items", "center")
     .style("justify-content", "center")
     .style("text-align", "center")
-    .style("font-size", "10px")
+    .style("font-size", "14px")
     .html(d => {
       // Add line breaks for wrapping long words
-      return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agriculture').replace(/Manufacturing/g, 'Manufacturing').replace(/Construction/g, 'Construction');
+      return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
     });
 
-  function magnetForce() {
-    employmentData.forEach(d => {
-      categories.forEach(category => {
-        const magnet = magnetCenters.find(m => m.category === category);
-
-        if (magnet) {
-          const categoryValue = +d[category]; // Convert to number
-
-          if (!isNaN(categoryValue) && categoryValue > 0) {
-            const distanceX = magnet.x - d.x;
-            const distanceY = magnet.y - d.y;
-
-            const strength = d.Total > 0 
-              ? categoryValue / d.Total 
-              : 0;
-            
-            const cappedStrength = Math.min(strength, 1);
-
-            d.vx += distanceX * cappedStrength * 0.1; // Scale down for smoother movement
-            d.vy += distanceY * cappedStrength * 0.1; // Scale down for smoother movement
+    function magnetForce() {
+      employmentData.forEach(d => {
+        categories.forEach(category => {
+          const magnet = magnetCenters.find(m => m.category === category);
+    
+          if (magnet) {
+            const categoryValue = +d[category]; // Convert to number
+    
+            if (!isNaN(categoryValue) && categoryValue > 0) {
+              const distanceX = magnet.x - d.x;
+              const distanceY = magnet.y - d.y;
+    
+              // Calculate distance from node to magnet
+              const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+    
+              // Calculate strength as a percentage of the total
+              const strength = d.Total > 0 ? categoryValue / d.Total : 0;
+    
+              // Scaling factor for smoother transitions (adjust as necessary)
+              const scaledStrength = Math.min(strength * 0.1, 1);
+    
+              // Define padded boundary around the magnet
+              const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
+              const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
+              const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
+              const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
+    
+              // Check if the node is inside the padded area of the magnet
+              if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
+                // Apply a repulsive force to push the node away from the magnet's center
+                const repulsionStrength = 0.05; // Adjust this as needed for better repulsion
+    
+                // Normalize distances to avoid division by zero when close to the magnet
+                const normDistanceX = distanceX / (distance || 1);
+                const normDistanceY = distanceY / (distance || 1);
+    
+                // Apply repulsion, moving the node away from the magnet
+                d.vx -= normDistanceX * repulsionStrength;
+                d.vy -= normDistanceY * repulsionStrength;
+              } else {
+                // Apply the calculated magnet attraction when outside the padded area
+                d.vx += distanceX * scaledStrength;
+                d.vy += distanceY * scaledStrength;
+              }
+            }
           }
-        }
+        });
       });
-    });
-
-    // Implement collision detection and keep nodes within boundaries
-    employmentData.forEach(d => {
-      magnetCenters.forEach(magnet => {
-        const magnetX = magnet.x - magnetSize / 2; // Adjust for rectangle center
-        const magnetY = magnet.y - magnetSize / 2; // Adjust for rectangle center
-        const radius = 8; // Circle radius
-
-        // Check if the circle is overlapping with the magnet rectangle
-        if (d.x + radius > magnetX && d.x - radius < magnetX + magnetSize &&
-            d.y + radius > magnetY && d.y - radius < magnetY + magnetSize) {
-          // Adjust position if overlapping
-          const overlapX = (d.x + radius) - magnetX;
-          const overlapY = (d.y + radius) - magnetY;
-
-          if (overlapX > overlapY) {
-            d.y = magnetY + magnetSize + radius; // Move below the magnet
-          } else {
-            d.x = magnetX + magnetSize + radius; // Move right of the magnet
-          }
-        }
-      });
-
-      // Keep nodes within the boundaries of the container
-      const radius = 8; // Circle radius
-      if (d.x < radius) d.x = radius; // Left boundary
-      if (d.x > width - radius) d.x = width - radius; // Right boundary
-      if (d.y < radius) d.y = radius; // Top boundary
-      if (d.y > height - radius) d.y = height - radius; // Bottom boundary
-    });
-  }
-
+    }    
+    
   const nodes = svg.selectAll(".node")
     .data(employmentData)
     .enter()
     .append("circle")
     .attr("class", "node")
-    .attr("r", 8)
+    .attr("r", 5)
     .attr("fill", "rgba(0, 128, 255, 0.6)")
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "red");
@@ -537,3 +537,604 @@ function createMagnetChart(employmentData, categories) {
       d3.select(this).attr("fill", "rgba(0, 128, 255, 0.6)");
     });
 }
+*/
+
+/*
+function createMagnetChart(employmentData, categories) {
+  const width = 350;
+  const height = 450;
+  const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  const magnetSize = 65; // Magnet size
+  const magnetPadding = 15;
+
+  const circles_width = 250; // Width of the area for circles
+  const circles_height = 350; // Height of the area for circles
+  const circles_margin = { top: 100, right: 100, bottom: 300, left: 100 };
+
+  const svg = d3.select(".grid-item-magnets")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  const magnetPositionMap = {
+    "Agriculture": { x: width * 0.1, y: height * 0.3 },
+    "Manufacturing": { x: width * 0.9, y: height * 0.3 },
+    "Construction": { x: width * 0.1, y: height * 0.7 },
+    "Mining_and_quarrying": { x: width * 0.9, y: height * 0.7 },
+    "Market_services": { x: width * 0.5, y: height * 0.9 },
+    "Non_market_services": { x: width * 0.5, y: height * 0.1 }
+  };
+
+  const magnetCenters = categories.map(category => {
+    return {
+      category: category,
+      ...magnetPositionMap[category]
+    };
+  }).filter(magnet => magnet.x !== undefined && magnet.y !== undefined);
+
+  employmentData.forEach(d => {
+    // Adjust the random initial position of the nodes within the circle area
+    d.x = circles_margin.left + Math.random() * (circles_width - circles_margin.left - circles_margin.right); // Adjusted to fit within circles_width
+    d.y = circles_margin.top + Math.random() * (circles_height - circles_margin.top - circles_margin.bottom); // Adjusted to fit within circles_height
+    d.vx = 0;
+    d.vy = 0;
+  });
+
+  const simulation = d3.forceSimulation(employmentData)
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(circles_width / 2 + circles_margin.left, circles_height / 2 + circles_margin.top)) // Center based on circles dimensions
+    .force("collision", d3.forceCollide().radius(8))
+    .on("tick", ticked);
+
+  function ticked() {
+    // Apply magnet force first
+    magnetForce(); // Ensure the custom force is applied
+
+    // Update positions of nodes
+    svg.selectAll(".node")
+      .attr("cx", d => d.x)
+      .attr("cy", d => d.y);
+
+    // Update positions of magnets and their labels
+    svg.selectAll(".magnet")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+
+    svg.selectAll(".magnet-label")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+  }
+
+  svg.selectAll(".magnet")
+    .data(magnetCenters)
+    .enter()
+    .append("rect")
+    .attr("class", "magnet")
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .attr("fill", "#FFCC00")
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2);
+
+  svg.selectAll(".magnet-label")
+    .data(magnetCenters)
+    .enter()
+    .append("foreignObject")
+    .attr("class", "magnet-label")
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .append("xhtml:div") // This is to wrap the text inside the foreignObject
+    .style("width", `${magnetSize}px`)
+    .style("height", `${magnetSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "center")
+    .style("text-align", "center")
+    .style("font-size", "14px")
+    .html(d => {
+      // Add line breaks for wrapping long words
+      return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
+    });
+
+  // Add the magnetForce function here, same as before
+  function magnetForce() {
+    employmentData.forEach(d => {
+      categories.forEach(category => {
+        const magnet = magnetCenters.find(m => m.category === category);
+
+        if (magnet) {
+          const categoryValue = +d[category]; // Convert to number
+
+          if (!isNaN(categoryValue) && categoryValue > 0) {
+            const distanceX = magnet.x - d.x;
+            const distanceY = magnet.y - d.y;
+
+            // Calculate distance from node to magnet
+            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+            // Calculate strength as a percentage of the total
+            const strength = d.Total > 0 ? categoryValue / d.Total : 0;
+
+            // Scaling factor for smoother transitions (adjust as necessary)
+            const scaledStrength = Math.min(strength * 0.1, 1);
+
+            // Define padded boundary around the magnet
+            const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
+            const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
+            const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
+            const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
+
+            // Check if the node is inside the padded area of the magnet
+            if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
+              // Apply a repulsive force to push the node away from the magnet's center
+              const repulsionStrength = 0.05; // Adjust this as needed for better repulsion
+
+              // Normalize distances to avoid division by zero when close to the magnet
+              const normDistanceX = distanceX / (distance || 1);
+              const normDistanceY = distanceY / (distance || 1);
+
+              // Apply repulsion, moving the node away from the magnet
+              d.vx -= normDistanceX * repulsionStrength;
+              d.vy -= normDistanceY * repulsionStrength;
+            } else {
+              // Apply the calculated magnet attraction when outside the padded area
+              d.vx += distanceX * scaledStrength;
+              d.vy += distanceY * scaledStrength;
+            }
+          }
+        }
+      });
+    });
+  }
+
+  const nodes = svg.selectAll(".node")
+    .data(employmentData)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 5)
+    .attr("fill", "rgba(0, 128, 255, 0.6)")
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr("fill", "red");
+
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+      const label = svg.append("text")
+        .attr("class", "country-label")
+        .attr("x", d.x)
+        .attr("y", d.y - 15)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .text(countryName);
+
+      setTimeout(() => {
+        label.remove();
+      }, 1000);
+    })
+    .on("mouseout", function() {
+      d3.select(this).attr("fill", "rgba(0, 128, 255, 0.6)");
+    });
+}
+*/
+
+/*
+function createMagnetChart(employmentData, categories) {
+  const width = 350;
+  const height = 450;
+  const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  const magnetSize = 65; // Magnet size
+  const magnetPadding = 20;
+  
+  const circles_width = 300; // Available width for the circles
+  const circles_height = 400; // Available height for the circles
+  const circles_margin = { top: 25, right: 0, bottom: 0, left: 25 }; // Margins for the circles
+
+  const svg = d3.select(".chart-container")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+    
+  const magnetPositionMap = {
+    "Agriculture": { x: width * 0.1, y: height * 0.3 },
+    "Manufacturing": { x: width * 0.9, y: height * 0.3 },
+    "Construction": { x: width * 0.1, y: height * 0.7 },
+    "Mining_and_quarrying": { x: width * 0.9, y: height * 0.7 },
+    "Market_services": { x: width * 0.5, y: height * 0.9 },
+    "Non_market_services": { x: width * 0.5, y: height * 0.1 }
+  };
+
+  const magnetCenters = categories.map(category => {
+    return {
+      category: category,
+      ...magnetPositionMap[category]
+    };
+  }).filter(magnet => magnet.x !== undefined && magnet.y !== undefined);
+
+  employmentData.forEach(d => {
+    d.x = Math.random() * circles_width + circles_margin.left; // Random initial x position within the circles' margins
+    d.y = Math.random() * circles_height + circles_margin.top; // Random initial y position within the circles' margins
+    d.vx = 0;
+    d.vy = 0;
+  });
+
+  const simulation = d3.forceSimulation(employmentData)
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(8))
+    .on("tick", ticked);
+
+  function ticked() {
+    // Apply magnet force first
+    magnetForce(); // Ensure the custom force is applied
+
+    // Update positions of nodes
+    svg.selectAll(".node")
+      .attr("cx", d => {
+        // Boundary checks to keep the nodes within the circles' margins
+        const newX = d.x < circles_margin.left ? circles_margin.left :
+                     d.x > circles_width + circles_margin.left ? circles_width + circles_margin.left :
+                     d.x;
+        return newX;
+      })
+      .attr("cy", d => {
+        // Boundary checks to keep the nodes within the circles' margins
+        const newY = d.y < circles_margin.top ? circles_margin.top :
+                     d.y > circles_height + circles_margin.top ? circles_height + circles_margin.top :
+                     d.y;
+        return newY;
+      });
+
+    // Update positions of magnets and their labels
+    svg.selectAll(".magnet")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+
+    svg.selectAll(".magnet-label")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+  }
+
+  // Update magnets' appearance
+svg.selectAll(".magnet")
+  .data(magnetCenters)
+  .enter()
+  .append("rect")
+  .attr("class", "magnet")
+  .attr("width", magnetSize)
+  .attr("height", magnetSize)
+  .attr("fill", "rgb(50, 50, 200)") // Set to blue
+  .attr("x", d => d.x - magnetSize / 2)
+  .attr("y", d => d.y - magnetSize / 2)
+  .attr("rx", 5) // Set 5px border-radius for rounded corners
+  .attr("ry", 5); // Set 5px border-radius for rounded corners
+
+svg.selectAll(".magnet-label")
+  .data(magnetCenters)
+  .enter()
+  .append("foreignObject")
+  .attr("class", "magnet-label")
+  .attr("x", d => d.x - magnetSize / 2)
+  .attr("y", d => d.y - magnetSize / 2)
+  .attr("width", magnetSize)
+  .attr("height", magnetSize)
+  .append("xhtml:div")
+  .style("width", `${magnetSize}px`)
+  .style("height", `${magnetSize}px`)
+  .style("display", "flex")
+  .style("align-items", "center")
+  .style("justify-content", "center")
+  .style("text-align", "center")
+  .style("font-size", "14px")
+  .style("color", "white") // Change text color to white
+  .html(d => {
+    // Add line breaks for wrapping long words
+    return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
+  });
+
+function magnetForce() {
+  employmentData.forEach(d => {
+    categories.forEach(category => {
+      const magnet = magnetCenters.find(m => m.category === category);
+
+      if (magnet) {
+        const categoryValue = +d[category]; // Convert to number
+
+        if (!isNaN(categoryValue) && categoryValue > 0) {
+          const distanceX = magnet.x - d.x;
+          const distanceY = magnet.y - d.y;
+
+          // Calculate distance from node to magnet
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+
+          // Calculate strength as a percentage of the total
+          const strength = d.Total > 0 ? categoryValue / d.Total : 0;
+
+          // Scaling factor for smoother transitions (adjust as necessary)
+          const scaledStrength = Math.min(strength * 0.1, 1);
+
+          // Define padded boundary around the magnet
+          const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
+          const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
+          const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
+          const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
+
+          // Check if the node is inside the padded area of the magnet
+          if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
+            // Apply a repulsive force to push the node away from the magnet's center
+            const repulsionStrength = 0.05; // Adjust this as needed for better repulsion
+
+            // Normalize distances to avoid division by zero when close to the magnet
+            const normDistanceX = distanceX / (distance || 1);
+            const normDistanceY = distanceY / (distance || 1);
+
+            // Apply repulsion, moving the node away from the magnet
+            d.vx -= normDistanceX * repulsionStrength;
+            d.vy -= normDistanceY * repulsionStrength;
+          } else {
+            // Apply the calculated magnet attraction when outside the padded area
+            d.vx += distanceX * scaledStrength;
+            d.vy += distanceY * scaledStrength;
+          }
+        }
+      }
+    });
+  });
+}    
+
+  // Change circle hover behavior
+  const nodes = svg.selectAll(".node")
+  .data(employmentData)
+  .enter()
+  .append("circle")
+  .attr("class", "node")
+  .attr("r", 5)
+  .attr("fill", "rgb(200, 170, 200)") // Set default fill color to gray
+  .on("mouseover", function(event, d) {
+    d3.select(this).attr("fill", "purple"); // Change fill color to light blue on hover
+
+    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+    const label = svg.append("text")
+      .attr("class", "country-label")
+      .attr("x", d.x)
+      .attr("y", d.y - 15)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .text(countryName);
+
+    setTimeout(() => {
+      label.remove();
+    }, 1500);
+  })
+  .on("mouseout", function() {
+    d3.select(this).attr("fill", "rgb(200, 170, 200)"); // Revert fill color to gray on mouse out
+  });
+
+}
+*/
+
+function createMagnetChart(employmentData, categories) {
+  const width = 350;
+  const height = 450;
+  const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  const magnetSize = 65; // Magnet size
+  const magnetPadding = 20;
+  
+  const circles_width = 300; // Available width for the circles
+  const circles_height = 400; // Available height for the circles
+  const circles_margin = { top: 25, right: 0, bottom: 0, left: 25 }; // Margins for the circles
+
+  const svg = d3.select(".chart-container")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  // Define the magnet positions
+  const magnetPositionMap = {
+    "Agriculture": { x: width * 0.1, y: height * 0.3 },
+    "Manufacturing": { x: width * 0.9, y: height * 0.3 },
+    "Construction": { x: width * 0.1, y: height * 0.7 },
+    "Mining_and_quarrying": { x: width * 0.9, y: height * 0.7 },
+    "Market_services": { x: width * 0.5, y: height * 0.9 },
+    "Non_market_services": { x: width * 0.5, y: height * 0.1 }
+  };
+
+  const magnetCenters = categories.map(category => {
+    return {
+      category: category,
+      ...magnetPositionMap[category]
+    };
+  }).filter(magnet => magnet.x !== undefined && magnet.y !== undefined);
+
+  // Initialize node positions
+  employmentData.forEach(d => {
+    d.x = Math.random() * circles_width + circles_margin.left; // Random initial x position
+    d.y = Math.random() * circles_height + circles_margin.top; // Random initial y position
+    d.vx = 0;
+    d.vy = 0;
+  });
+
+  const simulation = d3.forceSimulation(employmentData)
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(8))
+    .on("tick", ticked);
+
+  function ticked() {
+    // Apply magnet force first
+    magnetForce(); // Ensure the custom force is applied
+
+    // Update positions of nodes
+    svg.selectAll(".node")
+      .attr("cx", d => {
+        const newX = d.x < circles_margin.left ? circles_margin.left :
+                     d.x > circles_width + circles_margin.left ? circles_width + circles_margin.left :
+                     d.x;
+        return newX;
+      })
+      .attr("cy", d => {
+        const newY = d.y < circles_margin.top ? circles_margin.top :
+                     d.y > circles_height + circles_margin.top ? circles_height + circles_margin.top :
+                     d.y;
+        return newY;
+      });
+
+    // Update positions of magnets
+    svg.selectAll(".magnet")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+
+    svg.selectAll(".magnet-label")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+  }
+
+  // Update magnets' appearance
+  svg.selectAll(".magnet")
+    .data(magnetCenters)
+    .enter()
+    .append("rect")
+    .attr("class", "magnet")
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .attr("fill", "rgb(0, 0, 255, 0.75)") // Set to blue
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("rx", 5) // Set 5px border-radius for rounded corners
+    .attr("ry", 5); // Set 5px border-radius for rounded corners
+
+  svg.selectAll(".magnet-label")
+    .data(magnetCenters)
+    .enter()
+    .append("foreignObject")
+    .attr("class", "magnet-label")
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .append("xhtml:div")
+    .style("width", `${magnetSize}px`)
+    .style("height", `${magnetSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "center")
+    .style("text-align", "center")
+    .style("font-size", "14px")
+    .style("color", "white") // Change text color to white
+    .html(d => {
+      // Add line breaks for wrapping long words
+      return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
+    });
+
+  function magnetForce() {
+    employmentData.forEach(d => {
+      categories.forEach(category => {
+        const magnet = magnetCenters.find(m => m.category === category);
+        if (magnet) {
+          const categoryValue = +d[category]; // Convert to number
+          if (!isNaN(categoryValue) && categoryValue > 0) {
+            const distanceX = magnet.x - d.x;
+            const distanceY = magnet.y - d.y;
+
+            // Calculate distance from node to magnet
+            const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+            const strength = d.Total > 0 ? categoryValue / d.Total : 0;
+
+            // Scaling factor for smoother transitions
+            const scaledStrength = Math.min(strength * 0.1, 1);
+            const magnetLeft = magnet.x - magnetSize / 2 - magnetPadding;
+            const magnetRight = magnet.x + magnetSize / 2 + magnetPadding;
+            const magnetTop = magnet.y - magnetSize / 2 - magnetPadding;
+            const magnetBottom = magnet.y + magnetSize / 2 + magnetPadding;
+
+            if (d.x > magnetLeft && d.x < magnetRight && d.y > magnetTop && d.y < magnetBottom) {
+              const repulsionStrength = 0.05; // Adjust as needed
+              const normDistanceX = distanceX / (distance || 1);
+              const normDistanceY = distanceY / (distance || 1);
+              d.vx -= normDistanceX * repulsionStrength;
+              d.vy -= normDistanceY * repulsionStrength;
+            } else {
+              d.vx += distanceX * scaledStrength;
+              d.vy += distanceY * scaledStrength;
+            }
+          }
+        }
+      });
+    });
+  }    
+
+// Change circle hover behavior
+const nodes = svg.selectAll(".node")
+  .data(employmentData)
+  .enter()
+  .append("circle")
+  .attr("class", "node")
+  .attr("r", 5)
+  .attr("fill", "rgb(200, 170, 200)") // Set default fill color
+  .on("mouseover", function(event, d) {
+    d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
+
+    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+
+    // Create label and keep it visible
+    svg.append("text")
+      .attr("class", "country-label")
+      .attr("x", d.x)
+      .attr("y", d.y - 15)
+      .attr("text-anchor", "middle")
+      .style("font-size", "12px")
+      .style("fill", "black") // Change text color for better visibility
+      .text(countryName);
+  })
+  .on("click", function(event, d) {
+    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+  
+    // Create a tooltip group to hold the rectangle and text
+    const tooltipGroup = svg.append("g")
+      .attr("class", "tooltip-group")
+      .attr("transform", `translate(${d.x}, ${d.y + 15})`); // Position it based on the circle
+  
+    // Create a rectangle for the tooltip background
+    const tooltipWidth = 75; // Adjust width as needed
+    const tooltipHeight = 25; // Adjust height as needed
+  
+    tooltipGroup.append("rect")
+      .attr("class", "tooltip-rect")
+      .attr("width", tooltipWidth)
+      .attr("height", tooltipHeight)
+      .attr("fill", "rgba(50, 50, 50, 0.8)") // Semi-transparent background
+      .attr("rx", 5) // Rounded corners
+      .attr("ry", 5); // Rounded corners
+  
+    // Add text to the tooltip
+    tooltipGroup.append("text")
+      .attr("class", "tooltip-text")
+      .attr("x", tooltipWidth / 2) // Center the text
+      .attr("y", tooltipHeight / 2) // Center the text vertically
+      .attr("dy", ".35em") // Align text vertically
+      .attr("text-anchor", "middle") // Center text horizontally
+      .style("font-size", "12px")
+      .style("fill", "white") // Text color
+      .text(countryName);
+  
+    // Remove tooltip after 2 seconds
+    setTimeout(() => {
+      tooltipGroup.remove();
+    }, 2000);
+  })
+  .on("mouseout", function() {
+    d3.select(this).attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
+    // Remove the country label when mouse out
+    svg.selectAll(".country-label").remove();
+  });
+  
+
+}
+
