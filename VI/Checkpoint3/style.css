@@ -36,7 +36,6 @@
   border-radius: 5px;
 }
 
-
 .container{
   position: relative;
   width: 50%;
@@ -202,7 +201,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   position: absolute; /* Position it absolutely within the relative container */
   top: 0px; /* Adjust the distance from the top */
   right: 90px; /* Adjust the distance from the right */
-  background-color: rgb(77, 127, 255, 0.9); /* Button background color */
+  background-color: rgba(91, 91, 95, 0.419); /* Button background color */
   color: white; /* Button text color */
   border: none; /* Remove border */
   border-radius: 5px; /* Rounded corners */
@@ -217,7 +216,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
 }
 
 .line-chart-button:hover {
-  background-color:  rgb(77, 127, 255, 1.2); /* Darken background color on hover */
+  background-color:  rgba(91, 91, 95, 0.300); /* Darken background color on hover */
 }
 
 
@@ -240,7 +239,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
 
 .menu-btn {
   width: 150px;  
-  height: 30px;   
+  height: 25px;   
   background-color: #faaf0d; 
   color: white; 
   border: none; 
@@ -248,6 +247,8 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   cursor: pointer;  
   text-align: center; 
   align-items: center; 
+  transition: all 0.2s ease; /* Smooth transition for effects */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
 }
 
 .grid-item-magnets {
@@ -340,7 +341,7 @@ button {
 
 #country-container {
   width: 130px; /* Fixed width for the country container */
-  max-height: 200px; /* Max height to enable scrolling */
+  max-height: 150px; /* Max height to enable scrolling */
   overflow-y: auto; /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: border for visibility */
   padding: 5px; /* Padding inside the container */

@@ -186,12 +186,12 @@
     ]
   };
   const continentColors = {
-    Africa: 'rgba(207, 175, 141, 0.8)', 
-    Asia: 'rgba(203, 191, 21, 0.707)' ,
-    Europe: 'rgba(163, 200, 224, 0.8)', 
-    NorthAmerica: 'rgba(215, 76, 46, 0.8)', 
-    SouthAmerica: 'rgba(75, 143, 60, 0.8)',
-    Oceania: 'rgba(165, 125, 198, 0.8)'
+    Africa: 'rgba(207, 175, 141, 1)', 
+    Asia: 'rgba(203, 191, 21, 1)' ,
+    Europe: 'rgba(163, 200, 224, 1)', 
+    NorthAmerica: 'rgba(215, 76, 46, 1)', 
+    SouthAmerica: 'rgba(75, 143, 60, 1)',
+    Oceania: 'rgba(165, 125, 198, 1)'
   };
   
   const countryNameMapping = Object.values(continents).flat().reduce((acc, { name, code }) => {
@@ -206,12 +206,13 @@
   
 document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.menu-btn');
-  
+    
     buttons.forEach(button => {
       button.addEventListener('click', function() {
             //console.log(`You clicked on ${this.textContent}`);
             const continent = this.textContent;
             console.log(`You clicked on ${continent}`);
+            
             if(continent == "Africa") return showCountryButtons(0);
             else if(continent == "Asia") return showCountryButtons(1);
             else if(continent == "Europe") return showCountryButtons(2);
@@ -240,7 +241,6 @@ function clearLines() {
       button.style.backgroundColor = ''; // Reset background color to default
     });
     // Update the dashboard to reflect cleared selections
-
   }
   // Attach the event listener for "Clear selection" button
   document.addEventListener('DOMContentLoaded', function() {
@@ -469,62 +469,88 @@ function clearLines() {
         country,
         data: final_data.filter(d => d.country === country)
     }));
-  
-    // Create lines for each country
-    dataByCountry.forEach(countryData => {
-        const firstCountryCode = countryData.country;
-        const continent = getContinentByCountry(firstCountryCode);
-        const lineColor = continentColors[continent] || 'grey';
-  
-        const line = d3.line()
-            .x(d => xScale(d.year))
-            .y(d => yScale(d.ratio_employment_to_population));
-  
-        svg.append("path")
-            .datum(countryData.data)
-            .attr("class", "line")
-            .attr("fill", "none")
-            .attr("stroke", lineColor)
-            .attr("stroke-width", 2)
-            .attr("d", line);
-    });
-  // Handle circles
-    svg.selectAll("circle.dataItem").remove(); // Clear previous circles
-  
-  
-    const allCircles = svg
-        .selectAll("circle.dataItem")
-        .data(final_data, d => d.country)
-        .enter()
+
+    
+   
+
+// Create a color with the calculated shade
+// Define a function to generate distinct colors
+function getDistinctShade(baseColor, index, totalCountries) {
+  const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
+
+  // Adjustments
+  const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
+  const lightnessAdjustment = 0.5; // Base lightness
+  const minLightness = 0.2; // Minimum lightness
+  const maxLightness = 0.8; // Maximum lightness
+
+  // Calculate lightness based on index, keeping it within min and max lightness bounds
+  const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
+
+  // Create a new color with the same hue, adjusted saturation and lightness
+  return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
+}
+// Create lines for each country
+dataByCountry.forEach((countryData, index) => {
+    const firstCountryCode = countryData.country;
+    const continent = getContinentByCountry(firstCountryCode);
+    const baseColor = continentColors[continent] || 'grey';
+
+    // Get a distinct shade for the current country while keeping the continent's hue
+    const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
+
+    const line = d3.line()
+        .x(d => xScale(d.year))
+        .y(d => yScale(d.ratio_employment_to_population));
+
+    svg.append("path")
+        .datum(countryData.data)
+        .attr("class", "line")
+        .attr("fill", "none")
+        .attr("stroke", lineColor)
+        .attr("stroke-width", 2)
+        .attr("d", line)
+        .attr("opacity",1);
+
+  //circles
+  const allCircles = svg.selectAll("circle.dataItem")
+  .data(countryData.data, d => d.country); // Utiliser countryData.data
+
+  allCircles.enter()
         .append("circle")
         .attr("class", "dataItem")
         .attr("r", 3.2)
         .attr("cx", d => xScale(d.year))
         .attr("cy", d => yScale(d.ratio_employment_to_population))
-        .style("fill", d => {
-            const continent = getContinentByCountry(d.country);
-            return continentColors[continent] || 'grey';
-        })
-        .style("stroke", d => {
-            const continent = getContinentByCountry(d.country);
-            return continentColors[continent] || 'grey';
-        })
+        .style("fill", lineColor) // Définir la couleur de remplissage sur la couleur de ligne
+        .style("stroke", lineColor) // Définir la couleur de contour sur la couleur de ligne
         .style("stroke-width", 1)
-        .style("opacity", 0) // Start with opacity 0
+        .style("opacity", 1) // Démarrer avec une opacité de 1
         .on("mouseover", mouseOverFunction)
-        .on("mouseleave", mouseLeaveFunction);
+        .on("mouseleave", mouseLeaveFunction)
+        .append("title")
+        .text(d => `${countryNameMapping[d.country] || d.country}\nYear: ${d.year}\nRate: ${d.ratio_employment_to_population.toFixed(2)} %`);
+
   
   //   // Transition to make circles visible
     allCircles.transition().duration(1000).style("opacity", 1);
-  
+
+    // Mettre à jour les cercles existants
+    allCircles
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScale(d.ratio_employment_to_population))
+        .style("fill", lineColor) // Mettre à jour la couleur de remplissage
+        .style("stroke", lineColor); // Mettre à jour la couleur de contour
   // // Append tooltips
   allCircles.append("title")
       .text(d => `${countryNameMapping[d.country] || d.country}\nYear: ${d.year}\nRate: ${d.ratio_employment_to_population.toFixed(2)} %`);
 
 
-  }}
+   
+  });
+  }
   
-  
+}
   // ----------------------------Update visual idioms------------------------------------------------
   
   function updateDashboard() {
