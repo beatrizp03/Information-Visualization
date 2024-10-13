@@ -325,30 +325,20 @@ function clearLines() {
   
   // ----------------------------------------------Create visual idioms-------------------------------------
   function createLineChart(data, data_average) {
+       // Clean the data
+       const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
+        continent,
+        year: parseInt(year, 10), // Convert year to a number
+        ratio_employment_to_population: parseFloat(ratio_employment_to_population) // Convert ratio to a number
+    }));
 
-    
     // Set the dimensions of the SVG container
     const svgWidth = 815;
-    const svgHeight = 225;
+    const svgHeight = 210;
     const margin = 60; 
-  
-    const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
-      continent,
-      year: parseInt(year, 10), // Convert year to a number
-      ratio_employment_to_population: parseFloat(ratio_employment_to_population) // Convert ratio to a number
-  }));
-  
-  console.log(cleanedData[1]);
-  // Group by continent
-  const groupedByContinent = cleanedData.reduce((acc, current) => {
-    const { continent } = current;
-    if (!acc[continent]) {
-        acc[continent] = [];
-    }
-    acc[continent].push(current);
-    return acc;
-  }, {});
-  
+
+    // Clear the SVG before appending new elements
+    //d3.select(".line-chart").select("svg").remove();
     // Create an x-scale using a point scale for the years
     const xScale = d3
       .scalePoint()
@@ -379,12 +369,54 @@ function clearLines() {
       .style("font-weight", "bold") // Optional: Make it bold
       .text("Women's Employment Rate by Country and Year");
   
+      
+    // Append x-axis to the SVG
+    svg
+    .append("g")
+    .attr("class", "xAxis")
+    .attr("transform", `translate(0,${svgHeight - margin})`) 
+    .call(d3.axisBottom(xScale));
+
+  // Append y-axis to the SVG
+  svg
+    .append("g")
+    .attr("class", "yAxis")
+    .attr("transform", `translate(${margin*1.5},0)`) 
+    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
+
+  // Append x-axis label
+  svg
+    .append("text")
+    .attr("x", svgWidth / 2) // Center horizontally
+    .attr("y", svgHeight - margin / 3) 
+    .attr("text-anchor", "middle") 
+    .text("Year"); 
+
+  // Append y-axis label
+  svg
+    .append("text")
+    .attr("x", -svgHeight / 2 + margin / 2) // Position vertically and center
+    .attr("y", margin*1) 
+    .attr("text-anchor", "middle")
+    .attr("transform", "rotate(-90)") 
+    .text("Employment Rate"); 
+    if (clickedList.length == 0) {
+  //console.log(cleanedData[1]);
+  // Group by continent
+  const groupedByContinent = cleanedData.reduce((acc, current) => {
+    const { continent } = current;
+    if (!acc[continent]) {
+        acc[continent] = [];
+    }
+    acc[continent].push(current);
+    return acc;
+  }, {});
+  
     // Create a line generator function
     const line = d3
       .line()
       .x((d) => xScale(d.year)) 
       .y((d) => yScale(d.ratio_employment_to_population)); 
-  
   
   // Append lines for each continent
   const colors = d3.scaleOrdinal(d3.schemeCategory10); // Color scale for different lines
@@ -409,49 +441,10 @@ function clearLines() {
   });
   
   
-    // Append x-axis to the SVG
-    svg
-      .append("g")
-      .attr("class", "xAxis")
-      .attr("transform", `translate(0,${svgHeight - margin})`) 
-      .call(d3.axisBottom(xScale));
-  
-    // Append y-axis to the SVG
-    svg
-      .append("g")
-      .attr("class", "yAxis")
-      .attr("transform", `translate(${margin*1.5},0)`) 
-      .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
-  
-    // Append x-axis label
-    svg
-      .append("text")
-      .attr("x", svgWidth / 2) // Center horizontally
-      .attr("y", svgHeight - margin / 3) 
-      .attr("text-anchor", "middle") 
-      .text("Year"); 
-  
-    // Append y-axis label
-    svg
-      .append("text")
-      .attr("x", -svgHeight / 2 + margin / 2) // Position vertically and center
-      .attr("y", margin*1) 
-      .attr("text-anchor", "middle")
-      .attr("transform", "rotate(-90)") 
-      .text("Employment Rate"); 
+    
   }
-  
-  // ----------------------------Update visual idioms------------------------------------------------
-  
-  function updateDashboard() {
-    updateLineChart(globalData1 , globalData3, clickedList);
-  }
-  
-  function updateLineChart(data, data_average, countries_clicked) {
-    const svgWidth = 815;
-    const svgHeight = 225;
-    const margin = 60;
-  
+  else {
+    console.log("list clicked", clickedList)
     const total_data = data.filter(d =>d.level_education == "TOTAL");
   
     const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
@@ -462,33 +455,14 @@ function clearLines() {
   
   
     let final_data = reducedData.filter(d =>
-        countries_clicked.some(clicked => clicked.country === d.country)
+        clickedList.some(clicked => clicked.country === d.country)
     );
-  
-    // Get the full range of years from the dataset
-    const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);
-  
-    // Ensure that the xScale includes all the years (from all countries)
-    const xScale = d3
-        .scalePoint()
-        .domain(allYears) // Use full range of years
-        .range([margin * 1.5, svgWidth - margin]);
-  
-    const yScale = d3
-        .scaleLinear()
-        .domain([0, 100])
-        .range([svgHeight - margin, margin * 0.09]);
-  
-    const svg = d3
-        .select(".line-chart")
-        .select("svg")
-        .attr("width", svgWidth)
-        .attr("height", svgHeight);
-  
-    svg.selectAll('path').remove(); // This will remove all existing paths  
-  
-    // Get unique countries and group data by country
-    const uniqueCountries = Array.from(new Set(final_data.map(d => d.country)));
+ // Get the full range of years from the dataset
+     const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);
+
+
+  //   // Get unique countries and group data by country
+   const uniqueCountries = Array.from(new Set(final_data.map(d => d.country)));
   
     const dataByCountry = uniqueCountries.map(country => ({
         country,
@@ -513,8 +487,7 @@ function clearLines() {
             .attr("stroke-width", 2)
             .attr("d", line);
     });
-  
-    // Handle circles
+  // Handle circles
     svg.selectAll("circle.dataItem").remove(); // Clear previous circles
   
   
@@ -540,27 +513,25 @@ function clearLines() {
         .on("mouseover", mouseOverFunction)
         .on("mouseleave", mouseLeaveFunction);
   
-    // Transition to make circles visible
+  //   // Transition to make circles visible
     allCircles.transition().duration(1000).style("opacity", 1);
   
-  // Append tooltips
+  // // Append tooltips
   allCircles.append("title")
       .text(d => `${countryNameMapping[d.country] || d.country}\nYear: ${d.year}\nRate: ${d.ratio_employment_to_population.toFixed(2)} %`);
+
+
+  }}
   
   
-    // Update the x-axis with the full range of years
-    svg.append("g")
-        .attr("class", "xAxis")
-        .attr("transform", `translate(0,${svgHeight - margin})`)
-        .call(d3.axisBottom(xScale));
+  // ----------------------------Update visual idioms------------------------------------------------
   
-    // Update the y-axis
-    svg.append("g")
-        .attr("class", "yAxis")
-        .attr("transform", `translate(${margin * 1.5},0)`)
-        .call(d3.axisLeft(yScale).tickValues(d3.range(0, 101, 20)));
+  function updateDashboard() {
+
+    createLineChart(globalData1 , globalData3, clickedList);
   }
   
+
   function mouseOverFunction(event, d) {
     // Get the country code for the hovered line
     const hoveredCountry = d.country;

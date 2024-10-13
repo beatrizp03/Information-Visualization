@@ -1235,7 +1235,7 @@ function createMagnetChart(employmentData, categories) {
   
               if (magnet) {
                   const categoryValue = +d[categoryString]; // Access the value dynamically using bracket notation
-                  console.log("VALUE", categoryValue);
+                  //console.log("VALUE", categoryValue);
   
                   if (!isNaN(categoryValue) && categoryValue > 0) {
                       const distanceX = magnet.x - d.x; // Calculate distance from node to magnet

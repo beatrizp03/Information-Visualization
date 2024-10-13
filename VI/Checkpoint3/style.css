@@ -227,7 +227,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   align-items: center; 
 }
 
-#clearLines {
+.clearLines {
   background-color: #47454549; 
   color: white; 
   border: none; 
@@ -243,7 +243,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   transition: background-color 0.3s; /* Transition effect */
 }
 
-#clearLines:hover {
+.clearLines:hover {
   background-color: #414040bc; /* Darker red on hover */
 }
 
