@@ -527,10 +527,7 @@ dataByCountry.forEach((countryData, index) => {
         .style("stroke-width", 1)
         .style("opacity", 1) // Démarrer avec une opacité de 1
         .on("mouseover", mouseOverFunction)
-        .on("mouseleave", mouseLeaveFunction)
-        .append("title")
-        .text(d => `${countryNameMapping[d.country] || d.country}\nYear: ${d.year}\nRate: ${d.ratio_employment_to_population.toFixed(2)} %`);
-
+        .on("mouseleave", mouseLeaveFunction);
   
   //   // Transition to make circles visible
     allCircles.transition().duration(1000).style("opacity", 1);
@@ -540,13 +537,7 @@ dataByCountry.forEach((countryData, index) => {
         .attr("cx", d => xScale(d.year))
         .attr("cy", d => yScale(d.ratio_employment_to_population))
         .style("fill", lineColor) // Mettre à jour la couleur de remplissage
-        .style("stroke", lineColor); // Mettre à jour la couleur de contour
-  // // Append tooltips
-  allCircles.append("title")
-      .text(d => `${countryNameMapping[d.country] || d.country}\nYear: ${d.year}\nRate: ${d.ratio_employment_to_population.toFixed(2)} %`);
-
-
-   
+        .style("stroke", lineColor); // Mettre à jour la couleur de contour 
   });
   }
   
@@ -556,11 +547,52 @@ dataByCountry.forEach((countryData, index) => {
   function updateDashboard() {
 
     createLineChart(globalData1 , globalData3, clickedList);
+    updateWorldMap(clickedList);
+
   }
   
 
+  const tooltip = document.createElement("div");
+  tooltip.id = "tooltip";
+  tooltip.style.position = "absolute";
+  tooltip.style.fontSize = "14px";
+  tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+  tooltip.style.color = "white";
+  tooltip.style.padding = "5px";
+  tooltip.style.borderRadius = "5px";
+  tooltip.style.display = "none";
+  tooltip.style.pointerEvents = "none";
+  document.body.appendChild(tooltip);
+
+// Create a function to show the tooltip with dynamic content
+function showTooltip(event, countryData) {
+  var tooltip = document.getElementById('tooltip');
+  var tooltipCountry = document.getElementById('tooltip-country');
+  var tooltipYear = document.getElementById('tooltip-year');
+  var tooltipRatio = document.getElementById('tooltip-ratio');
+  
+  // Set the tooltip content
+  tooltipCountry.textContent = countryNameMapping[countryData.country];  // Country name
+  tooltipYear.textContent = countryData.year;  // Continent name
+  tooltipRatio.textContent = countryData.ratio_employment_to_population.toFixed(2);  // Ratio value
+
+  // Set the tooltip's position based on mouse coordinates
+  tooltip.style.left = event.pageX + 10 + 'px';  // X position with some offset
+  tooltip.style.top = event.pageY + 10 + 'px';   // Y position with some offset
+  
+  // Make the tooltip visible
+  tooltip.style.display = 'block';
+}
+
+// Mouseout function to hide the tooltip
+function hideTooltip() {
+  var tooltip = document.getElementById('tooltip');
+    tooltip.style.display = 'none';  // Hide tooltip
+}
+
   function mouseOverFunction(event, d) {
     // Get the country code for the hovered line
+    showTooltip(event, d);
     const hoveredCountry = d.country;
   
   
@@ -576,7 +608,7 @@ dataByCountry.forEach((countryData, index) => {
   
   function mouseLeaveFunction(event, d) {
     const hoveredCountry = d.country; // Get the country of the hovered item
-  
+    hideTooltip();
     // Reset circles for the hovered country
     d3.selectAll("circle.dataItem")
         .filter(function (elem) {
@@ -586,5 +618,5 @@ dataByCountry.forEach((countryData, index) => {
         .style("stroke-width", 1); // Reset stroke width
   
   }
-  
+
   
