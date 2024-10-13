@@ -198,8 +198,7 @@
     acc[code] = name;
     return acc;
   }, {});
-  
-  var globalData1, globalData3;
+
 
   let clickedList = [];
   const buttons = document.querySelectorAll('.menu-btn');
@@ -326,8 +325,7 @@ function clearLines() {
   
   // ----------------------------------------------Create visual idioms-------------------------------------
   function createLineChart(data, data_average) {
-    globalData1 = data;
-    globalData3 = data_average;
+
     
     // Set the dimensions of the SVG container
     const svgWidth = 815;
