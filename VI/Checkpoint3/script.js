@@ -1,3 +1,49 @@
+
+
+
+let sliderOne, sliderTwo, minGap, displayValOne, displayValTwo, finalValOne, finalValTwo;
+let globalData1 = [];
+let globalData2 = [];
+let globalData3 = [];
+
+function updateValue() {
+  displayValOne.textContent = sliderOne.value; 
+  displayValTwo.textContent = sliderTwo.value; 
+
+  finalValOne = sliderOne.value;
+  finalValTwo = sliderTwo.value;
+  console.log(finalValOne, finalValTwo)
+  filterDataset(finalValOne,finalValTwo);
+}
+
+function filterDataset(startYear,endYear) {
+
+  console.log(globalData1)
+  let startyear=startYear;
+  let endyear=endYear
+  let filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
+  //const filteredData2 = globalData2.filter(item => item.year >= startyear && item.year <= endyear);
+  let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
+  console.log(filteredData1, filteredData3);
+  createLineChart(filteredData1, filteredData3);
+}
+
+function slideOne() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderOne.value = parseInt(sliderTwo.value) - minGap;
+  }
+  updateValue(); 
+}
+
+function slideTwo() {
+  if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
+      sliderTwo.value = parseInt(sliderOne.value) + minGap;
+  }
+  updateValue();
+}
+
+
+
 function init() {
   sliderOne = document.getElementById("slider-1");
   sliderTwo = document.getElementById("slider-2");
@@ -9,8 +55,6 @@ function init() {
   
   sliderOne.addEventListener("input", slideOne);
   sliderTwo.addEventListener("input", slideTwo);
-
-  var globalData1, globalData2, globalData3;
 
   d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
     globalData1 = data1.map(d => {
@@ -31,7 +75,7 @@ function init() {
         }).sort((a, b) => a.year - b.year);
 
         
-        createLineChart(globalData1, globalData3);
+        filterDataset(2000,2023); //default setup
 
         const categories = Array.from(new Set(globalData2.map(d => d.job_category)));
         // Inside the d3.csv call
