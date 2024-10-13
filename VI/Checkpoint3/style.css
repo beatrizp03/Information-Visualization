@@ -40,7 +40,7 @@
 .container{
   position: relative;
   width: 50%;
-  height: 15px;
+  height: 12px;
   margin-top: 15px;
   display: flex;
   align-items: center; /* Center items horizontally */
@@ -194,7 +194,30 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   display: flex;
   width: 100%; /* Make sure the chart takes full width */
   max-width: 100%;
-  max-height: 70%;
+  max-height: 80%;
+  transform: translateX(-50px); /* Move left by 20 pixels */
+}
+
+.line-chart-button {
+  position: absolute; /* Position it absolutely within the relative container */
+  top: 0px; /* Adjust the distance from the top */
+  right: 90px; /* Adjust the distance from the right */
+  background-color: rgb(77, 127, 255, 0.9); /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 4px 10px; /* Padding for the button */
+  cursor: pointer; /* Change cursor on hover */
+  transition: background-color 0.3s; /* Smooth transition for background color */
+  z-index: 10; /* Ensure button is above other elements */
+  font-weight: bold;
+  width: 120px; /* Set the button width to 90px */
+  height: 20px; /* Set the button height to 20px */
+  font-size: 12px; /* Set font size to 12px */
+}
+
+.line-chart-button:hover {
+  background-color:  rgb(77, 127, 255, 1.2); /* Darken background color on hover */
 }
 
 
@@ -226,27 +249,6 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   text-align: center; 
   align-items: center; 
 }
-
-.clearLines {
-  background-color: #47454549; 
-  color: white; 
-  border: none; 
-  width: 150px;  
-  padding: 10px 10px; /* Top and bottom padding, left and right padding */
-  text-align: center; /* Center the text */
-  text-decoration: none; /* No underline */
-  display: inline-block; /* Make it an inline block element */
-  font-size: 16px; /* Font size */
-  margin: 3px 2px; /* Margin around the button */
-  cursor: pointer; /* Pointer cursor on hover */
-  border-radius: 5px; /* Rounded corners */
-  transition: background-color 0.3s; /* Transition effect */
-}
-
-.clearLines:hover {
-  background-color: #414040bc; /* Darker red on hover */
-}
-
 
 .grid-item-magnets {
   position: relative; 

@@ -240,11 +240,11 @@ function clearLines() {
       button.style.backgroundColor = ''; // Reset background color to default
     });
     // Update the dashboard to reflect cleared selections
-    updateDashboard();
+
   }
   // Attach the event listener for "Clear selection" button
   document.addEventListener('DOMContentLoaded', function() {
-  document.getElementById("clearLines").addEventListener("click", clearLines);
+  document.getElementById("clearselection").addEventListener("click", clearLines);
   });
   
   // ---------------------------- display country button--------------------------------
@@ -336,6 +336,7 @@ function clearLines() {
     const svgWidth = 815;
     const svgHeight = 210;
     const margin = 60; 
+    
 
     // Clear the SVG before appending new elements
     //d3.select(".line-chart").select("svg").remove();

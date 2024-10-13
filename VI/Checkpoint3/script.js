@@ -19,10 +19,14 @@ function filterDataset(startYear,endYear) {
   let startyear=startYear;
   let endyear=endYear
   let filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
-  //let filteredData2 = globalData2.filter(item => item.year >= startyear && item.year <= endyear);
+  let filteredData2 = globalData2.filter(item => item.year >= startyear && item.year <= endyear);
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
   //console.log(filteredData1, filteredData3);
   createLineChart(filteredData1, filteredData3);
+
+
+  
+  //createMagnetChart(filteredData2, categories);
 }
 
 function slideOne() {
