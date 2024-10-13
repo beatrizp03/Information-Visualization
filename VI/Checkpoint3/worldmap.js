@@ -42,7 +42,7 @@ function createWorldMap(employmentData) {
     });
 
     // Bind GeoJSON data to SVG paths
-    svg.append("g")
+    const countries = svg.append("g")
       .selectAll("path")
       .data(geoData.features)
       .enter()
@@ -53,8 +53,17 @@ function createWorldMap(employmentData) {
         const employmentRatio = employmentMap[d.id];  // d.id should be the country code
         return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
       })
-      .attr("stroke", "#fff")
-      .attr("stroke-width", 1)
+      .attr("stroke", "none");
+
+      countries.on("mouseover", function(event, d) {
+        d3.select(this)
+          .style("stroke", "#333")  // Darker border on hover
+          .style("stroke-width", "2");  // Thicker border on hover
+      })
+      .on("mouseout", function(event, d) {
+        d3.select(this)
+          .style("stroke", "none");  // Remove hover border, rely on separate border layer
+      })
       .on("click", function(event, d) {
         const employmentRatio = employmentMap[d.id];
         const countryName = d.properties.name;  // Get country name from geoData
