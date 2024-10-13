@@ -345,6 +345,7 @@ const countries = [
   { code: "ESP", country: "Spain" },
   { code: "LKA", country: "Sri Lanka" },
   { code: "SDN", country: "Sudan" },
+  { code: "SSD", country: "South Sudan" },
   { code: "SUR", country: "Suriname" },
   { code: "SWE", country: "Sweden" },
   { code: "CHE", country: "Switzerland" },
@@ -353,6 +354,7 @@ const countries = [
   { code: "THA", country: "Thailand" },
   { code: "TLS", country: "Timor-Leste" },
   { code: "TGO", country: "Togo" },
+  { code: "TJK", country: "Tajikistan" },
   { code: "TON", country: "Tonga" },
   { code: "TTO", country: "Trinidad and Tobago" },
   { code: "TUN", country: "Tunisia" },
@@ -1148,8 +1150,8 @@ function createMagnetChart(employmentData, categories) {
 
   // Initialize node positions
   employmentData.forEach(d => {
-    d.x = Math.random() * circles_width + circles_margin.left; // Random initial x position
-    d.y = Math.random() * circles_height + circles_margin.top; // Random initial y position
+    d.x = width/2; // Random initial x position
+    d.y = height/2; // Random initial y position
     d.vx = 0;
     d.vy = 0;
   });
@@ -1229,13 +1231,14 @@ function createMagnetChart(employmentData, categories) {
 
     function magnetForce() {
       employmentData.forEach(d => {
+        console.log(d.year);
           categories.forEach(category => {
               const categoryString = category.toString(); // Ensure category is a string
               const magnet = magnetCenters.find(m => m.category === categoryString); // Find the corresponding magnet
   
               if (magnet) {
                   const categoryValue = +d[categoryString]; // Access the value dynamically using bracket notation
-                  console.log("VALUE", categoryValue);
+                  //console.log("VALUE", categoryValue);
   
                   if (!isNaN(categoryValue) && categoryValue > 0) {
                       const distanceX = magnet.x - d.x; // Calculate distance from node to magnet
@@ -1268,73 +1271,87 @@ function createMagnetChart(employmentData, categories) {
       });
   }     
 
-// Change circle hover behavior
-const nodes = svg.selectAll(".node")
-  .data(employmentData)
-  .enter()
-  .append("circle")
-  .attr("class", "node")
-  .attr("r", 5)
-  .attr("fill", lighestBlue)
-  //.attr("fill", "rgb(200, 170, 200)") // Set default fill color
-  .on("mouseover", function(event, d) {
-    d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
+  // Create the tooltip
+  const tooltip = d3.select("body").append("div")
+  .attr("class", "tooltip")
+  .style("position", "absolute")
+  .style("background", "rgba(0, 0, 0, 0.7)")
+  .style("color", "white")
+  .style("padding", "5px")
+  .style("border-radius", "5px")
+  .style("visibility", "hidden")
+  .style("pointer-events", "none");
 
-    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+  // Change circle hover behavior
+  const nodes = svg.selectAll(".node")
+    .data(employmentData)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 5)
+    .attr("fill", lighestBlue)
+    //.attr("fill", "rgb(200, 170, 200)") // Set default fill color
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
 
-    // Create label and keep it visible
-    svg.append("text")
-      .attr("class", "country-label")
-      .attr("x", d.x)
-      .attr("y", d.y - 15)
-      .attr("text-anchor", "middle")
-      .style("font-size", "12px")
-      .style("fill", "black") // Change text color for better visibility
-      .text(countryName);
-  })
-  .on("click", function(event, d) {
-    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
-  
-    // Create a tooltip group to hold the rectangle and text
-    const tooltipGroup = svg.append("g")
-      .attr("class", "tooltip-group")
-      .attr("transform", `translate(${d.x}, ${d.y + 15})`); // Position it based on the circle
-  
-    // Create a rectangle for the tooltip background
-    const tooltipWidth = 75; // Adjust width as needed
-    const tooltipHeight = 25; // Adjust height as needed
-  
-    tooltipGroup.append("rect")
-      .attr("class", "tooltip-rect")
-      .attr("width", tooltipWidth)
-      .attr("height", tooltipHeight)
-      .attr("fill", "rgba(50, 50, 50, 0.8)") // Semi-transparent background
-      .attr("rx", 5) // Rounded corners
-      .attr("ry", 5); // Rounded corners
-  
-    // Add text to the tooltip
-    tooltipGroup.append("text")
-      .attr("class", "tooltip-text")
-      .attr("x", tooltipWidth / 2) // Center the text
-      .attr("y", tooltipHeight / 2) // Center the text vertically
-      .attr("dy", ".35em") // Align text vertically
-      .attr("text-anchor", "middle") // Center text horizontally
-      .style("font-size", "12px")
-      .style("fill", "white") // Text color
-      .text(countryName);
-  
-    // Remove tooltip after 2 seconds
-    setTimeout(() => {
-      tooltipGroup.remove();
-    }, 2000);
-  })
-  .on("mouseout", function() {
-    d3.select(this)//attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
-      .attr("fill", lighestBlue)
-    // Remove the country label when mouse out
-    svg.selectAll(".country-label").remove();
-  });
-  
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
 
+      // Create label and keep it visible
+      svg.append("text")
+        .attr("class", "country-label")
+        .attr("x", d.x)
+        .attr("y", d.y - 15)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "black") // Change text color for better visibility
+        .text(countryName);
+    })
+    .on("click", function(event, d) {
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+  
+      // Create an array of employment data for relevant categories
+      const employmentDataArray = [];
+      const relevantCategories = [
+          "Agriculture",
+          "Construction",
+          "Manufacturing",
+          "Market_services",
+          "Mining_and_quarrying",
+          "Non_market_services"
+      ];
+  
+      for (const category of relevantCategories) {
+          if (d[category] !== undefined) { // Ensure the key exists in the data
+              employmentDataArray.push({
+                  category: category.replace(/_/g, ' '), // Format category name
+                  value: parseFloat(d[category]).toFixed(2) // Convert to float and format
+              });
+          }
+      }
+  
+      // Sort the array by value in descending order
+      employmentDataArray.sort((a, b) => b.value - a.value);
+  
+      // Combine lines into a single HTML string
+      const employmentDataString = employmentDataArray.map(item => `${item.category}: ${item.value}%`).join("<br>"); // Use <br/> for line breaks
+  
+      // Update tooltip content and position
+      tooltip
+          .html(`Country: ${countryName}<br>Year: ${d.year}<br>${employmentDataString}`)
+          .style("visibility", "visible")
+          .style("top", (event.pageY + 10) + "px")
+          .style("left", (event.pageX + 10) + "px");
+  
+      // Hide tooltip after 3 seconds
+      setTimeout(() => {
+          tooltip.style("visibility", "hidden");
+      }, 3000); // 3 seconds delay
+    })
+    .on("mouseout", function() {
+      d3.select(this)//attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
+        .attr("fill", lighestBlue)
+      // Remove the country label when mouse out
+      svg.selectAll(".country-label").remove();
+    });
 }
 

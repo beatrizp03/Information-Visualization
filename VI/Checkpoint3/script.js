@@ -1,6 +1,3 @@
-
-
-
 let sliderOne, sliderTwo, minGap, displayValOne, displayValTwo, finalValOne, finalValTwo;
 let globalData1 = [];
 let globalData2 = [];
