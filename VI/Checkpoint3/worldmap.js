@@ -2,6 +2,8 @@
 function createWorldMap(employmentData) {
   const width = 960;
   const height = 450;
+  d3.select(".grid-item-world").select("svg").remove(); // Remove the existing SVG
+  
 
   // Adjust the width to leave space for the legend
   const svg = d3.select(".grid-item-world")
@@ -35,11 +37,32 @@ function createWorldMap(employmentData) {
   // Load the GeoJSON data for the world map
   d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(geoData) {
 
-    // Convert CSV data into a key-value map (country code -> employment ratio)
+    // Convertir les données CSV en une carte clé-valeur (code du pays -> { somme des taux, nombre d'entrées })
     const employmentMap = {};
     employmentData.forEach(d => {
-      employmentMap[d.country] = +d.average_employment_ratio;
+      const country = d.country;
+      const rate = +d.rate; 
+      
+      // Initialiser l'entrée si le pays n'existe pas encore
+      if (!employmentMap[country]) {
+        employmentMap[country] = { sum: 0, count: 0 };
+      }
+
+      // Ajouter le taux à la somme et incrémenter le compteur
+      employmentMap[country].sum += rate;
+      employmentMap[country].count += 1;
     });
+
+    // Calculer la moyenne des taux par pays
+    const averageEmploymentMap = {};
+    for (const country in employmentMap) {
+      averageEmploymentMap[country] = employmentMap[country].sum / employmentMap[country].count;
+    }
+
+    // averageEmploymentMap contient les moyennes des taux d'emploi par pays
+    console.log("average",averageEmploymentMap);
+
+
 
     // Bind GeoJSON data to SVG paths
     const countries = svg.append("g")
@@ -50,10 +73,13 @@ function createWorldMap(employmentData) {
       .attr("d", path)
       .attr("fill", function(d) {
         // Get the employment ratio for the country
-        const employmentRatio = employmentMap[d.id];  // d.id should be the country code
+        const employmentRatio = averageEmploymentMap[d.id];  // d.id should be the country code
+        console.log("employmentrate", employmentRatio)
         return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
       })
       .attr("stroke", "none");
+    
+    
 
       countries.on("mouseover", function(event, d) {
         d3.select(this)
@@ -65,12 +91,12 @@ function createWorldMap(employmentData) {
           .style("stroke", "none");  // Remove hover border, rely on separate border layer
       })
       .on("click", function(event, d) {
-        const employmentRatio = employmentMap[d.id];
+        const employmentRatio = averageEmploymentMap[d.id];
         const countryName = d.properties.name;  // Get country name from geoData
 
         // Update and display the tooltip
         tooltip
-          .html(`${countryName}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
+          .html(`${countryName}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`) //to change
           .style("visibility", "visible")
           .style("top", (event.pageY + 10) + "px")
           .style("left", (event.pageX + 10) + "px");

@@ -15,7 +15,7 @@ function updateValue() {
 
 function filterDataset(startYear,endYear) {
 
-  console.log(globalData1)
+  //console.log(globalData1)
   let startyear=startYear;
   let endyear=endYear
   let filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
@@ -23,6 +23,16 @@ function filterDataset(startYear,endYear) {
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
   //console.log(filteredData1, filteredData3);
   createLineChart(filteredData1, filteredData3);
+  console.log(filteredData1);
+
+  const reducedData1 = filteredData1.map(entry => ({
+    country: entry.country,
+    year: entry.year,
+    rate: parseFloat(entry.ratio_employment_to_population) // Convert the rate to a number
+}));
+
+  console.log("reduceddata1",reducedData1);
+  createWorldMap(reducedData1);
 
 
   
@@ -152,10 +162,10 @@ function init() {
 
         //console.log("ARRAY");
         //console.log(employmentDataArray);
-        console.log("ARRAY YEARLY");
-        console.log(employmentDataArray);
-        console.log("CATEGORIES");
-        console.log(categories);
+        //console.log("ARRAY YEARLY");
+        //console.log(employmentDataArray);
+        //console.log("CATEGORIES");
+        //console.log(categories);
         // Create the magnet chart
         createMagnetChart(employmentDataArray, categories);
       
@@ -164,7 +174,8 @@ function init() {
   });
 
   d3.csv("datasets/average_employment_ratio_by_country.csv").then(function(data){
-    createWorldMap(data);
+    console.log("data",data[0]);
+    //createWorldMap(data);
   });
 
   // Automatically click the "Job Categories" button on page load
