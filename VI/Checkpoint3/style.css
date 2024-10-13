@@ -171,6 +171,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   cursor: pointer;
 }
 
+
 .tooltip {
   font-size: 14px;
   pointer-events: none;
@@ -230,7 +231,8 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   background-color: #47454549; 
   color: white; 
   border: none; 
-  padding: 10px 20px; /* Top and bottom padding, left and right padding */
+  width: 150px;  
+  padding: 10px 10px; /* Top and bottom padding, left and right padding */
   text-align: center; /* Center the text */
   text-decoration: none; /* No underline */
   display: inline-block; /* Make it an inline block element */

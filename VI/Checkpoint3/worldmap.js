@@ -11,8 +11,8 @@ function createWorldMap(employmentData) {
 
   // Projection to move map to the right
   const projection = d3.geoMercator()
-    .scale(120)
-    .translate([width / 2, height / 1.5]);  // Shift the map to the right
+    .scale(150)
+    .translate([width / 2, height / 1.8]);  // Shift the map to the right
 
   const path = d3.geoPath().projection(projection);
 
@@ -86,7 +86,7 @@ function createWorldMap(employmentData) {
 
     // Create the color scale as a vertical bar
     legendGroup.selectAll("rect")
-      .data(bins.slice(0, -1))  // We don't need the last bin for color boxes, since it's for labeling
+      .data(bins.slice(0, -1).reverse())  // We don't need the last bin for color boxes, since it's for labeling
       .enter()
       .append("rect")
       .attr("x", 0)
@@ -97,7 +97,7 @@ function createWorldMap(employmentData) {
 
     // Add labels for the dividing lines (now lower by 5px using dy)
     legendGroup.selectAll("text")
-      .data(bins)  // Include 0 as the first value
+      .data(bins.reverse())  // Include 0 as the first value
       .enter()
       .append("text")
       .attr("x", legendWidth + 5)  // Position the label to the right of each color box
