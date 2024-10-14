@@ -240,7 +240,7 @@ function clearLines() {
     document.querySelectorAll('.country-btn').forEach(button => {
       button.style.backgroundColor = ''; // Reset background color to default
     });
-
+    updateMagnetChart(clickedList);
     updateWorldMap(clickedList);
     // Update the dashboard to reflect cleared selections
   }
@@ -549,7 +549,9 @@ dataByCountry.forEach((countryData, index) => {
   function updateDashboard() {
 
     createLineChart(globalData1 , globalData3, clickedList);
+    updateMagnetChart(clickedList);
     updateWorldMap(clickedList);
+    
 
   }
   

@@ -60,7 +60,6 @@ function createWorldMap(employmentData) {
     }
 
     // averageEmploymentMap contient les moyennes des taux d'emploi par pays
-    //console.log("average",averageEmploymentMap);
 
     // Bind GeoJSON data to SVG paths
     const countries = svg.append("g")

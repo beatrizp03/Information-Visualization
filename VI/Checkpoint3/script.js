@@ -24,6 +24,7 @@ function filterDataset(startYear,endYear) {
   //console.log(filteredData1, filteredData3);
   createLineChart(filteredData1, filteredData3);
 
+  filteredData1 = filteredData1.filter(d => d.level_education == "TOTAL");
   const reducedData1 = filteredData1.map(entry => ({
     country: entry.country,
     year: entry.year,

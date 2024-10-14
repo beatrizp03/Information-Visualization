@@ -1856,3 +1856,15 @@ function createMagnetChart(employmentData, categories) {
 }
 
 
+function updateMagnetChart(clickedList) {
+  console.log("Clicked List:", clickedList);
+  // Select all country paths
+  d3.selectAll(".node")
+    .style("fill", function(d) {
+        const countryName = d.country;  // Assuming d.id is the country code or name
+        // Check if the country is in the clickedList and change its color accordingly
+        if (clickedList.some(clicked => clicked.country === countryName)) {
+            return "purple";  // Change color for clicked countries (e.g., orange/red)
+        }
+    });
+}
