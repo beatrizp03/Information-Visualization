@@ -235,11 +235,13 @@ function clearLines() {
     // Clear the clickedList
     clickedList = []; // Reset the clickedList to an empty array
     console.log("Clicked list cleared:", clickedList);
-  
+    
     // Reset the background color of all country buttons
     document.querySelectorAll('.country-btn').forEach(button => {
       button.style.backgroundColor = ''; // Reset background color to default
     });
+
+    updateWorldMap(clickedList);
     // Update the dashboard to reflect cleared selections
   }
   // Attach the event listener for "Clear selection" button

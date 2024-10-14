@@ -32,7 +32,7 @@
   margin: 0 auto;
   height: 10px;
   background-color: #ff0c0c00;
-  padding:20px 40px 10px 40px;
+  padding:20px 220px 10px 40px;
   border-radius: 5px;
 }
 
@@ -123,7 +123,7 @@ input[type="range"]:active::-webkit-slider-thumb{  /*when hovered*/
   width: 100%;
   left: 50%;
   transform: translateX(-10%); /* Adjust for perfect centering */
-  bottom: 20px; /* Adjust distance above the slider */
+  bottom: 10px; /* Adjust distance above the slider */
   display: flex; /* Align items horizontally */
   gap: 5px; /* Space between values */
   position: absolute;
@@ -322,6 +322,27 @@ body, html {
   height: 100%;
   overflow: hidden; /* Prevent scrolling */
   box-sizing: border-box;
+}
+
+.titles-container {
+  position: absolute;  /* Stacks the titles above the slider */
+  top: 10px;  /* Adjust this value to move titles up/down */
+  width: 120%;  /* Ensures titles span the entire width */
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  justify-content: space-between; /* Space titles evenly */
+  padding: 0 30px; /* Padding for spacing from edges */
+}
+.map-title, .magnet-title {
+  font-weight: bold; /* Bold font */
+  padding-top: 13px;
+  font-size: 18px;  /* Adjust font size */
+}
+.map-title {
+  padding-left: 280px;
+}
+.magnet-title {
+  padding-left: 230px;
 }
 .button-container {
   /*background-color: lightyellow;*/
