@@ -25,7 +25,8 @@
   --color-oceania: rgba(165, 125, 198, 0.8); /* Soft purple with transparency */
 }
 
-/*--------------------------------year range selection------------------------------------*/
+/*#################################### year range selection ####################################*/
+
 .button-container {
   position: relative;
   width: 95vmin;
@@ -138,7 +139,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 }
 
 
-/*-----------------------------------------------------------------------------------*/
+/*####################################### GRID #######################################*/
 
 .grid-container {
   display: grid;
@@ -156,6 +157,8 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   width: 100%;
   margin: 0 auto;
 }
+
+/*####################################### WORLD #######################################*/
 
 /* Scope the SVG and path styles to the map-container */
 .grid-item-world svg {
@@ -189,6 +192,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   z-index: 10;
 }
 
+/*####################################### LINE #######################################*/
 
 .grid-item-line {
   display: grid;
@@ -230,6 +234,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   background-color:  rgba(91, 91, 95, 0.300); /* Darken background color on hover */
 }
 
+/*####################################### MAGNETS #######################################*/
 
 .buttons {
   /*background-color: rgba(128, 128, 128, 0.377);*/
@@ -298,13 +303,13 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   transition: background-color 0.3s; /* Add transition for hover effect */
 }
 
-
 .switch_chart-buttons button.active {
   background-color: rgb(77, 127, 255, 0.9); /* 90% opacity for active button */
   color: white;
   font-weight: bold;
 }
 
+/*####################################### RADAR #######################################*/
 
 .grid-item-radar {
   display: flex;
@@ -320,6 +325,8 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   max-height: 120%;           /* Ensure the image scales down to fit */
   object-fit: contain;        /* Maintain aspect ratio, fitting inside the container */
 }
+
+/*####################################### OTHERS #######################################*/
 
 html,
 body, html {
@@ -365,6 +372,7 @@ button {
   font-size: 18px;
 }
 
+/*####################################### COUNTRIES #######################################*/
 
 #country-container {
   width: 130px; /* Fixed width for the country container */

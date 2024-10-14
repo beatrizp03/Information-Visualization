@@ -192,12 +192,11 @@ const lighestBlue = "#B3C7FF";
 // #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
-
 function createMagnetChart(employmentData, categories) {
   const width = 350;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
-  const magnetSize = 65; // Magnet size
+  const magnetSize = 60; // Magnet size
   
   // Remove previous circles if needed
   d3.select(".grid-item-magnets").select("svg").remove(); // Remove the existing SVG
@@ -329,9 +328,17 @@ function createMagnetChart(employmentData, categories) {
     .style("font-size", "14px")
     .style("color", "white") // Change text color to white
     .html(d => {
-      // Add line breaks for wrapping long words
-      return d.category.replace(/_/g, '<br/>');
+      // Customize line breaks for specific words
+      const categoryName = d.category
+        .replace(/Agriculture/g, 'Agricul<br/>ture')   // Wrap Agriculture
+        .replace(/Manufacturing/g, 'Manufac<br/>turing') // Wrap Manufacturing
+        .replace(/Construction/g, 'Construc<br/>tion') // Wrap Construction
+        .replace(/_/g, '<br/>');
+        // Add line breaks for wrapping long words
+
+      return categoryName;
     });
+
 
   // Custom magnet force based on category means
   function magnetForce() {
