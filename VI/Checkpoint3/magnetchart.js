@@ -1113,12 +1113,17 @@ function magnetForce() {
 }
 */
 
+/*
 function createMagnetChart(employmentData, categories) {
   const width = 350;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
   const magnetSize = 65; // Magnet size
   const magnetPadding = 20;
+
+  let oldestYear;
+  let mostRecentYear;
+  let categoryEmployment = {};
   
   const circles_width = 300; // Available width for the circles
   const circles_height = 400; // Available height for the circles
@@ -1229,9 +1234,20 @@ function createMagnetChart(employmentData, categories) {
       return d.category.replace(/_/g, '<br/>').replace(/Agriculture/g, 'Agricul_\nture').replace(/Manufacturing/g, 'Manufac_\nturing').replace(/Construction/g, 'Construc_\ntion');
     });
 
+    function calculateAveragesByCategory() {
+      // Get the most recent and oldest years
+      const years = Array.from(new Set(employmentData.map(d => d.year)));
+
+      oldestYear = Math.min(...years);
+      mostRecentYear = Math.max(...years);
+  
+      console.log("Year Range:", oldestYear, mostRecentYear);
+
+    }
+
     function magnetForce() {
       employmentData.forEach(d => {
-        console.log(d.year);
+        //console.log(d.year);
           categories.forEach(category => {
               const categoryString = category.toString(); // Ensure category is a string
               const magnet = magnetCenters.find(m => m.category === categoryString); // Find the corresponding magnet
@@ -1353,5 +1369,490 @@ function createMagnetChart(employmentData, categories) {
       // Remove the country label when mouse out
       svg.selectAll(".country-label").remove();
     });
+}*/
+
+/*
+function createMagnetChart(employmentData, categories) {
+  const width = 350;
+  const height = 450;
+  const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  const magnetSize = 65; // Magnet size
+  const magnetPadding = 20;
+
+  let oldestYear;
+  let mostRecentYear;
+  let categoryMeans = {}; // Object to store mean values for each category
+  
+  const circles_width = 300; // Available width for the circles
+  const circles_height = 400; // Available height for the circles
+  const circles_margin = { top: 25, right: 0, bottom: 0, left: 25 }; // Margins for the circles
+
+  const svg = d3.select(".chart-container")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  // Define the magnet positions
+  const magnetPositionMap = {
+    "Agriculture": { x: width * 0.1, y: height * 0.3 },
+    "Manufacturing": { x: width * 0.9, y: height * 0.3 },
+    "Construction": { x: width * 0.1, y: height * 0.7 },
+    "Mining_and_quarrying": { x: width * 0.9, y: height * 0.7 },
+    "Market_services": { x: width * 0.5, y: height * 0.9 },
+    "Non_market_services": { x: width * 0.5, y: height * 0.1 }
+  };
+
+  const magnetCenters = categories.map(category => {
+    return {
+      category: category,
+      ...magnetPositionMap[category]
+    };
+  }).filter(magnet => magnet.x !== undefined && magnet.y !== undefined);
+
+  // Initialize node positions
+  employmentData.forEach(d => {
+    d.x = width/2; // Random initial x position
+    d.y = height/2; // Random initial y position
+    d.vx = 0;
+    d.vy = 0;
+  });
+
+  const simulation = d3.forceSimulation(employmentData)
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(8))
+    .on("tick", ticked);
+
+  function ticked() {
+    // Apply magnet force first
+    magnetForce(); // Ensure the custom force is applied
+
+    // Update positions of nodes
+    svg.selectAll(".node")
+      .attr("cx", d => {
+        const newX = d.x < circles_margin.left ? circles_margin.left :
+                     d.x > circles_width + circles_margin.left ? circles_width + circles_margin.left :
+                     d.x;
+        return newX;
+      })
+      .attr("cy", d => {
+        const newY = d.y < circles_margin.top ? circles_margin.top :
+                     d.y > circles_height + circles_margin.top ? circles_height + circles_margin.top :
+                     d.y;
+        return newY;
+      });
+
+    // Update positions of magnets
+    svg.selectAll(".magnet")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+
+    svg.selectAll(".magnet-label")
+      .attr("x", d => d.x - magnetSize / 2)
+      .attr("y", d => d.y - magnetSize / 2);
+  }
+
+  // Update magnets' appearance
+  svg.selectAll(".magnet")
+    .data(magnetCenters)
+    .enter()
+    .append("rect")
+    .attr("class", "magnet")
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .attr("fill", darkestBlue)
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("rx", 5) // Set 5px border-radius for rounded corners
+    .attr("ry", 5); // Set 5px border-radius for rounded corners
+
+  svg.selectAll(".magnet-label")
+    .data(magnetCenters)
+    .enter()
+    .append("foreignObject")
+    .attr("class", "magnet-label")
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .append("xhtml:div")
+    .style("width", `${magnetSize}px`)
+    .style("height", `${magnetSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "center")
+    .style("text-align", "center")
+    .style("font-size", "14px")
+    .style("color", "white") // Change text color to white
+    .html(d => {
+      // Add line breaks for wrapping long words
+      return d.category.replace(/_/g, '<br/>');
+    });
+
+  // Calculate the mean values for each category from the oldest and newest years
+  function calculateCategoryMeans() {
+    const years = Array.from(new Set(employmentData.map(d => d.year)));
+    oldestYear = Math.min(...years);
+    mostRecentYear = Math.max(...years);
+
+    categories.forEach(category => {
+      const valuesOld = employmentData.filter(d => d.year === oldestYear).map(d => +d[category]);
+      const valuesNew = employmentData.filter(d => d.year === mostRecentYear).map(d => +d[category]);
+
+      const meanOld = d3.mean(valuesOld);
+      const meanNew = d3.mean(valuesNew);
+
+      categoryMeans[category] = { meanOld, meanNew };
+    });
+  }
+
+  calculateCategoryMeans(); // Calculate means for force and tooltip
+
+  function magnetForce() {
+    employmentData.forEach(d => {
+      categories.forEach(category => {
+        const magnet = magnetCenters.find(m => m.category === category); // Find the corresponding magnet
+        if (magnet) {
+          const meanValue = categoryMeans[category].meanNew; // Use the mean value from the most recent year
+          const distanceX = magnet.x - d.x; // Calculate distance from node to magnet
+          const distanceY = magnet.y - d.y;
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+          const strength = meanValue / 100; // Convert percentage to a value between 0 and 1
+
+          const scaledStrength = Math.min(strength * 0.25, 1);
+          d.vx += distanceX * scaledStrength; // Apply attraction
+          d.vy += distanceY * scaledStrength;
+        }
+      });
+    });
+  }
+
+  // Create the tooltip
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background", "rgba(0, 0, 0, 0.7)")
+    .style("color", "white")
+    .style("padding", "5px")
+    .style("border-radius", "5px")
+    .style("visibility", "hidden")
+    .style("pointer-events", "none");
+
+  // Change circle hover behavior
+  const nodes = svg.selectAll(".node")
+    .data(employmentData)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 5)
+    .attr("fill", lighestBlue)
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
+
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+
+      // Create label and keep it visible
+      svg.append("text")
+        .attr("class", "country-label")
+        .attr("x", d.x)
+        .attr("y", d.y - 15)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "black") // Change text color for better visibility
+        .text(countryName);
+    })
+    .on("click", function(event, d) {
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+  
+      // Create an array of employment data for relevant categories
+      const employmentDataArray = [];
+      const relevantCategories = [
+          "Agriculture",
+          "Construction",
+          "Manufacturing",
+          "Market_services",
+          "Mining_and_quarrying",
+          "Non_market_services"
+      ];
+  
+      for (const category of relevantCategories) {
+          if (d[category] !== undefined) { // Ensure the key exists in the data
+              employmentDataArray.push({
+                  category: category.replace(/_/g, ' '), // Format category name
+                  value: parseFloat(d[category]).toFixed(2) // Convert to float and format
+              });
+          }
+      }
+  
+      // Sort the array by value in descending order
+      employmentDataArray.sort((a, b) => b.value - a.value);
+  
+      // Combine lines into a single HTML string
+      const employmentDataString = employmentDataArray.map(item => `${item.category}: ${item.value}%`).join("<br>"); // Use <br/> for line breaks
+  
+      // Update tooltip content and position
+      tooltip
+          .html(`Country: ${countryName}<br>Year Range: ${oldestYear} - ${mostRecentYear}<br>${employmentDataString}`)
+          .style("visibility", "visible")
+          .style("top", (event.pageY + 10) + "px")
+          .style("left", (event.pageX + 10) + "px");
+  
+      // Hide tooltip after 3 seconds
+      setTimeout(() => {
+          tooltip.style("visibility", "hidden");
+      }, 3000); // 3 seconds delay
+    })
+    .on("mouseout", function() {
+      d3.select(this)//attr("fill", "rgb(200, 170, 200)"); // Revert fill color to default
+        .attr("fill", lighestBlue)
+      // Remove the country label when mouse out
+      svg.selectAll(".country-label").remove();
+    });
+}*/
+
+function createMagnetChart(employmentData, categories) {
+  const width = 350;
+  const height = 450;
+  const margin = { top: 5, right: 5, bottom: 5, left: 5 };
+  const magnetSize = 65; // Magnet size
+  
+  // Remove previous circles if needed
+  d3.select(".grid-item-magnets").select("svg").remove(); // Remove the existing SVG
+
+  let categoryMeansByCountry = {}; // Object to store mean values for each category for each country
+
+  const years = Array.from(new Set(employmentData.map(d => d.year)));
+  let oldestYear = Math.min(...years);
+  let mostRecentYear = Math.max(...years);
+  
+  const circles_width = 300; // Available width for the circles
+  const circles_height = 400; // Available height for the circles
+  const circles_margin = { top: 25, right: 0, bottom: 0, left: 25 }; // Margins for the circles
+
+  const svg = d3.select(".chart-container")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", `translate(${margin.left}, ${margin.top})`);
+
+  // Define the magnet positions
+  const magnetPositionMap = {
+    "Agriculture": { x: width * 0.1, y: height * 0.3 },
+    "Manufacturing": { x: width * 0.9, y: height * 0.3 },
+    "Construction": { x: width * 0.1, y: height * 0.7 },
+    "Mining_and_quarrying": { x: width * 0.9, y: height * 0.7 },
+    "Market_services": { x: width * 0.5, y: height * 0.9 },
+    "Non_market_services": { x: width * 0.5, y: height * 0.1 }
+  };
+
+  const magnetCenters = categories.map(category => {
+    return {
+      category: category,
+      ...magnetPositionMap[category]
+    };
+  }).filter(magnet => magnet.x !== undefined && magnet.y !== undefined);
+
+  // Aggregate data to calculate means per country across all years
+  function calculateCategoryMeansByCountry() {
+    const countries = Array.from(new Set(employmentData.map(d => d.country))); // Get unique countries
+    
+    countries.forEach(country => {
+      const countryData = employmentData.filter(d => d.country === country); // Get data for this country
+      let meanValues = {};
+
+      categories.forEach(category => {
+        const values = countryData.map(d => +d[category]); // Get values for this category
+        const meanValue = d3.mean(values); // Calculate mean
+        meanValues[category] = meanValue;
+      });
+
+      // Store the means for this country
+      categoryMeansByCountry[country] = {
+        country: country,
+        ...meanValues
+      };
+    });
+  }
+
+  calculateCategoryMeansByCountry(); // Call function to calculate means
+
+  // Convert the category means object into an array for D3 to use
+  const countryNodes = Object.values(categoryMeansByCountry);
+
+  // Initialize node positions
+  countryNodes.forEach(d => {
+    d.x = isNaN(d.x) ? width / 2 : d.x; // Fallback to width / 2 if d.x is NaN
+    d.y = isNaN(d.y) ? height / 2 : d.y; // Fallback to height / 2 if d.y is NaN
+    d.vx = isNaN(d.vx) ? 0 : d.vx; // Initialize velocity if NaN
+    d.vy = isNaN(d.vy) ? 0 : d.vy; // Initialize velocity if NaN
+  });  
+
+  console.log('Initial Positions:', countryNodes);
+
+  const simulation = d3.forceSimulation(countryNodes)
+    .force("charge", d3.forceManyBody().strength(-30))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(8))
+    .on("tick", ticked);
+
+  function ticked() {
+    // Apply magnet force first
+    magnetForce(); // Ensure the custom force is applied
+  
+    // Update positions of nodes
+    svg.selectAll(".node")
+      .attr("cx", d => {
+        const newX = isNaN(d.x) ? width / 2 : d.x; // Fallback to width / 2 if d.x is NaN
+        const constrainedX = Math.max(circles_margin.left, Math.min(newX, circles_width + circles_margin.left));
+        return constrainedX;
+      })
+      .attr("cy", d => {
+        const newY = isNaN(d.y) ? height / 2 : d.y; // Fallback to height / 2 if d.y is NaN
+        const constrainedY = Math.max(circles_margin.top, Math.min(newY, circles_height + circles_margin.top));
+        return constrainedY;
+      });
+  }
+    
+
+  // Update magnets' appearance
+  svg.selectAll(".magnet")
+    .data(magnetCenters)
+    .enter()
+    .append("rect")
+    .attr("class", "magnet")
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .attr("fill", darkestBlue)
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("rx", 5) // Set 5px border-radius for rounded corners
+    .attr("ry", 5); // Set 5px border-radius for rounded corners
+
+  svg.selectAll(".magnet-label")
+    .data(magnetCenters)
+    .enter()
+    .append("foreignObject")
+    .attr("class", "magnet-label")
+    .attr("x", d => d.x - magnetSize / 2)
+    .attr("y", d => d.y - magnetSize / 2)
+    .attr("width", magnetSize)
+    .attr("height", magnetSize)
+    .append("xhtml:div")
+    .style("width", `${magnetSize}px`)
+    .style("height", `${magnetSize}px`)
+    .style("display", "flex")
+    .style("align-items", "center")
+    .style("justify-content", "center")
+    .style("text-align", "center")
+    .style("font-size", "14px")
+    .style("color", "white") // Change text color to white
+    .html(d => {
+      // Add line breaks for wrapping long words
+      return d.category.replace(/_/g, '<br/>');
+    });
+
+  // Custom magnet force based on category means
+  function magnetForce() {
+    countryNodes.forEach(d => {
+      categories.forEach(category => {
+        const magnet = magnetCenters.find(m => m.category === category); // Find the corresponding magnet
+        if (magnet) {
+          const meanValue = d[category]; // Use the mean value for this category for this country
+          const distanceX = magnet.x - d.x;
+          const distanceY = magnet.y - d.y;
+          const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY) || 1; // Ensure no division by zero
+          const strength = (meanValue || 0) / 100; // Avoid NaN if meanValue is undefined or null
+  
+          const scaledStrength = Math.min(strength * 0.25, 1);
+          d.vx = isNaN(d.vx) ? 0 : d.vx + distanceX * scaledStrength; // Handle NaN for vx
+          d.vy = isNaN(d.vy) ? 0 : d.vy + distanceY * scaledStrength; // Handle NaN for vy
+        }
+      });
+    });
+  }  
+
+  // Create the tooltip
+  const tooltip = d3.select("body").append("div")
+    .attr("class", "tooltip")
+    .style("position", "absolute")
+    .style("background", "rgba(0, 0, 0, 0.7)")
+    .style("color", "white")
+    .style("padding", "5px")
+    .style("border-radius", "5px")
+    .style("visibility", "hidden")
+    .style("pointer-events", "none");
+
+  // Change circle hover behavior
+  const nodes = svg.selectAll(".node")
+    .data(countryNodes)
+    .enter()
+    .append("circle")
+    .attr("class", "node")
+    .attr("r", 5)
+    .attr("fill", lighestBlue)
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
+
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+
+      // Create label and keep it visible
+      svg.append("text")
+        .attr("class", "country-label")
+        .attr("x", d.x)
+        .attr("y", d.y - 15)
+        .attr("text-anchor", "middle")
+        .style("font-size", "12px")
+        .style("fill", "black") // Change text color for better visibility
+        .text(countryName);
+    })
+    .on("click", function(event, d) {
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+  
+      // Create an array of employment data for relevant categories
+      const employmentDataArray = [];
+      const relevantCategories = [
+          "Agriculture",
+          "Construction",
+          "Manufacturing",
+          "Market_services",
+          "Mining_and_quarrying",
+          "Non_market_services"
+      ];
+  
+      for (const category of relevantCategories) {
+          if (d[category] !== undefined) { // Ensure the key exists in the data
+              employmentDataArray.push({
+                  category: category.replace(/_/g, ' '), // Format category name
+                  value: parseFloat(d[category]).toFixed(2) // Convert to float and format
+              });
+          }
+      }
+  
+      // Sort the array by value in descending order
+      employmentDataArray.sort((a, b) => b.value - a.value);
+  
+      // Combine lines into a single HTML string
+      const employmentDataString = employmentDataArray.map(item => `${item.category}: ${item.value}%`).join("<br>"); // Use <br/> for line breaks
+  
+      // Update tooltip content and position
+      tooltip
+          .html(`Country: ${countryName}<br>Year Range: ${oldestYear} - ${mostRecentYear}<br>${employmentDataString}`)
+          .style("visibility", "visible")
+          .style("top", (event.pageY + 10) + "px")
+          .style("left", (event.pageX + 10) + "px");
+  
+      // Hide tooltip after 3 seconds
+      setTimeout(() => {
+          tooltip.style("visibility", "hidden");
+      }, 3000); // 3 seconds delay
+    })
+    .on("mouseout", function() {
+      d3.select(this).attr("fill", lighestBlue); // Revert fill color to default
+      svg.selectAll(".country-label").remove();
+    });
 }
+
 

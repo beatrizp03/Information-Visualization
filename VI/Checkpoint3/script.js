@@ -23,20 +23,42 @@ function filterDataset(startYear,endYear) {
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
   //console.log(filteredData1, filteredData3);
   createLineChart(filteredData1, filteredData3);
-  console.log(filteredData1);
 
   const reducedData1 = filteredData1.map(entry => ({
     country: entry.country,
     year: entry.year,
     rate: parseFloat(entry.ratio_employment_to_population) // Convert the rate to a number
-}));
+  }));
 
-  console.log("reduceddata1",reducedData1);
+  //console.log("reduceddata1",reducedData1);
   createWorldMap(reducedData1);
-
-
   
-  //createMagnetChart(filteredData2, categories);
+  const categories = Array.from(new Set(filteredData2.map(d => d.job_category)));
+        
+  // Inside the d3.csv call
+  const employmentData = d3.rollup(
+    filteredData2,  // Your dataset
+    leaves => {
+      const categoryEmployment = {};
+      leaves.forEach(l => categoryEmployment[l.job_category] = l.worker_percentage);
+      return categoryEmployment;
+    },
+    d => d.country, // Group by country
+    d => d.year,
+  );
+
+  const employmentDataArray = Array.from(employmentData, ([country, yearMap]) => 
+    Array.from(yearMap, ([year, categoryEmployment]) => ({
+      country,
+      year,
+      ...categoryEmployment
+    }))
+  ).flat();
+
+  console.log("DATA");
+  console.log(employmentData);
+
+  createMagnetChart(employmentDataArray, categories);
 }
 
 function slideOne() {
@@ -52,7 +74,6 @@ function slideTwo() {
   }
   updateValue();
 }
-
 
 
 function init() {
@@ -88,86 +109,34 @@ function init() {
         
         filterDataset(2000,2023); //default setup
 
-        const categories = Array.from(new Set(globalData2.map(d => d.job_category)));
+        /*let filteredData2 = globalData2.filter(item => item.year >= 2022 && item.year <= 2023);
+
+        const categories = Array.from(new Set(filteredData2.map(d => d.job_category)));
+        
         // Inside the d3.csv call
-        /*const employmentData = d3.rollup(
-          globalData2,  // Your dataset
+        const employmentData = d3.rollup(
+          filteredData2,  // Your dataset
           leaves => {
             const categoryEmployment = {};
             leaves.forEach(l => categoryEmployment[l.job_category] = l.worker_percentage);
             return categoryEmployment;
           },
-          d => d.country  // Group by country
+          d => d.country, // Group by country
+          d => d.year,
         );
+
+        const employmentDataArray = Array.from(employmentData, ([country, yearMap]) => 
+          Array.from(yearMap, ([year, categoryEmployment]) => ({
+            country,
+            year,
+            ...categoryEmployment
+          }))
+        ).flat();
 
         console.log("DATA");
         console.log(employmentData);
 
-        const employmentDataYearly = d3.rollup(
-          globalData2,  // Your dataset
-          leaves => {
-            const categoryEmployment = {};
-            leaves.forEach(l => {
-              categoryEmployment[l.job_category] = l.worker_percentage; // Populate category percentages
-            });
-            return categoryEmployment;
-          },
-          d => d.country, // Group by country
-          d => d.year     // Group by year
-        );*/
-
-        // Step 1: Find the most recent year
-        const mostRecentYear = d3.max(globalData2, d => d.year);
-
-        // Step 2: Filter the data to only include the most recent year's data
-        const recentYearData = globalData2.filter(d => d.year === mostRecentYear);
-
-        // Step 3: Rollup the data for the most recent year, including the year itself
-        const employmentData = d3.rollup(
-          recentYearData, // Use the filtered dataset
-          leaves => {
-            const categoryEmployment = {};
-            
-            // Assume that all entries have the same year, so we can take the year from the first entry
-            const year = leaves[0].year;
-
-            leaves.forEach(l => {
-              categoryEmployment[l.job_category] = l.worker_percentage; // Collect employment data
-            });
-
-            // Return category employment and the year
-            return { year, categoryEmployment }; // Return an object with year and category employment
-          },
-          d => d.country // Group by country
-        );
-
-        // Convert the rollup to an array format
-        const employmentDataArray = Array.from(employmentData, ([country, { year, categoryEmployment }]) => ({
-          country,
-          year, // Include the year in the final output
-          ...categoryEmployment // Spread the employment categories
-        }));
-
-        // Convert the rollup to a format that can be used
-        /*const employmentDataArray = Array.from(employmentData, ([country, categoryEmployment]) => ({
-          country,
-          ...categoryEmployment
-        }));
-
-        const employmentDataArray = Array.from(employmentData, ([country, categoryEmployment]) => ({
-          country,
-          ...categoryEmployment,
-          year: categoryEmployment.year // Include the year in each entry
-        }));  */      
-
-        //console.log("ARRAY");
-        //console.log(employmentDataArray);
-        //console.log("ARRAY YEARLY");
-        //console.log(employmentDataArray);
-        //console.log("CATEGORIES");
-        //console.log(categories);
-        // Create the magnet chart
-        createMagnetChart(employmentDataArray, categories);
+        createMagnetChart(employmentDataArray, categories);*/
       
       });
     });

@@ -60,9 +60,7 @@ function createWorldMap(employmentData) {
     }
 
     // averageEmploymentMap contient les moyennes des taux d'emploi par pays
-    console.log("average",averageEmploymentMap);
-
-
+    //console.log("average",averageEmploymentMap);
 
     // Bind GeoJSON data to SVG paths
     const countries = svg.append("g")
@@ -74,13 +72,12 @@ function createWorldMap(employmentData) {
       .attr("fill", function(d) {
         // Get the employment ratio for the country
         const employmentRatio = averageEmploymentMap[d.id];  // d.id should be the country code
-        console.log("employmentrate", employmentRatio)
+        //console.log("employmentrate", employmentRatio)
         return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
       })
       .attr("stroke", "none");
     
-    
-
+  
       countries.on("mouseover", function(event, d) {
         d3.select(this)
           .style("stroke", "#333")  // Darker border on hover

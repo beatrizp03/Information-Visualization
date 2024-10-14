@@ -581,6 +581,9 @@ function showTooltip(event, countryData) {
   // Set the tooltip's position based on mouse coordinates
   tooltip.style.left = event.pageX + 10 + 'px';  // X position with some offset
   tooltip.style.top = event.pageY + 10 + 'px';   // Y position with some offset
+
+  // Set z-index to ensure it stays on top
+  tooltip.style.zIndex = 10;
   
   // Make the tooltip visible
   tooltip.style.display = 'block';
