@@ -9,19 +9,17 @@ function updateValue() {
 
   finalValOne = sliderOne.value;
   finalValTwo = sliderTwo.value;
-  console.log(finalValOne, finalValTwo)
   filterDataset(finalValOne,finalValTwo);
 }
 
 function filterDataset(startYear,endYear) {
 
-  //console.log(globalData1)
   let startyear=startYear;
   let endyear=endYear
   let filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
   let filteredData2 = globalData2.filter(item => item.year >= startyear && item.year <= endyear);
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
-  //console.log(filteredData1, filteredData3);
+ 
   createLineChart(filteredData1, filteredData3);
 
   filteredData1 = filteredData1.filter(d => d.level_education == "TOTAL");
@@ -31,7 +29,7 @@ function filterDataset(startYear,endYear) {
     rate: parseFloat(entry.ratio_employment_to_population) // Convert the rate to a number
   }));
 
-  //console.log("reduceddata1",reducedData1);
+  
   createWorldMap(reducedData1);
   
   const categories = Array.from(new Set(filteredData2.map(d => d.job_category)));
@@ -56,9 +54,6 @@ function filterDataset(startYear,endYear) {
     }))
   ).flat();
 
-  console.log("DATA");
-  console.log(employmentData);
-
   createMagnetChart(employmentDataArray, categories);
 }
 
@@ -75,7 +70,6 @@ function slideTwo() {
   }
   updateValue();
 }
-
 
 function init() {
   sliderOne = document.getElementById("slider-1");
@@ -109,42 +103,11 @@ function init() {
 
         
         filterDataset(2000,2023); //default setup
-
-        /*let filteredData2 = globalData2.filter(item => item.year >= 2022 && item.year <= 2023);
-
-        const categories = Array.from(new Set(filteredData2.map(d => d.job_category)));
-        
-        // Inside the d3.csv call
-        const employmentData = d3.rollup(
-          filteredData2,  // Your dataset
-          leaves => {
-            const categoryEmployment = {};
-            leaves.forEach(l => categoryEmployment[l.job_category] = l.worker_percentage);
-            return categoryEmployment;
-          },
-          d => d.country, // Group by country
-          d => d.year,
-        );
-
-        const employmentDataArray = Array.from(employmentData, ([country, yearMap]) => 
-          Array.from(yearMap, ([year, categoryEmployment]) => ({
-            country,
-            year,
-            ...categoryEmployment
-          }))
-        ).flat();
-
-        console.log("DATA");
-        console.log(employmentData);
-
-        createMagnetChart(employmentDataArray, categories);*/
-      
       });
     });
   });
 
   d3.csv("datasets/average_employment_ratio_by_country.csv").then(function(data){
-    console.log("data",data[0]);
     //createWorldMap(data);
   });
 
