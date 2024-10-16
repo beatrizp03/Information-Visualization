@@ -186,17 +186,18 @@ const colorScale = d3.scaleQuantize()
   .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges
 
 // To get the darkest blue color
-const darkestBlue = "#0056FF";
-const lighestBlue = "#B3C7FF";
+const darkestColor = "#8A1F30";
+const lighestColor = "#F2B8C6";
 
 // #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
 function createMagnetChart(employmentData, categories) {
-  const width = 350;
+  const width = 400;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
-  const magnetSize = 60; // Magnet size
+  const magnetWidth = 90; // Magnet size
+  const magnetHeight = 50; // Magnet size
   
   // Remove previous circles if needed
   d3.select(".grid-item-magnets").select("svg").remove(); // Remove the existing SVG
@@ -207,9 +208,9 @@ function createMagnetChart(employmentData, categories) {
   let oldestYear = Math.min(...years);
   let mostRecentYear = Math.max(...years);
   
-  const circles_width = 300; // Available width for the circles
+  const circles_width = 400; // Available width for the circles
   const circles_height = 400; // Available height for the circles
-  const circles_margin = { top: 25, right: 0, bottom: 0, left: 25 }; // Margins for the circles
+  const circles_margin = { top: 25, right: 0, bottom: 0, left: 0 }; // Margins for the circles
 
   const svg = d3.select(".chart-container")
     .append("svg")
@@ -294,18 +295,17 @@ function createMagnetChart(employmentData, categories) {
       });
   }
     
-
   // Update magnets' appearance
   svg.selectAll(".magnet")
     .data(magnetCenters)
     .enter()
     .append("rect")
     .attr("class", "magnet")
-    .attr("width", magnetSize)
-    .attr("height", magnetSize)
-    .attr("fill", darkestBlue)
-    .attr("x", d => d.x - magnetSize / 2)
-    .attr("y", d => d.y - magnetSize / 2)
+    .attr("width", magnetWidth)
+    .attr("height", magnetHeight)
+    .attr("fill", darkestColor)
+    .attr("x", d => d.x - magnetWidth / 2)
+    .attr("y", d => d.y - magnetHeight / 2)
     .attr("rx", 5) // Set 5px border-radius for rounded corners
     .attr("ry", 5); // Set 5px border-radius for rounded corners
 
@@ -314,13 +314,13 @@ function createMagnetChart(employmentData, categories) {
     .enter()
     .append("foreignObject")
     .attr("class", "magnet-label")
-    .attr("x", d => d.x - magnetSize / 2)
-    .attr("y", d => d.y - magnetSize / 2)
-    .attr("width", magnetSize)
-    .attr("height", magnetSize)
+    .attr("x", d => d.x - magnetWidth / 2)
+    .attr("y", d => d.y - magnetHeight / 2)
+    .attr("width", magnetWidth)
+    .attr("height", magnetHeight)
     .append("xhtml:div")
-    .style("width", `${magnetSize}px`)
-    .style("height", `${magnetSize}px`)
+    .style("width", `${magnetWidth}px`)
+    .style("height", `${magnetHeight}px`)
     .style("display", "flex")
     .style("align-items", "center")
     .style("justify-content", "center")
@@ -330,15 +330,11 @@ function createMagnetChart(employmentData, categories) {
     .html(d => {
       // Customize line breaks for specific words
       const categoryName = d.category
-        .replace(/Agriculture/g, 'Agricul<br/>ture')   // Wrap Agriculture
-        .replace(/Manufacturing/g, 'Manufac<br/>turing') // Wrap Manufacturing
-        .replace(/Construction/g, 'Construc<br/>tion') // Wrap Construction
         .replace(/_/g, '<br/>');
         // Add line breaks for wrapping long words
 
       return categoryName;
     });
-
 
   // Custom magnet force based on category means
   function magnetForce() {
@@ -378,7 +374,8 @@ function createMagnetChart(employmentData, categories) {
     .append("circle")
     .attr("class", "node")
     .attr("r", 5)
-    .attr("fill", lighestBlue)
+    .attr("fill", lighestColor)
+    .attr("opacity", 0.8) // Set opacity to 0.8
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
 
@@ -436,7 +433,7 @@ function createMagnetChart(employmentData, categories) {
       }, 3000); // 3 seconds delay
     })
     .on("mouseout", function() {
-      d3.select(this).attr("fill", lighestBlue); // Revert fill color to default
+      d3.select(this).attr("fill", lighestColor); // Revert fill color to default
       svg.selectAll(".country-label").remove();
     });
 }

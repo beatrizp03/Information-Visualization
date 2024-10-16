@@ -13,15 +13,20 @@ function createWorldMap(employmentData) {
 
   // Projection to move map to the right
   const projection = d3.geoMercator()
-    .scale(150)
-    .translate([width / 2, height / 1.8]);  // Shift the map to the right
+    .scale(160)
+    .translate([width / 2.1, height / 1.7]);  // Shift the map to the right
 
   const path = d3.geoPath().projection(projection);
 
   // Define a color scale with 5 bins
   const colorScale = d3.scaleQuantize()
     .domain([0, 100])  // Employment ratio between 0 and 100%
-    .range(["#E6EBFF", "#B3C7FF", "#80A3FF", "#4D7FFF", "#0059FF"]);  // Custom colors
+    .range(["#F2B8C6", "#E08A9B", "#CC5D70", "#B23547", "#8A1F30"]);  // Burgundy shades (pinky)
+    //.range(["#D4B2DA", "#B185B8", "#8F5B96", "#6C3574", "#4A1E52"]);  // Dark purple shades
+    //.range(["#B2D8D8", "#88C0C0", "#5EA8A8", "#368F8F", "#1A6F6F"]);  // Teal shades
+    //.range(["#E0E0E0", "#B8B8B8", "#909090", "#686868", "#404040"]);  // Updated gray shades
+    //.range(["#E6EBFF", "#B3C7FF", "#80A3FF", "#4D7FFF", "#0059FF"]);  // Custom colors
+    //.range(["#C4A484", "#A3795E", "#8C5C44", "#75422E", "#5A2D1A"]);  // Updated brown shades
 
   // Create a tooltip div (initially hidden)
   const tooltip = d3.select("body").append("div")
