@@ -21,6 +21,7 @@ function filterDataset(startYear,endYear) {
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
  
   createLineChart(filteredData1, filteredData3);
+  createRadarChart(filteredData1);
 
   filteredData1 = filteredData1.filter(d => d.level_education == "TOTAL");
   const reducedData1 = filteredData1.map(entry => ({
