@@ -586,16 +586,18 @@ function mouseOverFunction(event, d) {
   showTooltip(event, d);
   const hoveredCountry = d.country;
 
-
   // Highlight circles that correspond to the hovered country
   d3.selectAll("circle.dataItem")
-      .filter(function (elem) {
-          return elem.country === hoveredCountry; // Match by country
-      })
-      .style("stroke", "black")
-      .style("stroke-width", 1);
-
+    .filter(function (elem) {
+      return elem.country === hoveredCountry; // Match by country
+    })
+    .style("stroke", "black")
+    .style("stroke-width", 1.5)
+    .each(function() {
+      d3.select(this).raise(); // Bring the hovered circle to the front
+    });
 }
+
 
 function mouseLeaveFunction(event, d) {
     const hoveredCountry = d.country; // Get the country of the hovered item

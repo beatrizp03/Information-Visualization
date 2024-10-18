@@ -107,10 +107,6 @@ function init() {
     });
   });
 
-  d3.csv("datasets/average_employment_ratio_by_country.csv").then(function(data){
-    //createWorldMap(data);
-  });
-
   // Automatically click the "Job Categories" button on page load
   const jobChartBtn = document.getElementById("job_chart-btn");
   jobChartBtn.classList.add("active"); // Add active styles

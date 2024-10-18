@@ -40,7 +40,7 @@ function createWorldMap(employmentData) {
     .style("pointer-events", "none");
 
   // Load the GeoJSON data for the world map
-  d3.json("https://raw.githubusercontent.com/holtzy/D3-graph-gallery/master/DATA/world.geojson").then(function(geoData) {
+  d3.json("datasets/world.geojson").then(function(geoData) {
 
     // Convertir les données CSV en une carte clé-valeur (code du pays -> { somme des taux, nombre d'entrées })
     const employmentMap = {};

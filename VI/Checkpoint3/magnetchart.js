@@ -79,6 +79,7 @@ const countries = [
   { code: "KEN", country: "Kenya" },
   { code: "KIR", country: "Kiribati" },
   { code: "KOR", country: "Korea" },
+  { code: "KOS", country: "Kosovo" },
   { code: "KGZ", country: "Kyrgyzstan" },
   { code: "LAO", country: "Lao" },
   { code: "LVA", country: "Latvia" },
