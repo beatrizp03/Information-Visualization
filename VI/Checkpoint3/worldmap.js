@@ -21,7 +21,9 @@ function createWorldMap(employmentData) {
   // Define a color scale with 5 bins
   const colorScale = d3.scaleQuantize()
     .domain([0, 100])  // Employment ratio between 0 and 100%
-    .range(["#F2B8C6", "#E08A9B", "#CC5D70", "#B23547", "#8A1F30"]);  // Burgundy shades (pinky)
+    .range(["#FFE6EE", "#F6ADC7", "#EC739F", "#D14B7E", "#9D1C50"]);
+
+    //.range(["#F2B8C6", "#E08A9B", "#CC5D70", "#B23547", "#8A1F30"]);  // Burgundy shades (pinky)
     //.range(["#D4B2DA", "#B185B8", "#8F5B96", "#6C3574", "#4A1E52"]);  // Dark purple shades
     //.range(["#B2D8D8", "#88C0C0", "#5EA8A8", "#368F8F", "#1A6F6F"]);  // Teal shades
     //.range(["#E0E0E0", "#B8B8B8", "#909090", "#686868", "#404040"]);  // Updated gray shades

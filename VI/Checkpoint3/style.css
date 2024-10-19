@@ -313,6 +313,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   /*background-color: lightgray;*/
   position: relative; 
   display: flex;
+  flex-direction: column;
   justify-content: center;    /* Horizontally center */
   align-items: center;        /* Vertically center */
   overflow: visible;          /* Ensure no scroll or hidden overflow */
@@ -355,20 +356,66 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### RADAR #######################################*/
 
 .grid-item-radar {
-  background-color: lightblue;
   display: flex;
   justify-content: center;
+  position: relative; /* Relative positioning to anchor the info button */
   overflow: hidden;
   max-width: 100%;
   max-height: 100%;
-  margin: 10px;
+  margin: 0;
 }
 
-.grid-item-magnets img {
-  max-width: 120%;            /* Ensure the image scales down to fit */
-  max-height: 120%;           /* Ensure the image scales down to fit */
-  object-fit: contain;        /* Maintain aspect ratio, fitting inside the container */
+.radar-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 0;
+  margin-bottom: 5px;
+  margin-right: 30px;
 }
+
+/* Style for the 'i' button - square with rounded edges */
+.info-btn {
+  background-color: #EC739F;
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;  /* Rounded edges */
+  width: 30px;         /* Square dimensions */
+  height: 30px;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;           /* Position relative to the top of the container */
+  right: 50px;         /* Align the button close to the right edge */
+  z-index: 1;
+}
+
+
+/* Style for the info box */
+.info-box {
+  display: none;
+  background-color: white;
+  color: black;
+  border: 1px solid #ccc;
+  padding: 10px;
+  position: absolute;
+  top: -10px;            /* Aligns the box vertically with the button */
+  right: 80px;        /* Position it to the right of the button */
+  width: 250px;
+  z-index: 10;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 4px;
+}
+
+
+/* Style for the container holding both the button and the info box */
+.info-container {
+  position: absolute;
+  right: 0; /* Ensure the info button container is aligned to the right */
+  top: 10px;
+}
+
 
 /*####################################### OTHERS #######################################*/
 

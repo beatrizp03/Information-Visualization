@@ -43,6 +43,7 @@
         </div>
         <div class="job-chart-container"></div> <!-- Container for the magnet charts -->
         <div class="salaries-chart-container"></div>
+        <div id="radar-title" class="radar-title" >Level of Education and Women's Employment Rate</div>
       </div>
       <div class="grid-item-line">
         <!-- Tooltip container, will be dynamically created in JavaScript -->
@@ -65,7 +66,24 @@
           <button class="line-chart-button" id="clearselection">Clear selection</button>
         </div>
       </div>
-      <div class="grid-item-radar"></div>
+      <div class="grid-item-radar">
+        <div class="radar-chart-container"></div>
+        <!-- 'i' button and info box -->
+        <div class="info-container">
+          <button id="info-btn" class="info-btn">i</button> <!-- "i" button -->
+          <div id="info-box" class="info-box"> <!-- Hidden info box -->
+            <p>Meaning of the different categories:
+              <ul>
+                <li>Less Than Basic: Until pre-primary education</li>
+                <li>Basic: Primary and Lower Secundary Education</li>
+                <li>Intermediate: Upper Secundary Education</li>
+                <li>Advanced: Bachelor's, Master's or Doctoral</li>
+                <li>No Information: no known level of education</li>
+              </ul>
+            </p>
+          </div>
+        </div>
+      </div>
     </div>
     <script src="https://d3js.org/d3.v7.min.js"></script>
   </body>
