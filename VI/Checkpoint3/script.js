@@ -9,6 +9,7 @@ function updateValue() {
 
   finalValOne = sliderOne.value;
   finalValTwo = sliderTwo.value;
+  updateSlider(finalValOne, finalValTwo);
   filterDataset(finalValOne,finalValTwo);
 }
 
@@ -58,9 +59,49 @@ function filterDataset(startYear,endYear) {
   createMagnetChart(employmentDataArray, categories);
 }
 
+
+function updateSlider(yearmin, yearmax) {
+  // const range1 = document.getElementById('range1');
+  // const range2 = document.getElementById('range2');
+  const bubble1 = document.getElementById('bubble1');
+  const bubble2 = document.getElementById('bubble2');
+  const filledTrack = document.getElementById('filled-track');
+
+  const min = 2000;
+  const max = 2023;
+
+  // Get the percentage positions for both sliders
+  const range1Percent = ((yearmin - min) / (max - min)) * 100;
+  const range2Percent = ((yearmax - min) / (max - min)) * 100;
+  //console.log(range1Percent)
+  // Calculate the left position and width of the filled track
+  filledTrack.style.left = `${Math.min(range1Percent, range2Percent)}%`;
+  filledTrack.style.width = `${Math.abs(range2Percent - range1Percent)}%`;
+  // Update the position of the spans to follow the thumbs
+  // range1.style.left = `calc(${range1Percent}% + (${8 - range1Percent * 0.15}px))`;
+  // range2.style.left = `calc(${range2Percent}% + (${8 - range2Percent * 0.15}px))`;
+
+  // Update the position of the spans to follow the thumbs
+  bubble1.style.left = `calc(${range1Percent}% + (${8 - range1Percent * 0.15}px))`;
+  bubble2.style.left = `calc(${range2Percent}% + (${8 - range2Percent * 0.15}px))`;
+
+  // Update bubble text
+  bubble1.textContent = yearmin;
+  bubble2.textContent = yearmax;
+
+  bubble1.classList.add('visible');
+  bubble2.classList.add('visible');
+
+  // Debugging - log the values
+  console.log(`Thumb 1: ${range1Percent}%, Thumb 2: ${range2Percent}%`);
+  console.log(`Filled Track Left: ${filledTrack.style.left}, Width: ${filledTrack.style.width}`);
+}
+
+
 function slideOne() {
   if (parseInt(sliderTwo.value) - parseInt(sliderOne.value) <= minGap) {
       sliderOne.value = parseInt(sliderTwo.value) - minGap;
+
   }
   updateValue(); 
 }
@@ -80,9 +121,20 @@ function init() {
   displayValTwo = document.getElementById("range2");
   finalValOne = document.getElementById("finalValOne");
   finalValTwo = document.getElementById("finalValTwo");
-  
+  filledTrack = document.getElementById('filled-track');
+  bubble1 = document.getElementById('bubble1');
+  bubble2 = document.getElementById('bubble2');
+
   sliderOne.addEventListener("input", slideOne);
   sliderTwo.addEventListener("input", slideTwo);
+  filledTrack.style.left = `0%`;
+  filledTrack.style.width = `100%`;
+  bubble1.style.left = `calc(0% + (${2 - 0 * 0.15}px))`;
+  bubble2.style.left = `calc(100% + (${2 - 100 * 0.15}px))`;
+  bubble1.style.visibility = 'visible';
+  bubble2.style.visibility = 'visible';
+  bubble1.textContent = 2000;
+  bubble2.textContent = 2023;
 
   d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
     globalData1 = data1.map(d => {

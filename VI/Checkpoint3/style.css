@@ -65,12 +65,22 @@ input[type="range"] {
 }
 
 .slider-track {
-  width: 100%; /* Ensure the track matches the full width of the slider */
+  width: 100%;
   height: 6px;
   position: absolute;
   margin: auto;
-  background-color: rgba(57, 57, 57, 0.868); /* line color */
+  background-color: rgba(62, 42, 42, 0.7); /* line color */
   top: 0px;
+  bottom: 0;
+  border-radius: 7px;
+  z-index: 1;
+}
+.slider-track-filled {
+  position: absolute;
+  height: 6px;
+  transform: translateY(3.5px);
+  background-color: rgba(178, 53, 71, 0.9); /* color of the line between the thumbs */
+  top: 0;
   bottom: 0;
   border-radius: 5px;
   z-index: 1;
@@ -93,18 +103,19 @@ input[type="range"]::-ms-track {
 
 input[type="range"]::-webkit-slider-thumb {
   -webkit-appearance: none;
-  height: 1.2em;
-  width: 0.9em;
-  background-color: #a1a1a1; /* thumb color */
+  height: 1em;
+  width: 1em;
+  background-color: rgba(178, 53, 71, 0.9); /* thumb color */
+
   cursor: pointer;
-  margin-top: -6px;
+  margin-top: -4px;
   pointer-events: auto;
   border-radius: 50%;
 }
 
 input[type="range"]::-moz-range-thumb {
-  height: 1.2em;
-  width: 0.9em;
+  height: 1em;
+  width: 1em;
   cursor: pointer;
   border-radius: 50%;
   background-color: #a1a1a1;
@@ -112,30 +123,58 @@ input[type="range"]::-moz-range-thumb {
 }
 
 input[type="range"]::-ms-thumb {
-  height: 1.2em;
-  width: 0.9em;
+  height: 1em;
+  width: 1em;
   cursor: pointer;
   border-radius: 50%;
-  background-color: #a1a1a1;
+  background-color: rgba(178, 53, 71, 0.9);
   pointer-events: auto;
 }
 
 input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   background-color: #99999c;
-  border: 2px solid #000000;
-}
-
-.values {
-  width: calc(100% + 75px); /* Allow space for the numbers at the edges */
-  position: relative;
-  display: flex;
-  justify-content: space-between; /* Align numbers at the extremes */
-  font-size: 16px;
-  color: #000000;
+  border: 2px solid rgba(99, 14, 14, 0.7);
 }
 
 #range1, #range2 {
-  font-size: 16px;
+  color: white; /* Change text color to white */
+}
+
+.bubble {
+  position: absolute;
+  background-color: rgb(109, 67, 67); 
+  color: white; 
+  padding: 5px 10px;
+  border-radius: 15px; /* Rounded corners */
+  font-size: 12px;
+  text-align: center;
+  transform: translateX(-20px);
+  bottom: -26px; /* Adjust based on the position you want */
+  opacity: 0.8; /* Semi-transparent */
+  visibility: hidden; /* Hide initially */
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  width: 10px; /* Adjust width of the tail */
+  height:10px; /* Adjust height of the tail */
+  background-color: rgb(109, 67, 67); /* Same as bubble background */
+  transform: rotate(190deg); /* Adjust the rotation angle if needed */
+  visibility: hidden; /* Initially hidden */
+  left: 50%; /* Center the tail */
+  top: 90%; /* Position tail above the bubble */
+  margin-left: -5px; /* Adjust left margin to center the tail */
+  border-top-right-radius: 40px 30px;
+  transform: translateY(-23px);
+  z-index: -1;
+}
+
+.bubble.visible {
+  visibility: visible; /* Show bubble */
+}
+.bubble.visible::after {
+  visibility: visible; /* Show tail when bubble is visible */
 }
 
 
