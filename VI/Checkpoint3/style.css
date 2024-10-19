@@ -238,7 +238,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   background-color: rgb(255, 255, 255);
   display: grid;
   overflow: hidden;
-  margin: 10px;
+  margin: 8px;
   grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
   grid-template-areas: 
     "buttons sub-buttons line-chart";
@@ -292,7 +292,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   gap: 1px;
   align-items: left; /* Centers buttons horizontally */
 }
-
+.tick-label {
+  display: flex; /* Utiliser flexbox pour aligner la case et le texte */
+  align-items: center; /* Centrer verticalement les éléments */
+  margin-bottom: 5px; /* Espacement en bas de la case à cocher */
+  font-size: 10px;
+}
 .menu-btn {
   width: 150px;  
   height: 25px;   

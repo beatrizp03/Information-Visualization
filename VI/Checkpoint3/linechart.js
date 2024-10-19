@@ -186,9 +186,9 @@ const continents = {
   ]
 };
 const continentColors = {
-  Africa: 'rgba(207, 175, 141, 1)', 
+  Africa: 'rgba(147, 115, 81, 1)', 
   Asia: 'rgba(203, 191, 21, 1)' ,
-  Europe: 'rgba(163, 200, 224, 1)', 
+  Europe: 'rgba(0, 150, 215, 1)', 
   NorthAmerica: 'rgba(215, 76, 46, 1)', 
   SouthAmerica: 'rgba(75, 143, 60, 1)',
   Oceania: 'rgba(165, 125, 198, 1)'
@@ -250,7 +250,28 @@ function showCountryButtons(continent_id) {
   const countryContainer = document.getElementById('country-container');
   countryContainer.innerHTML = ''; // Clear previous country buttons
   let countries = [];
+  const continentAverageLabel = document.getElementById('continent-average-label');
   let continentName = "";
+
+  if (!continentAverageLabel) {
+
+    const continentAverageLabel = document.createElement('div');
+    continentAverageLabel.className = 'tick-label';
+    continentAverageLabel.id = 'continent-average-label';
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = 'continent-average-checkbox';
+
+    const label = document.createElement('label');
+    label.htmlFor = 'continent-average-checkbox';
+    label.textContent = 'Show Continent Average';
+
+    continentAverageLabel.appendChild(checkbox);
+    continentAverageLabel.appendChild(label);
+    countryContainer.appendChild(continentAverageLabel);
+  }
+
 
   if(continent_id == 0){ 
     countries = continents.Africa;
@@ -311,19 +332,21 @@ function getContinentByCountry(countryCode) {
       if (countries.some(country => country.code === countryCode)) {
           return continent;
       }
-  }
+    }
   return null;
 }
 
 //#################################### Create visual idioms ####################################
 
 function createLineChart(data, data_average) {
+  const checkbox = document.getElementById('continent-average-checkbox');
   // Clean the data
   const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
     continent,
     year: parseInt(year, 10), // Convert year to a number
     ratio_employment_to_population: parseFloat(ratio_employment_to_population) // Convert ratio to a number
   }));
+
 
   // Set the dimensions of the SVG container
   const svgWidth = 815;
@@ -341,8 +364,11 @@ function createLineChart(data, data_average) {
   // Create a y-scale using a linear scale for the employment rate
   const yScale = d3
     .scaleLinear()
-    .domain([0, 100].reverse()) 
-    .range([margin * 0.09, svgHeight - margin]); 
+    // .domain([0, 100].reverse()) 
+    // .range([margin * 0.09, svgHeight - margin]); 
+    .domain([0, 100]) // Set initial domain
+    .range([svgHeight - margin, margin * 0.09]); // Adjust range for D3.js
+
 
   // Clear the SVG before appending new elements
   d3.select(".line-chart").select("svg").remove();
@@ -393,6 +419,9 @@ function createLineChart(data, data_average) {
     .attr("text-anchor", "middle")
     .attr("transform", "rotate(-90)") 
     .text("Employment Rate"); 
+
+
+
     if (clickedList.length == 0) {
       const groupedByContinent = cleanedData.reduce((acc, current) => {
     const { continent } = current;
@@ -416,7 +445,7 @@ function createLineChart(data, data_average) {
       svg.append('path')
           .datum(data) // Bind data for this continent
           .attr('fill', 'none') // No fill
-          .attr('stroke', colors(continent)) 
+          .attr('stroke', continentColors[continent]) 
           .attr('stroke-width', 2) 
           .attr('d', line) // Generate line
           .on('mouseover', function() {
@@ -499,6 +528,54 @@ function createLineChart(data, data_average) {
       .attr("d", line)
       .attr("opacity",1);
 
+  // load average data per continent == cleanedData
+  const checkbox = document.getElementById('continent-average-checkbox');
+
+  // Attach an event listener to the checkbox
+  checkbox.addEventListener('change', function() {
+    if (checkbox.checked) {
+      console.log("Checkbox selected");
+      var list_continent = [];
+      console.log(clickedList);
+  
+      clickedList.forEach(function(item) {
+        list_continent.push(item.continent);
+      });
+      var unique_continents = [...new Set(list_continent)];
+  
+      // Filter the cleaned data based on unique continents
+      var showcontinentvalue = cleanedData.filter(function(item) {
+        return unique_continents.includes(item.continent);
+      });
+  
+      console.log(showcontinentvalue); 
+      // Group the data by continent
+      const groupedByContinent = d3.group(showcontinentvalue, d => d.continent); 
+  
+      groupedByContinent.forEach((showcontinentvalue, continent) => {
+        const averageLine = d3.line()
+          .x((d) => xScale(d.year))
+          .y((d) => yScale(d.ratio_employment_to_population));
+  
+        svg.append('path')
+          .datum(showcontinentvalue) // Bind the data_average
+          .attr('class', 'average-line') // Add a class for easy selection later
+          .attr('fill', 'none')
+          .attr('stroke', continentColors[continent]) // Set the average line color
+          .attr('stroke-width', 2)
+          .attr('stroke-dasharray', '4,4') // Make the line dashed
+          .attr('d', averageLine); // Use the line generator for the average line
+      });
+    } else {
+      console.log("Checkbox has been unchecked");
+      d3.selectAll('.average-line').remove(); // Remove all elements with the class 'average-line'
+      //find which continent to remove
+      list_continent = []
+
+    }
+  });
+
+
   //circles
   const allCircles = svg.selectAll("circle.dataItem")
     .data(countryData.data, d => d.country); // Utiliser countryData.data
@@ -525,8 +602,8 @@ function createLineChart(data, data_average) {
       .attr("cy", d => yScale(d.ratio_employment_to_population))
       .style("fill", lineColor) // Mettre à jour la couleur de remplissage
       .style("stroke", lineColor); // Mettre à jour la couleur de contour 
-    });
-  }
+  })};
+  
 }
 
 //#################################### Update visual idioms ####################################
