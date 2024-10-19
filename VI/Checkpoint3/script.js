@@ -85,7 +85,6 @@ function filterDataset(startYear,endYear) {
 
   // Event listener for the Job Categories button
   jobChartBtn.addEventListener("click", function() {
-      console.log("jobs clciked");
       jobChartBtn.classList.add("active");
       salariesChartBtn.classList.remove("active");
 
@@ -99,7 +98,6 @@ function filterDataset(startYear,endYear) {
 
   // Event listener for the Salaries button
   salariesChartBtn.addEventListener("click", function() {
-      console.log("salaries clciked");
       salariesChartBtn.classList.add("active");
       jobChartBtn.classList.remove("active");
 
@@ -147,8 +145,8 @@ function updateSlider(yearmin, yearmax) {
   bubble2.classList.add('visible');
 
   // Debugging - log the values
-  console.log(`Thumb 1: ${range1Percent}%, Thumb 2: ${range2Percent}%`);
-  console.log(`Filled Track Left: ${filledTrack.style.left}, Width: ${filledTrack.style.width}`);
+  //console.log(`Thumb 1: ${range1Percent}%, Thumb 2: ${range2Percent}%`);
+  //console.log(`Filled Track Left: ${filledTrack.style.left}, Width: ${filledTrack.style.width}`);
 }
 
 
