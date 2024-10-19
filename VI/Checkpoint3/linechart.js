@@ -483,7 +483,15 @@ function createLineChart(data, data_average) {
         ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
     }));
 
-
+    const groupedByContinent = cleanedData.reduce((acc, current) => {
+      const { continent } = current;
+      if (!acc[continent]) {
+          acc[continent] = []; }
+      acc[continent].push(current);
+      return acc;
+    }, {});
+  
+  
     let final_data = reducedData.filter(d =>
         clickedList.some(clicked => clicked.country === d.country)
     );
@@ -530,10 +538,26 @@ function createLineChart(data, data_average) {
       .x(d => xScale(d.year))
       .y(d => yScale(d.ratio_employment_to_population));
 
-  // Calculate the new y-axis domain based on all the data
-  const allData = Object.values(countryData).flat();
-  const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -5), 
-                   d3.max(allData, d => d.ratio_employment_to_population + 5)];
+ // Calculate the new y-axis domain based on all the data from countryData
+const allData = Object.values(countryData).flat();
+const yDomainCountry = [
+  d3.min(allData, d => d.ratio_employment_to_population) - 5,
+  d3.max(allData, d => d.ratio_employment_to_population) + 5
+];
+
+// Calculate the new y-axis domain based on all the data from groupedByContinent
+const allData2 = Object.values(groupedByContinent).flat();
+const yDomainContinent = [
+  d3.min(allData2, d => d.ratio_employment_to_population) - 8,
+  d3.max(allData2, d => d.ratio_employment_to_population) + 8
+];
+
+// Combine both domains to get the final y-axis domain
+const yDomain = [
+  Math.min(yDomainCountry[0], yDomainContinent[0]), // Overall minimum
+  Math.max(yDomainCountry[1], yDomainContinent[1])  // Overall maximum
+];
+
   // Set the yScale domain
   yScale.domain(yDomain);
   
