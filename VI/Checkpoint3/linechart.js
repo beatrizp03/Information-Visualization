@@ -421,7 +421,6 @@ function createLineChart(data, data_average) {
     .text("Employment Rate"); 
 
 
-
     if (clickedList.length == 0) {
       const groupedByContinent = cleanedData.reduce((acc, current) => {
     const { continent } = current;
@@ -431,7 +430,6 @@ function createLineChart(data, data_average) {
     acc[continent].push(current);
     return acc;
   }, {});
-
     // Create a line generator function
     const line = d3
       .line()
@@ -440,6 +438,18 @@ function createLineChart(data, data_average) {
 
   // Append lines for each continent
   const colors = d3.scaleOrdinal(d3.schemeCategory10); // Color scale for different lines
+
+
+ // Calculate the new y-axis domain based on all the data
+  const allData = Object.values(groupedByContinent).flat();
+  const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -8), 
+                   d3.max(allData, d => d.ratio_employment_to_population + 8)];
+  yScale.domain(yDomain);
+
+  //redraw all the axis
+  svg.select(".yAxis") // Make sure you have the y-axis appended previously
+    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
+  
 
   Object.entries(groupedByContinent).forEach(([continent, data]) => {
       svg.append('path')
@@ -458,6 +468,7 @@ function createLineChart(data, data_average) {
             d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
             svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
         });        
+
   });
 
 
@@ -518,6 +529,33 @@ function createLineChart(data, data_average) {
   const line = d3.line()
       .x(d => xScale(d.year))
       .y(d => yScale(d.ratio_employment_to_population));
+
+  // Calculate the new y-axis domain based on all the data
+  const allData = Object.values(countryData).flat();
+  const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -5), 
+                   d3.max(allData, d => d.ratio_employment_to_population + 5)];
+  // Set the yScale domain
+  yScale.domain(yDomain);
+  
+  // Set a tick interval (maximum difference between ticks)
+  const tickInterval = 5; 
+  
+  // Calculate the tick values
+  const yMin = Math.floor(yDomain[0] / tickInterval) * tickInterval;
+  const yMax = Math.ceil(yDomain[1] / tickInterval) * tickInterval;
+  
+  // Create an array for tick values
+  const tickValues = [];
+  for (let value = yMin; value <= yMax; value += tickInterval) {
+    tickValues.push(value);
+  }
+  
+  // Update the y-axis with the new tick values
+  svg.select(".yAxis")
+    .call(d3.axisLeft(yScale)
+      .tickValues(tickValues) // Use the custom tick values
+      .tickSizeOuter(0)
+      .tickFormat(d3.format(".2s"))); // Format ticks as needed
 
   svg.append("path")
       .datum(countryData.data)
