@@ -182,9 +182,9 @@ const countries = [
   { code: "ZWE", country: "Zimbabwe" },
 ];
 
-const colorScale = d3.scaleQuantize()
+/*const colorScale = d3.scaleQuantize()
   .domain([0, 100])  // Employment ratio between 0 and 100%
-  .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges
+  .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges*/
 
 // To get the darkest blue color
 const darkestColor = "#8A1F30";
@@ -193,7 +193,7 @@ const lighestColor = "#F2B8C6";
 // #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
-function createMagnetChart(employmentData, categories) {
+function createJobMagnetChart(employmentData, categories) {
   const width = 400;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
@@ -213,7 +213,7 @@ function createMagnetChart(employmentData, categories) {
   const circles_height = 400; // Available height for the circles
   const circles_margin = { top: 25, right: 0, bottom: 0, left: 0 }; // Margins for the circles
 
-  const svg = d3.select(".chart-container")
+  const svg = d3.select(".job-chart-container")
     .append("svg")
     .attr("width", width + margin.left + margin.right)
     .attr("height", height + margin.top + margin.bottom)
