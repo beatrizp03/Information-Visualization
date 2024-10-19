@@ -8,7 +8,8 @@
     <script src="./script.js"></script>
     <script src="./linechart.js"></script>
     <script src="./worldmap.js"></script>
-    <script src="./magnetchart.js"></script>
+    <script src="./jobsMagnetchart.js"></script>
+    <script src="./salaryMagnetchart.js"></script>
     <script src="./radarchart.js"></script>
     <title>Woman's Employment Rate Globaly Dashboard</title>
   </head>
@@ -33,10 +34,11 @@
       <div class="grid-item-world"></div>
       <div class="grid-item-magnets">
         <div class="switch_chart-buttons">
-          <button id="job_chart-btn">Job Categories</button>
+          <button id="job_chart-btn" class="active">Job Categories</button>
           <button id="salaries_chart-btn">Salaries</button>
         </div>
-        <div class="chart-container"></div> <!-- Container for the magnet charts -->
+        <div class="job-chart-container"></div> <!-- Container for the magnet charts -->
+        <div class="salaries-chart-container"></div>
       </div>
       <div class="grid-item-line">
         <!-- Tooltip container, will be dynamically created in JavaScript -->
