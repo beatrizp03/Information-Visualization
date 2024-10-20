@@ -187,8 +187,8 @@ const countries = [
   .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges*/
 
 // To get the darkest blue color
-const darkestColor = "#8A1F30";
-const lighestColor = "#F2B8C6";
+const darkestColor = "#9D1C50";
+const lighestColor = "#F6ADC7";
 
 // #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
