@@ -2,6 +2,8 @@ const customTitles = ['No Information', 'Less Than Basic', 'Basic', 'Intermediat
 
 function createRadarChart(data) {
 
+    d3.select('.radar-chart-container svg').remove();
+    
     document.getElementById('info-btn').addEventListener('click', function() {
         const infoBox = document.getElementById('info-box');
         if (infoBox.style.display === 'block') {
@@ -67,6 +69,10 @@ function createRadarChart(data) {
             .attr('stroke', '#cccecf');
     });
   
+    const yearExtent = d3.extent(data, d => d.year);
+    const minYear = yearExtent[0];
+    const maxYear = yearExtent[1];
+
     // Plot data points (averages for each education category)
     const dataPoints = categories.map((category, i) => {
         const value = d3.mean(data.filter(d => d.level_education === category), d => d.ratio_employment_to_population); // Calculate average for each category
@@ -76,7 +82,7 @@ function createRadarChart(data) {
             y: radialScale(value) * Math.sin(angle), 
             value, 
             label: categoryLabels[i], 
-            yearRange: "2000-2023" // Replace this with actual year range if available in data 
+            yearRange: `${minYear}-${maxYear}` // Replace this with actual year range if available in data 
         };
     });
   
