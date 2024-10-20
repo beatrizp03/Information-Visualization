@@ -325,6 +325,7 @@ function showCountryButtons(continent_id) {
     const isSelected = clickedList.some(item => item.continent === continentName && item.country === country.code);
     if (isSelected) {
         countryButton.style.backgroundColor = continentColors[continentName]; // Set selected color if already clicked
+        
     }
 
     countryButton.addEventListener('click', function() {
@@ -335,6 +336,7 @@ function showCountryButtons(continent_id) {
         // Country is not in the list, add it
         clickedList.push(clickedItem);
         countryButton.style.backgroundColor = continentColors[continentName];
+        
       } else {
         // Country is in the list, remove it
         clickedList.splice(index, 1);
@@ -446,6 +448,19 @@ function createLineChart(data, data_average,continentlist) {
     .attr("transform", "rotate(-90)") 
     .text("Employment Rate"); 
 
+
+    //----------------------------------creating tooltip2----------------
+    const tooltip2 = document.createElement("div");
+    tooltip2.id = "tooltip2";
+    tooltip2.style.position = "absolute";
+    tooltip2.style.fontSize = "14px";
+    tooltip2.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+    tooltip2.style.color = "white";
+    tooltip2.style.padding = "5px";
+    tooltip2.style.borderRadius = "5px";
+    tooltip2.style.display = "none";
+    tooltip2.style.pointerEvents = "none";
+    document.body.appendChild(tooltip2);
 
     if (clickedList.length == 0) {
          //------------------------- --load data----------------------------------
@@ -631,20 +646,16 @@ function createLineChart(data, data_average,continentlist) {
                     .attr("opacity", 1)
                     .on("mouseover", function(event, d) {
                       console.log('Hovered continent:', continent.name);
-                      // Change stroke style on mouseover
-                      // Show tooltip
-                      // tooltip.innerHTML = continent.name; // Set the tooltip text to the continent name
-                      // tooltip.style.display = "block"; // Make the tooltip visible
-                      // tooltip.style.left = event.pageX + "px"; // Position it based on mouse coordinates
-                      // tooltip.style.top = event.pageY + "px";
-                      showTooltipcontinent(event, continent.name);
+                      
                       d3.select(this)
                           .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
                           .attr("stroke-width", 4); // Change stroke width on hover
+
+                      showTooltipcontinent(event, continent.name);
                   })
                   .on("mouseout", function(event, d) {
                     // Hide the tooltip
-                    hideTooltip()
+                    hideTooltipcontinent()
                     // Change stroke style on mouseover
                     d3.select(this)
                         .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
@@ -652,6 +663,7 @@ function createLineChart(data, data_average,continentlist) {
                   
                 })
                 })
+          
               
 
               // -------------------------draw circles-----------------------------------------
@@ -715,6 +727,9 @@ tooltip.style.display = "none";
 tooltip.style.pointerEvents = "none";
 document.body.appendChild(tooltip);
 
+
+
+
 // Create a function to show the tooltip with dynamic content
 function showTooltip(event, countryData) {
   var tooltip = document.getElementById('tooltip');
@@ -741,6 +756,7 @@ function showTooltip(event, countryData) {
 // Mouseout function to hide the tooltip
 function hideTooltip() {
   var tooltip = document.getElementById('tooltip');
+
     tooltip.style.display = 'none';  // Hide tooltip
 }
 
@@ -763,20 +779,23 @@ function mouseOverFunction(event, d) {
 
 
 function showTooltipcontinent(event,continent) {
-  var tooltip = document.getElementById('tooltip');
-
+  var tooltip2 = document.getElementById('tooltip2');
   // Update the content of the tooltip with the continent name
-  tooltip.textContent = `${continent} Average`; // Use continent instead of continent.name
+  tooltip2.textContent = `Average ${continent}`; // Use continent instead of continent.name
 
   // Set the tooltip's position based on mouse coordinates
-  tooltip.style.left = (event.pageX + 10) + 'px'; // X position with some offset
-  tooltip.style.top = (event.pageY + 10) + 'px'; // Y position with some offset
-
+  tooltip2.style.left = (event.pageX + 10) + 'px'; // X position with some offset
+  tooltip2.style.top = (event.pageY + 10) + 'px'; // Y position with some offset
   // Set z-index to ensure it stays on top
-  tooltip.style.zIndex = 10;
-
+  tooltip2.style.zIndex = 10;
   // Make the tooltip visible
-  tooltip.style.display = 'block';
+  tooltip2.style.display = 'block';
+}
+
+function hideTooltipcontinent() {
+  var tooltip2 = document.getElementById('tooltip2');
+  
+    tooltip2.style.display = 'none';  // Hide tooltip
 }
 
 
