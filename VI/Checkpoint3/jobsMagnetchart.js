@@ -189,7 +189,7 @@ const countries = [
 // To get the darkest blue color
 const darkestColor = "#9D1C50";
 const lighestColor = "#F6ADC7";
-/*
+
 // #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
@@ -391,7 +391,7 @@ function createJobMagnetChart(employmentData, categories) {
         .style("font-size", "12px")
         .style("fill", "black") // Change text color for better visibility
         .text(countryName);
-    })
+    })*/
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple");
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
@@ -451,9 +451,9 @@ function updateMagnetChart(clickedList) {
         }
     });
 }
-*/
 
 
+/*
 //__________NEW TRY_________________
 function createJobMagnetChart(employmentData, categories) {
   const width = 400;
@@ -472,6 +472,21 @@ function createJobMagnetChart(employmentData, categories) {
       .attr("height", height + margin.top + margin.bottom)
       .append("g")
       .attr("transform", `translate(${margin.left}, ${margin.top})`);
+  }
+
+  // Create or select the tooltip div (ensure it is created only once)
+  let tooltip = d3.select(".tooltip");
+  
+  if (tooltip.empty()) {
+    tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("background", "rgba(0, 0, 0, 0.7)")
+      .style("color", "white")
+      .style("padding", "5px")
+      .style("border-radius", "5px")
+      .style("visibility", "hidden")
+      .style("pointer-events", "none");
   }
 
   let categoryMeansByCountry = {};
@@ -594,7 +609,6 @@ function createJobMagnetChart(employmentData, categories) {
     .style("color", "white")
     .html(d => d.category.replace(/_/g, '<br/>'));
 
-  // Hide new circles at the start and fade them in after they are positioned
   const nodes = svg.selectAll(".node")
     .data(countryNodes, d => d.country)
     .join(
@@ -602,19 +616,17 @@ function createJobMagnetChart(employmentData, categories) {
         .attr("class", "node")
         .attr("r", 5)
         .attr("fill", lighestColor)
-        .attr("opacity", 0) // Start hidden
         .attr("cx", d => d.x)
         .attr("cy", d => d.y)
-        .call(enter => enter.transition().duration(0)
-          .attr("opacity", 0.8) // Fade in after being positioned
-        ),
+        .attr("opacity", 0) // Start hidden
+        .call(enter => enter.transition().duration(300).attr("opacity", 0.8)), // Fade in after being positioned
       update => update,
       exit => exit.remove()
     );
 
   nodes.on("mouseover", function(event, d) {
     d3.select(this).attr("fill", "purple");
-    const countryName = d.country;
+    const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
 
     const employmentDataArray = [];
     const relevantCategories = [
@@ -645,15 +657,18 @@ function createJobMagnetChart(employmentData, categories) {
       .style("top", (event.pageY + 10) + "px")
       .style("left", (event.pageX + 10) + "px");
 
-    setTimeout(() => {
-      tooltip.style("visibility", "hidden");
-    }, 3000);
   })
+    .on("mousemove", function(event) {
+      tooltip
+        .style("top", (event.pageY + 10) + "px")
+        .style("left", (event.pageX + 10) + "px");
+    })
     .on("mouseout", function() {
       d3.select(this).attr("fill", lighestColor);
       tooltip.style("visibility", "hidden");
     });
 }
+
 
 function updateMagnetChart(clickedList) {
   // Select all country paths
@@ -665,4 +680,4 @@ function updateMagnetChart(clickedList) {
             return "purple";  // Change color for clicked countries (e.g., orange/red)
         }
     });
-}
+}*/
