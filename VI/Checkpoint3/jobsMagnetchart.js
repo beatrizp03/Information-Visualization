@@ -377,7 +377,7 @@ function createJobMagnetChart(employmentData, categories) {
     .attr("r", 5)
     .attr("fill", lighestColor)
     .attr("opacity", 0.8) // Set opacity to 0.8
-    .on("mouseover", function(event, d) {
+    /*.on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
 
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
@@ -391,8 +391,9 @@ function createJobMagnetChart(employmentData, categories) {
         .style("font-size", "12px")
         .style("fill", "black") // Change text color for better visibility
         .text(countryName);
-    })
-    .on("click", function(event, d) {
+    })*/
+    .on("mouseover", function(event, d) {
+      d3.select(this).attr("fill", "purple");
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
   
       // Create an array of employment data for relevant categories

@@ -234,7 +234,14 @@ function clearLines() {
     document.querySelectorAll('.country-btn').forEach(button => {
       button.style.backgroundColor = ''; // Reset background color to default
     });
-    updateMagnetChart(clickedList);
+
+    if(activeChart == "job"){
+      updateMagnetChart(clickedList);
+    }else{
+      updateSalaryMagnetChart(clickedList);
+    }
+    //updateMagnetChart(clickedList);
+
     updateWorldMap(clickedList);
     // Update the dashboard to reflect cleared selections
   }
@@ -685,7 +692,12 @@ function createLineChart(data, data_average,continentlist) {
 function updateDashboard() {
 
     createLineChart(globalData1 , globalData3, clickedList);
-    updateMagnetChart(clickedList);
+    if(activeChart == "job"){
+      updateMagnetChart(clickedList);
+    }else{
+      updateSalaryMagnetChart(clickedList);
+    }
+    //updateMagnetChart(clickedList);
     updateWorldMap(clickedList);
     
 

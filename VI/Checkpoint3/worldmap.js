@@ -153,7 +153,9 @@ function updateWorldMap(clickedList) {
   // Select all country paths
   d3.selectAll("path")
     .style("fill", function(d) {
-        const countryName = d.id;  // Assuming d.id is the country code or name
+      const countryName = d.id ? d.id : '';  // If `d.id` is null or undefined, assign an empty string
+      // Assuming d.id is the country code or name
+        //console.log(countryName);
         // Check if the country is in the clickedList and change its color accordingly
         if (clickedList.some(clicked => clicked.country === countryName)) {
             return "purple";  // Change color for clicked countries (e.g., orange/red)

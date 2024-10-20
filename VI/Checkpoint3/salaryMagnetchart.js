@@ -286,7 +286,7 @@ function createSalaryMagnetChart(salaryData) {
     const lowestSalary = d3.min(salaryValues);
     const globalAverageSalary = d3.mean(salaryValues);
 
-    console.log("higest ", highestSalary,"global average ", globalAverageSalary,"lowest ", lowestSalary);
+    //console.log("higest ", highestSalary,"global average ", globalAverageSalary,"lowest ", lowestSalary);
 
     const magnetPositionMap = {
         "Lowest Salary": { x: width * 0.5, y: height * 0.85, value: lowestSalary },
@@ -313,6 +313,7 @@ function createSalaryMagnetChart(salaryData) {
         const salaryValuesByCountry = countryData.map(d => +d.average_salary_per_month);
         const meanSalary = d3.mean(salaryValuesByCountry); // Calculate the mean salary for this country
         salaryMeansByCountry[country.country] = {
+            code: country.code,
             country: country.country,
             average_salary_per_month: meanSalary,
         };
@@ -320,13 +321,14 @@ function createSalaryMagnetChart(salaryData) {
 
     // Use only the 5 highest and 5 lowest salary countries for the circles
     const countryNodes = Object.values(salaryMeansByCountry)
-    .filter(d => !isNaN(d.average_salary_per_month) && d.average_salary_per_month !== undefined) // Filter out invalid data
-    .map(d => ({
-        country: d.country,
-        average_salary_per_month: d.average_salary_per_month,
-        x: width / 2,
-        y: height / 2
-    }));
+        .filter(d => !isNaN(d.average_salary_per_month) && d.average_salary_per_month !== undefined) // Filter out invalid data
+        .map(d => ({
+            code : d.code,
+            country: d.country,
+            average_salary_per_month: d.average_salary_per_month,
+            x: width / 2,
+            y: height / 2
+        }));
 
 
     // Initialize node positions
@@ -465,7 +467,7 @@ function createSalaryMagnetChart(salaryData) {
         .attr("cx", d => d.x || width / 2)
         .attr("cy", d => d.y || height / 2)
         .attr("opacity", 0.8)
-        .on("mouseover", function(event, d) {
+        /*.on("mouseover", function(event, d) {
             d3.select(this).attr("fill", "purple"); // Change the circle color on hover
         
             const countryName = d.country;
@@ -487,9 +489,10 @@ function createSalaryMagnetChart(salaryData) {
                 .style("font-size", "12px") // Adjust font size as needed
                 .style("fill", "black") // Set the text color
                 .text(countryName); // Display the country name
-        })        
-        .on("click", function(event, d) {
+        })   */     
+        .on("mouseover", function(event, d) {
             //console.log(d);
+            d3.select(this).attr("fill", "purple");
             const countryName = d.country;
             const averageCountry = isNaN(d.average_salary_per_month) ? "Data not available" : d.average_salary_per_month;
         
@@ -508,3 +511,15 @@ function createSalaryMagnetChart(salaryData) {
             svg.selectAll(".country-label").remove();
         });
 }
+
+function updateSalaryMagnetChart(clickedList) {
+    // Select all country paths
+    d3.selectAll(".node")
+      .style("fill", function(d) {
+          const countryName = d.code;  // Assuming d.id is the country code or name
+          // Check if the country is in the clickedList and change its color accordingly
+          if (clickedList.some(clicked => clicked.country === countryName)) {
+              return "purple";  // Change color for clicked countries (e.g., orange/red)
+          }
+      });
+  }
