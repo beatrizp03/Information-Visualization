@@ -297,7 +297,6 @@ function showCountryButtons(continent_id) {
     continentAverageLabel.appendChild(checkbox);
     continentAverageLabel.appendChild(label);
     countryContainer.appendChild(continentAverageLabel);
-    
      // Event listener pour chaque checkbox
      checkbox.addEventListener('change', function() {
       if (this.checked) {
@@ -343,7 +342,7 @@ function showCountryButtons(continent_id) {
         countryButton.style.backgroundColor = ''; // Reset background color or set it to default
       }
       
-      updateDashboard();
+      updateValue();
     });
     countryContainer.appendChild(countryButton);
   });
@@ -360,10 +359,7 @@ function getContinentByCountry(countryCode) {
     }
   return null;
 }
-
 //#################################### Create visual idioms ####################################
-
-
 
 function createLineChart(data, data_average,continentlist) {
 
@@ -570,53 +566,6 @@ function createLineChart(data, data_average,continentlist) {
                   .x(d => xScale(d.year))
                   .y(d => yScale(d.ratio_employment_to_population));
 
-
-
-              
-            // // --------------------new y-axis domain based on all the data from countryData and continent-----------------------
-            // const allData = Object.values(countryData).flat();
-            // const yDomainCountry = [
-            //   d3.min(allData, d => d.ratio_employment_to_population) - 5,
-            //   d3.max(allData, d => d.ratio_employment_to_population) + 5
-            // ];
-
-            // // Calculate the new y-axis domain based on all the data from groupedByContinent
-            // const allData2 = Object.values(groupedByContinent).flat();
-            // const yDomainContinent = [
-            //   d3.min(allData2, d => d.ratio_employment_to_population) - 8,
-            //   d3.max(allData2, d => d.ratio_employment_to_population) + 8
-            // ];
-
-            // // Combine both domains to get the final y-axis domain
-            // const yDomain = [
-            //   Math.min(yDomainCountry[0], yDomainContinent[0]), // Overall minimum
-            //   Math.max(yDomainCountry[1], yDomainContinent[1])  // Overall maximum
-            // ];
-            //   // Set the yScale domain
-            //   yScale.domain(yDomain);
-              
-            //   // Set a tick interval (maximum difference between ticks)
-            //   const tickInterval = 5; 
-              
-            //   // Calculate the tick values
-            //   const yMin = Math.floor(yDomain[0] / tickInterval) * tickInterval;
-            //   const yMax = Math.ceil(yDomain[1] / tickInterval) * tickInterval;
-              
-            //   // Create an array for tick values
-            //   const tickValues = [];
-            //   for (let value = yMin; value <= yMax; value += tickInterval) {
-            //     tickValues.push(value);
-            //   }
-              
-            //   // Update the y-axis with the new tick values
-            //   svg.select(".yAxis")
-            //     .call(d3.axisLeft(yScale)
-            //       .tickValues(tickValues) // Use the custom tick values
-            //       .tickSizeOuter(0)
-            //       .tickFormat(d3.format(".2s"))); // Format ticks as needed
-
-
-
               // ----------------------------draw lines------------------------------------
               svg.append("path")
                   .datum(countryData.data)
@@ -637,7 +586,7 @@ function createLineChart(data, data_average,continentlist) {
               
                   svg.append("path")
                     .datum(countryData) // Utilisez les données filtrées pour le continent
-                    .attr("class", "line")
+                    .attr("class", "line continent-line")
                     .attr("fill", "none")
                     .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
                     .attr("stroke-width", 2)
@@ -663,7 +612,6 @@ function createLineChart(data, data_average,continentlist) {
                   
                 })
                 })
-          
               
 
               // -------------------------draw circles-----------------------------------------
