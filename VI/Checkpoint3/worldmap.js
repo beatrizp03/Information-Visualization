@@ -166,6 +166,7 @@ function updateWorldMap(clickedList) {
 
 //_______________NEW TRY__________________
 // Function to create the world map visualization
+// Function to create the world map visualization
 function createWorldMap(employmentData, isInitialLoad = false) {
   const width = 960;
   const height = 450;
@@ -216,6 +217,9 @@ function createWorldMap(employmentData, isInitialLoad = false) {
 
       // Bind GeoJSON data to SVG paths and create countries
       renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip);
+
+      // Add the color scale legend
+      addColorScaleLegend(svg, colorScale);
     }).catch(function(error) {
       console.log(error);
     });
@@ -303,3 +307,43 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       tooltip.style("visibility", "hidden");
     });
 }
+
+// Function to add the color scale legend
+function addColorScaleLegend(svg, colorScale) {
+  const legendWidth = 20;  // Width of each color section
+  const legendHeight = 230;  // Height of the entire color scale
+  const legendMarginTop = 200; // margin-top for spacing between the boxes
+  const legendMarginLeft = 20; // Margin to place the legend on the left
+
+  // Create the legend group and position it to the left of the map
+  const legendGroup = svg.append("g")
+    .attr("transform", `translate(${legendMarginLeft}, ${legendMarginTop})`);  // Position legend to the left
+
+  // Define the bins for the legend (employment rate ranges)
+  const bins = [0, 20, 40, 60, 80, 100]; // Bins: 0-20, 20-40, 40-60, 60-80, 80-100
+
+  // Create the color scale as a vertical bar
+  legendGroup.selectAll("rect")
+    .data(bins.slice(0, -1).reverse())  // We don't need the last bin for color boxes, since it's for labeling
+    .enter()
+    .append("rect")
+    .attr("x", 0)
+    .attr("y", (d, i) => i * (legendHeight / 5)) // Distribute colors evenly vertically
+    .attr("width", legendWidth)  // Width of each color section
+    .attr("height", legendHeight / 5)  // Height of each color section
+    .style("fill", (d, i) => colorScale(d));  // Set color based on scale
+
+  // Add labels for the dividing lines (now lower by 5px using dy)
+  legendGroup.selectAll("text")
+    .data(bins.reverse())  // Include 0 as the first value
+    .enter()
+    .append("text")
+    .attr("x", legendWidth + 5)  // Position the label to the right of each color box
+    .attr("y", (d, i) => i * (legendHeight / 5) + (legendHeight / 20) - 20)  // Vertical positioning (center)
+    .attr("dy", "10px") // Offset the text 10px lower using dy attribute
+    .text(d => d)  // Just display the numbers (e.g., 0, 20, 40, 60, etc.)
+    .style("font-size", "12px")
+    .style("alignment-baseline", "middle")
+    .style("text-anchor", "start");
+}
+
