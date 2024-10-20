@@ -229,7 +229,7 @@ function clearLines() {
   
     // Clear the clickedList
     clickedList = []; // Reset the clickedList to an empty array
-    
+    continentlist=[];
     // Reset the background color of all country buttons
     document.querySelectorAll('.country-btn').forEach(button => {
       button.style.backgroundColor = ''; // Reset background color to default
