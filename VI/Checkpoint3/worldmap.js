@@ -1,5 +1,5 @@
 // Function to create the world map visualization
-function createWorldMap(employmentData) {
+/*function createWorldMap(employmentData) {
   const width = 960;
   const height = 450;
   d3.select(".grid-item-world").select("svg").remove(); // Remove the existing SVG
@@ -160,5 +160,146 @@ function updateWorldMap(clickedList) {
         if (clickedList.some(clicked => clicked.country === countryName)) {
             return "purple";  // Change color for clicked countries (e.g., orange/red)
         }
+    });
+}*/
+
+
+//_______________NEW TRY__________________
+// Function to create the world map visualization
+function createWorldMap(employmentData, isInitialLoad = false) {
+  const width = 960;
+  const height = 450;
+
+  // Select or create the SVG container
+  let svg = d3.select(".grid-item-world").select("svg");
+
+  if (svg.empty()) {
+    svg = d3.select(".grid-item-world")
+      .append("svg")
+      .attr("width", width)
+      .attr("height", height);
+  }
+
+  // Projection to move map to the right
+  const projection = d3.geoMercator()
+    .scale(160)
+    .translate([width / 2.1, height / 1.7]);
+
+  const path = d3.geoPath().projection(projection);
+
+  // Define a color scale with 5 bins
+  const colorScale = d3.scaleQuantize()
+    .domain([0, 100])  // Employment ratio between 0 and 100%
+    .range(["#FFE6EE", "#F6ADC7", "#EC739F", "#D14B7E", "#9D1C50"]);
+
+  // Create or select the tooltip div (ensure it is created only once)
+  let tooltip = d3.select(".tooltip");
+  
+  if (tooltip.empty()) {
+    tooltip = d3.select("body").append("div")
+      .attr("class", "tooltip")
+      .style("position", "absolute")
+      .style("background", "rgba(0, 0, 0, 0.7)")
+      .style("color", "white")
+      .style("padding", "5px")
+      .style("border-radius", "5px")
+      .style("visibility", "hidden")
+      .style("pointer-events", "none");
+  }
+
+  // Load the GeoJSON data for the world map only if this is the initial load
+  if (isInitialLoad) {
+    d3.json("datasets/world.geojson").then(function(geoData) {
+
+      // Convert employment data to a map
+      const employmentMap = getEmploymentMap(employmentData);
+
+      // Bind GeoJSON data to SVG paths and create countries
+      renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip);
+    }).catch(function(error) {
+      console.log(error);
+    });
+  } else {
+    // If this is an update, just update the colors and reattach event listeners
+    const employmentMap = getEmploymentMap(employmentData);
+    updateCountryColors(svg, employmentMap, colorScale);
+    reattachEventListeners(svg, employmentMap, tooltip);  // Reattach the updated event listeners
+  }
+}
+
+// Function to convert employment data into a map (country -> employment rate)
+function getEmploymentMap(employmentData) {
+  const employmentMap = {};
+  employmentData.forEach(d => {
+    const country = d.country;
+    const rate = +d.rate;
+
+    if (!employmentMap[country]) {
+      employmentMap[country] = { sum: 0, count: 0 };
+    }
+
+    employmentMap[country].sum += rate;
+    employmentMap[country].count += 1;
+  });
+
+  const averageEmploymentMap = {};
+  for (const country in employmentMap) {
+    averageEmploymentMap[country] = employmentMap[country].sum / employmentMap[country].count;
+  }
+  
+  return averageEmploymentMap;
+}
+
+// Function to render countries (only called once)
+function renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip) {
+  // Bind GeoJSON data to SVG paths
+  const countries = svg.append("g")
+    .selectAll("path")
+    .data(geoData.features)
+    .enter()
+    .append("path")
+    .attr("d", path)
+    .attr("fill", function(d) {
+      const employmentRatio = employmentMap[d.id];  // d.id should be the country code
+      return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
+    })
+    .attr("stroke", "none");
+
+  // Attach the event listeners for tooltips
+  reattachEventListeners(svg, employmentMap, tooltip);
+}
+
+// Function to update country colors smoothly
+function updateCountryColors(svg, employmentMap, colorScale) {
+  svg.selectAll("path")
+    .transition()  // Start a transition
+    .duration(1000)  // Set the duration (1 second)
+    .attr("fill", function(d) {
+      const employmentRatio = employmentMap[d.id];
+      return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
+    });
+}
+
+// Function to reattach event listeners (this will ensure tooltips are updated with the correct data)
+function reattachEventListeners(svg, employmentMap, tooltip) {
+  svg.selectAll("path")
+    .on("mouseover", function(event, d) {
+      d3.select(this)
+        .style("stroke", "#333")  // Darker border on hover
+        .style("stroke-width", "2");  // Thicker border on hover
+      tooltip.style("visibility", "visible");
+    })
+    .on("mousemove", function(event, d) {
+      const employmentRatio = employmentMap[d.id];
+      const countryName = d.properties.name;
+
+      tooltip.html(`${countryName}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
+        .style("top", (event.pageY + 10) + "px")
+        .style("left", (event.pageX + 10) + "px");
+    })
+    .on("mouseout", function(event, d) {
+      d3.select(this)
+        .style("stroke", "none");  // Remove hover border
+      tooltip.style("visibility", "hidden");
     });
 }

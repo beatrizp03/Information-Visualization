@@ -47,7 +47,7 @@ function filterDataset(startYear,endYear) {
     rate: parseFloat(entry.ratio_employment_to_population) // Convert the rate to a number
   }));
 
-  createWorldMap(reducedData1);
+  createWorldMap(reducedData1,false);
   
   categories = Array.from(new Set(filteredData2.map(d => d.job_category)));
         
@@ -219,7 +219,13 @@ function init() {
             return d;
           }).sort((a, b) => a.year - b.year);
 
-        
+        let loadingFilteredData1 = globalData1.filter(d => d.level_education == "TOTAL");
+        const reducedData1 = loadingFilteredData1.map(entry => ({
+          country: entry.country,
+          year: entry.year,
+          rate: parseFloat(entry.ratio_employment_to_population) // Convert the rate to a number
+        }));
+        createWorldMap(reducedData1, true);
         filterDataset(2000,2023); //default 
         });
       });
