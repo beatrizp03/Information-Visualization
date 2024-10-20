@@ -201,7 +201,7 @@ const countryNameMapping = Object.values(continents).flat().reduce((acc, { name,
 
 let clickedList = [];
 const buttons = document.querySelectorAll('.menu-btn');
-
+var continentlist = [];
 document.addEventListener('DOMContentLoaded', function() {
     const buttons = document.querySelectorAll('.menu-btn');
     
@@ -253,26 +253,6 @@ function showCountryButtons(continent_id) {
   const continentAverageLabel = document.getElementById('continent-average-label');
   let continentName = "";
 
-  if (!continentAverageLabel) {
-
-    const continentAverageLabel = document.createElement('div');
-    continentAverageLabel.className = 'tick-label';
-    continentAverageLabel.id = 'continent-average-label';
-
-    const checkbox = document.createElement('input');
-    checkbox.type = 'checkbox';
-    checkbox.id = 'continent-average-checkbox';
-
-    const label = document.createElement('label');
-    label.htmlFor = 'continent-average-checkbox';
-    label.textContent = 'Show Continent Average';
-
-    continentAverageLabel.appendChild(checkbox);
-    continentAverageLabel.appendChild(label);
-    countryContainer.appendChild(continentAverageLabel);
-  }
-
-
   if(continent_id == 0){ 
     countries = continents.Africa;
     continentName = "Africa";
@@ -292,6 +272,42 @@ function showCountryButtons(continent_id) {
   } else if(continent_id == 5){   
     countries = continents.SouthAmerica;
     continentName = "SouthAmerica";
+  }
+
+  if (!document.getElementById(`continent-average-checkbox-${continent_id}`)) {
+    const continentAverageLabel = document.createElement('div');
+    continentAverageLabel.className = 'tick-label';
+    continentAverageLabel.id = `continent-average-label-${continent_id}`; // ID unique pour chaque continent
+
+    const checkbox = document.createElement('input');
+    checkbox.type = 'checkbox';
+    checkbox.id = `continent-average-checkbox-${continent_id}`; // ID unique pour chaque continent
+
+    const label = document.createElement('label');
+    label.htmlFor = checkbox.id;
+    label.textContent = `Show ${continentName} Average`;
+
+    continentAverageLabel.appendChild(checkbox);
+    continentAverageLabel.appendChild(label);
+    countryContainer.appendChild(continentAverageLabel);
+    
+     // Event listener pour chaque checkbox
+     checkbox.addEventListener('change', function() {
+      if (this.checked) {
+        console.log(`Displaying ${continentName} data`);
+        continentlist.push({name: continentName });
+        updateValue();
+        // Logique pour afficher la moyenne du continent
+        
+      } else {
+        console.log(`Hiding ${continentName} data`);
+        continentlist = continentlist.filter(continent => continent.name !== continentName);
+        updateValue();
+      }
+      console.log(continentlist);
+      
+    });
+    
   }
 
   countries.forEach(country => {
@@ -338,9 +354,12 @@ function getContinentByCountry(countryCode) {
 
 //#################################### Create visual idioms ####################################
 
-function createLineChart(data, data_average) {
-  const checkbox = document.getElementById('continent-average-checkbox');
+
+
+function createLineChart(data, data_average,continentlist) {
+
   // Clean the data
+  const checkbox = document.getElementById('continent-average-checkbox');
   const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
     continent,
     year: parseInt(year, 10), // Convert year to a number
@@ -422,251 +441,244 @@ function createLineChart(data, data_average) {
 
 
     if (clickedList.length == 0) {
-      const groupedByContinent = cleanedData.reduce((acc, current) => {
-    const { continent } = current;
-    if (!acc[continent]) {
-        acc[continent] = [];
-    }
-    acc[continent].push(current);
-    return acc;
-  }, {});
-    // Create a line generator function
-    const line = d3
-      .line()
-      .x((d) => xScale(d.year)) 
-      .y((d) => yScale(d.ratio_employment_to_population)); 
+         //------------------------- --load data----------------------------------
+            const groupedByContinent = cleanedData.reduce((acc, current) => {
+              const { continent } = current;
+              if (!acc[continent]) {acc[continent] = [];}
+                  acc[continent].push(current);
+                  return acc;
+            }, {});
 
-  // Append lines for each continent
-  const colors = d3.scaleOrdinal(d3.schemeCategory10); // Color scale for different lines
+          //--------------------- Create a line generator function------------------------
+          const line = d3
+            .line()
+            .x((d) => xScale(d.year)) 
+            .y((d) => yScale(d.ratio_employment_to_population)); 
 
 
- // Calculate the new y-axis domain based on all the data
-  const allData = Object.values(groupedByContinent).flat();
-  const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -8), 
-                   d3.max(allData, d => d.ratio_employment_to_population + 8)];
-  yScale.domain(yDomain);
+          // ------------------Calculate the new y-axis domain based on all the data-----------------
+          const allData = Object.values(groupedByContinent).flat();
+          const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -8), 
+                          d3.max(allData, d => d.ratio_employment_to_population + 8)];
+          yScale.domain(yDomain);
 
-  //redraw all the axis
-  svg.select(".yAxis") // Make sure you have the y-axis appended previously
-    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
-  
+          //---------------------redraw all the axis----------------------
+          svg.select(".yAxis") // Make sure you have the y-axis appended previously
+            .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
+          
 
-  Object.entries(groupedByContinent).forEach(([continent, data]) => {
-      svg.append('path')
-          .datum(data) // Bind data for this continent
-          .attr('fill', 'none') // No fill
-          .attr('stroke', continentColors[continent]) 
-          .attr('stroke-width', 2) 
-          .attr('d', line) // Generate line
-          .on('mouseover', function() {
-            d3.select(this).attr('stroke-width', 3); // Increase stroke width on hover
-            svg.selectAll('path')
-                .filter((_, i, nodes) => nodes[i] !== this) // Select all but the hovered line
-                .attr('stroke-width', 1); // Change other lines' stroke width
-        })
-        .on('mouseout', function() {
-            d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
-            svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
-        });        
+          //-------------------------draw the line------------------------------
 
-  });
+          Object.entries(groupedByContinent).forEach(([continent, data]) => {
+              svg.append('path')
+                  .datum(data) // Bind data for this continent
+                  .attr('fill', 'none') // No fill
+                  .attr('stroke', continentColors[continent]) 
+                  .attr('stroke-width', 2) 
+                  .attr('d', line) // Generate line
+                  .on('mouseover', function() {
+                    d3.select(this).attr('stroke-width', 3); // Increase stroke width on hover
+                    svg.selectAll('path')
+                        .filter((_, i, nodes) => nodes[i] !== this) // Select all but the hovered line
+                        .attr('stroke-width', 1); // Change other lines' stroke width
+                })
+                .on('mouseout', function() {
+                    d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
+                    svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
+                });        
 
-
-    
+          });
   }
   else {
-    const total_data = data.filter(d =>d.level_education == "TOTAL");
+                //---------------------------------------filter data-------------------------------------
+                const total_data = data.filter(d =>d.level_education == "TOTAL");
 
-    const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
-        country,
-        year: Number(year),
-        ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
-    }));
+                const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
+                    country,
+                    year: Number(year),
+                    ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
+                }));
 
-    const groupedByContinent = cleanedData.reduce((acc, current) => {
-      const { continent } = current;
-      if (!acc[continent]) {
-          acc[continent] = []; }
-      acc[continent].push(current);
-      return acc;
-    }, {});
-  
-  
-    let final_data = reducedData.filter(d =>
-        clickedList.some(clicked => clicked.country === d.country)
-    );
-    // Get the full range of years from the dataset
-    const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);
+                const groupedByContinent = cleanedData.reduce((acc, current) => {
+                  const { continent } = current;
+                  if (!acc[continent]) {
+                      acc[continent] = []; }
+                  acc[continent].push(current);
+                  return acc;
+                }, {});
+              
+                let final_data = reducedData.filter(d => clickedList.some(clicked => clicked.country === d.country)
+                );
+                
+                const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);// Get the full range of years from the dataset
+                const uniqueCountries = Array.from(new Set(final_data.map(d => d.country))); // Get unique countries and group data by country
+                const dataByCountry = uniqueCountries.map(country => ({
+                    country,
+                    data: final_data.filter(d => d.country === country)
+                }));
+                
+              
+              // --------------------------Create a color with the calculated shade--------------------------
+              // function to generate distinct colors
+              function getDistinctShade(baseColor, index, totalCountries) {
+              const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
+
+              // Adjustments
+              const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
+              const lightnessAdjustment = 0.5; // Base lightness
+              const minLightness = 0.2; // Minimum lightness
+              const maxLightness = 0.8; // Maximum lightness
+
+              // Calculate lightness based on index, keeping it within min and max lightness bounds
+              const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
+
+              // Create a new color with the same hue, adjusted saturation and lightness
+              return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
+              }
+              // Create lines for each country
+              dataByCountry.forEach((countryData, index) => {
+                const firstCountryCode = countryData.country;
+                const continent = getContinentByCountry(firstCountryCode);
+                const baseColor = continentColors[continent] || 'grey';
+
+              // Get a distinct shade for the current country while keeping the continent's hue
+              const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
+
+              const line = d3.line()
+                  .x(d => xScale(d.year))
+                  .y(d => yScale(d.ratio_employment_to_population));
 
 
-    // Get unique countries and group data by country
-    const uniqueCountries = Array.from(new Set(final_data.map(d => d.country)));
 
-    const dataByCountry = uniqueCountries.map(country => ({
-        country,
-        data: final_data.filter(d => d.country === country)
-    }));
+              
+            // // --------------------new y-axis domain based on all the data from countryData and continent-----------------------
+            // const allData = Object.values(countryData).flat();
+            // const yDomainCountry = [
+            //   d3.min(allData, d => d.ratio_employment_to_population) - 5,
+            //   d3.max(allData, d => d.ratio_employment_to_population) + 5
+            // ];
+
+            // // Calculate the new y-axis domain based on all the data from groupedByContinent
+            // const allData2 = Object.values(groupedByContinent).flat();
+            // const yDomainContinent = [
+            //   d3.min(allData2, d => d.ratio_employment_to_population) - 8,
+            //   d3.max(allData2, d => d.ratio_employment_to_population) + 8
+            // ];
+
+            // // Combine both domains to get the final y-axis domain
+            // const yDomain = [
+            //   Math.min(yDomainCountry[0], yDomainContinent[0]), // Overall minimum
+            //   Math.max(yDomainCountry[1], yDomainContinent[1])  // Overall maximum
+            // ];
+            //   // Set the yScale domain
+            //   yScale.domain(yDomain);
+              
+            //   // Set a tick interval (maximum difference between ticks)
+            //   const tickInterval = 5; 
+              
+            //   // Calculate the tick values
+            //   const yMin = Math.floor(yDomain[0] / tickInterval) * tickInterval;
+            //   const yMax = Math.ceil(yDomain[1] / tickInterval) * tickInterval;
+              
+            //   // Create an array for tick values
+            //   const tickValues = [];
+            //   for (let value = yMin; value <= yMax; value += tickInterval) {
+            //     tickValues.push(value);
+            //   }
+              
+            //   // Update the y-axis with the new tick values
+            //   svg.select(".yAxis")
+            //     .call(d3.axisLeft(yScale)
+            //       .tickValues(tickValues) // Use the custom tick values
+            //       .tickSizeOuter(0)
+            //       .tickFormat(d3.format(".2s"))); // Format ticks as needed
 
 
-  // Create a color with the calculated shade
-  // Define a function to generate distinct colors
-  function getDistinctShade(baseColor, index, totalCountries) {
-  const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
 
-  // Adjustments
-  const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
-  const lightnessAdjustment = 0.5; // Base lightness
-  const minLightness = 0.2; // Minimum lightness
-  const maxLightness = 0.8; // Maximum lightness
+              // ----------------------------draw lines------------------------------------
+              svg.append("path")
+                  .datum(countryData.data)
+                  .attr("class", "line")
+                  .attr("fill", "none")
+                  .attr("stroke", lineColor)
+                  .attr("stroke-width", 2)
+                  .attr("d", line)
+                  .attr("opacity",1); 
 
-  // Calculate lightness based on index, keeping it within min and max lightness bounds
-  const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
+                  //add new continent lines 
+              
+                continentlist.forEach(continent => {
+                  const countryData = data_average.filter(d => d.continent === continent.name); // Filtrer les données par continent
+                  const line = d3.line()
+                    .x(d => xScale(d.year)) // Remplacez par votre échelle x
+                    .y(d => yScale(d.ratio_employment_to_population)); // Remplacez par votre échelle y
+              
+                  svg.append("path")
+                    .datum(countryData) // Utilisez les données filtrées pour le continent
+                    .attr("class", "line")
+                    .attr("fill", "none")
+                    .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
+                    .attr("stroke-width", 2)
+                    .attr("stroke-dasharray", "5,5")
+                    .attr("d", line)
+                    .attr("opacity", 1)
+                    .on("mouseover", function(event, d) {
+                      console.log('Hovered continent:', continent.name);
+                      // Change stroke style on mouseover
+                      // Show tooltip
+                      // tooltip.innerHTML = continent.name; // Set the tooltip text to the continent name
+                      // tooltip.style.display = "block"; // Make the tooltip visible
+                      // tooltip.style.left = event.pageX + "px"; // Position it based on mouse coordinates
+                      // tooltip.style.top = event.pageY + "px";
+                      showTooltipcontinent(event, continent.name);
+                      d3.select(this)
+                          .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+                          .attr("stroke-width", 4); // Change stroke width on hover
+                  })
+                  .on("mouseout", function(event, d) {
+                    // Hide the tooltip
+                    hideTooltip()
+                    // Change stroke style on mouseover
+                    d3.select(this)
+                        .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+                        .attr("stroke-width", 2); // Change stroke width on hover
+                  
+                })
+                })
+              
 
-  // Create a new color with the same hue, adjusted saturation and lightness
-  return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
-  }
-  // Create lines for each country
-  dataByCountry.forEach((countryData, index) => {
-    const firstCountryCode = countryData.country;
-    const continent = getContinentByCountry(firstCountryCode);
-    const baseColor = continentColors[continent] || 'grey';
+              // -------------------------draw circles-----------------------------------------
+              const allCircles = svg.selectAll("circle.dataItem")
+                .data(countryData.data, d => d.country); // Utiliser countryData.data
 
-  // Get a distinct shade for the current country while keeping the continent's hue
-  const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
+              allCircles.enter()
+                .append("circle")
+                .attr("class", "dataItem")
+                .attr("r", 3.2)
+                .attr("cx", d => xScale(d.year))
+                .attr("cy", d => yScale(d.ratio_employment_to_population))
+                .style("fill", lineColor) // Définir la couleur de remplissage sur la couleur de ligne
+                .style("stroke", lineColor) // Définir la couleur de contour sur la couleur de ligne
+                .style("stroke-width", 1)
+                .style("opacity", 1) // Démarrer avec une opacité de 1
+                .on("mouseover", mouseOverFunction)
+                .on("mouseleave", mouseLeaveFunction);
 
-  const line = d3.line()
-      .x(d => xScale(d.year))
-      .y(d => yScale(d.ratio_employment_to_population));
+              // Transition to make circles visible
+              allCircles.transition().duration(1000).style("opacity", 1);
 
- // Calculate the new y-axis domain based on all the data from countryData
-const allData = Object.values(countryData).flat();
-const yDomainCountry = [
-  d3.min(allData, d => d.ratio_employment_to_population) - 5,
-  d3.max(allData, d => d.ratio_employment_to_population) + 5
-];
-
-// Calculate the new y-axis domain based on all the data from groupedByContinent
-const allData2 = Object.values(groupedByContinent).flat();
-const yDomainContinent = [
-  d3.min(allData2, d => d.ratio_employment_to_population) - 8,
-  d3.max(allData2, d => d.ratio_employment_to_population) + 8
-];
-
-// Combine both domains to get the final y-axis domain
-const yDomain = [
-  Math.min(yDomainCountry[0], yDomainContinent[0]), // Overall minimum
-  Math.max(yDomainCountry[1], yDomainContinent[1])  // Overall maximum
-];
-
-  // Set the yScale domain
-  yScale.domain(yDomain);
-  
-  // Set a tick interval (maximum difference between ticks)
-  const tickInterval = 5; 
-  
-  // Calculate the tick values
-  const yMin = Math.floor(yDomain[0] / tickInterval) * tickInterval;
-  const yMax = Math.ceil(yDomain[1] / tickInterval) * tickInterval;
-  
-  // Create an array for tick values
-  const tickValues = [];
-  for (let value = yMin; value <= yMax; value += tickInterval) {
-    tickValues.push(value);
-  }
-  
-  // Update the y-axis with the new tick values
-  svg.select(".yAxis")
-    .call(d3.axisLeft(yScale)
-      .tickValues(tickValues) // Use the custom tick values
-      .tickSizeOuter(0)
-      .tickFormat(d3.format(".2s"))); // Format ticks as needed
-
-  svg.append("path")
-      .datum(countryData.data)
-      .attr("class", "line")
-      .attr("fill", "none")
-      .attr("stroke", lineColor)
-      .attr("stroke-width", 2)
-      .attr("d", line)
-      .attr("opacity",1);
-
-  // load average data per continent == cleanedData
-  const checkbox = document.getElementById('continent-average-checkbox');
-
-  // Attach an event listener to the checkbox
-  checkbox.addEventListener('change', function() {
-    if (checkbox.checked) {
-      console.log("Checkbox selected");
-      var list_continent = [];
-      console.log(clickedList);
-  
-      clickedList.forEach(function(item) {
-        list_continent.push(item.continent);
-      });
-      var unique_continents = [...new Set(list_continent)];
-  
-      // Filter the cleaned data based on unique continents
-      var showcontinentvalue = cleanedData.filter(function(item) {
-        return unique_continents.includes(item.continent);
-      });
-  
-      console.log(showcontinentvalue); 
-      // Group the data by continent
-      const groupedByContinent = d3.group(showcontinentvalue, d => d.continent); 
-  
-      groupedByContinent.forEach((showcontinentvalue, continent) => {
-        const averageLine = d3.line()
-          .x((d) => xScale(d.year))
-          .y((d) => yScale(d.ratio_employment_to_population));
-  
-        svg.append('path')
-          .datum(showcontinentvalue) // Bind the data_average
-          .attr('class', 'average-line') // Add a class for easy selection later
-          .attr('fill', 'none')
-          .attr('stroke', continentColors[continent]) // Set the average line color
-          .attr('stroke-width', 2)
-          .attr('stroke-dasharray', '4,4') // Make the line dashed
-          .attr('d', averageLine); // Use the line generator for the average line
-      });
-    } else {
-      console.log("Checkbox has been unchecked");
-      d3.selectAll('.average-line').remove(); // Remove all elements with the class 'average-line'
-      //find which continent to remove
-      list_continent = []
+              // Mettre à jour les cercles existants
+              allCircles
+                  .attr("cx", d => xScale(d.year))
+                  .attr("cy", d => yScale(d.ratio_employment_to_population))
+                  .style("fill", lineColor) // Mettre à jour la couleur de remplissage
+                  .style("stroke", lineColor); // Mettre à jour la couleur de contour 
+                });
 
     }
-  });
-
-
-  //circles
-  const allCircles = svg.selectAll("circle.dataItem")
-    .data(countryData.data, d => d.country); // Utiliser countryData.data
-
-  allCircles.enter()
-    .append("circle")
-    .attr("class", "dataItem")
-    .attr("r", 3.2)
-    .attr("cx", d => xScale(d.year))
-    .attr("cy", d => yScale(d.ratio_employment_to_population))
-    .style("fill", lineColor) // Définir la couleur de remplissage sur la couleur de ligne
-    .style("stroke", lineColor) // Définir la couleur de contour sur la couleur de ligne
-    .style("stroke-width", 1)
-    .style("opacity", 1) // Démarrer avec une opacité de 1
-    .on("mouseover", mouseOverFunction)
-    .on("mouseleave", mouseLeaveFunction);
-
-  // Transition to make circles visible
-  allCircles.transition().duration(1000).style("opacity", 1);
-
-  // Mettre à jour les cercles existants
-  allCircles
-      .attr("cx", d => xScale(d.year))
-      .attr("cy", d => yScale(d.ratio_employment_to_population))
-      .style("fill", lineColor) // Mettre à jour la couleur de remplissage
-      .style("stroke", lineColor); // Mettre à jour la couleur de contour 
-  })};
-  
 }
+  
+
 
 //#################################### Update visual idioms ####################################
 
@@ -738,6 +750,24 @@ function mouseOverFunction(event, d) {
 }
 
 
+function showTooltipcontinent(event,continent) {
+  var tooltip = document.getElementById('tooltip');
+
+  // Update the content of the tooltip with the continent name
+  tooltip.textContent = `${continent} Average`; // Use continent instead of continent.name
+
+  // Set the tooltip's position based on mouse coordinates
+  tooltip.style.left = (event.pageX + 10) + 'px'; // X position with some offset
+  tooltip.style.top = (event.pageY + 10) + 'px'; // Y position with some offset
+
+  // Set z-index to ensure it stays on top
+  tooltip.style.zIndex = 10;
+
+  // Make the tooltip visible
+  tooltip.style.display = 'block';
+}
+
+
 function mouseLeaveFunction(event, d) {
     const hoveredCountry = d.country; // Get the country of the hovered item
     hideTooltip();
@@ -750,5 +780,7 @@ function mouseLeaveFunction(event, d) {
         .style("stroke-width", 1); // Reset stroke width
   
 }
+
+
 
   

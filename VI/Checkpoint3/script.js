@@ -24,7 +24,7 @@ function filterDataset(startYear,endYear) {
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
   let filteredData4 = globalData4.filter(item => item.year >= startyear && item.year <= endyear);
  
-  createLineChart(filteredData1, filteredData3);
+  createLineChart(filteredData1, filteredData3,continentlist);
   createRadarChart(filteredData1);
 
   filteredData1 = filteredData1.filter(d => d.level_education == "TOTAL");
