@@ -474,17 +474,6 @@ function createLineChart(data, data_average,clickedList,continentlist) {
             .x((d) => xScale(d.year)) 
             .y((d) => yScale(d.ratio_employment_to_population)); 
 
-
-          // ------------------Calculate the new y-axis domain based on all the data-----------------
-          /*const allData = Object.values(groupedByContinent).flat();
-          const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -8), 
-                          d3.max(allData, d => d.ratio_employment_to_population + 8)];
-          yScale.domain(yDomain);
-
-          //---------------------redraw all the axis----------------------
-          /*svg.select(".yAxis") // Make sure you have the y-axis appended previously
-            .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));*/
-          // Append y-axis to the SVG
           svg
             .append("g")
             .attr("class", "yAxis")

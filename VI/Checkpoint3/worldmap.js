@@ -341,8 +341,7 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
     }
 
     // Update the magnet chart based on the current clicked list
-    updateJobMagnetChart(clickedList); //---------------------------------------change to update dashboard once everything is done. 
-
+    updateDashboard();
     });
  
 }

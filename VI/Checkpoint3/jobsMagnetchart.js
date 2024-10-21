@@ -128,7 +128,7 @@ const countries = [
   { code: "POL", country: "Poland" },
   { code: "PRT", country: "Portugal" },
   { code: "ROU", country: "Romania" },
-  { code: "RUS", country: "Russian Federation" },
+  { code: "RUS", country: "Russia" },
   { code: "RWA", country: "Rwanda" },
   { code: "LCA", country: "Saint Lucia" },
   { code: "WSM", country: "Samoa" },
@@ -469,8 +469,9 @@ function createJobMagnetChart(employmentData, categories) {
     };
 
     // Update the magnet chart based on the current clicked list
-    updateWorldMap(clickedList); //---------------------------------------change to update dashboard once everything is done. 
-
+    //updateWorldMap(clickedList); //---------------------------------------change to update dashboard once everything is done. 
+    //updatelinechart();
+    updateDashboard();
     })
 }
 
