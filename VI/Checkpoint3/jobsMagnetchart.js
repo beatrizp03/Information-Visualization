@@ -433,7 +433,45 @@ function createJobMagnetChart(employmentData, categories) {
       d3.select(this).attr("fill", lighestColor); // Revert fill color to default
       tooltip.style("visibility", "hidden");
       svg.selectAll(".country-label").remove();
-    });
+    })
+
+
+    .on("click", function(event,d) {
+      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
+      const continent = getContinent(countryName); // Function to get continent by country name
+      const countryCode = getCountryCode(countryName);
+      console.log(clickedList);
+      // Check if the clicked country is already in the clicked list
+    const existingEntryIndex = clickedList.findIndex(clicked => 
+      clicked.country === countryCode && clicked.continent === continent
+    );
+    if (existingEntryIndex === -1) {
+      //store color
+      const currentColor = d3.select(this).style("fill"); // Get the current fill color
+      originalColors[countryCode] = currentColor; // Store the original color
+
+      // If not found, add to the clicked list
+      clickedList.push({ continent, country: countryCode });
+      console.log("Clicked list (added):", clickedList);
+      
+      // Update styles for the clicked country
+      d3.select(this)
+        .style("fill", "purple") // Change color for clicked country
+        .attr("opacity", 1); // Set high opacity for clicked country
+    } else {
+      // If found, remove the entry from the clicked list
+      clickedList.splice(existingEntryIndex, 1); // Remove the entry at the found index
+      console.log("Clicked list (removed):", clickedList);
+      const originalColor = lighestColor; // Get the stored original color
+      d3.select(this)
+        .style("fill", originalColor) // Restore original color
+        .attr("opacity", 0.5)
+    };
+
+    // Update the magnet chart based on the current clicked list
+    updateWorldMap(clickedList); //---------------------------------------change to update dashboard once everything is done. 
+
+    })
 }
 
 function updateJobMagnetChart(clickedList) {
