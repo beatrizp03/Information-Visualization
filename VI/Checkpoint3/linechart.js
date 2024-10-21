@@ -236,11 +236,11 @@ function clearLines() {
     });
 
     if(activeChart == "job"){
-      updateMagnetChart(clickedList);
+      updateJobMagnetChart(clickedList);
     }else{
       updateSalaryMagnetChart(clickedList);
     }
-    //updateMagnetChart(clickedList);
+    //updateJobMagnetChart(clickedList);
 
     updateWorldMap(clickedList);
     // Update the dashboard to reflect cleared selections
@@ -341,7 +341,8 @@ function showCountryButtons(continent_id) {
         countryButton.style.backgroundColor = ''; // Reset background color or set it to default
       }
       
-      updateDashboard();
+      //updateDashboard();
+      updateValue();
     });
     countryContainer.appendChild(countryButton);
   });
@@ -663,11 +664,11 @@ function updateDashboard() {
 
     createLineChart(globalData1, globalData3,clickedList,continentlist);
     if(activeChart == "job"){
-      updateMagnetChart(clickedList);
+      updateJobMagnetChart(clickedList);
     }else{
       updateSalaryMagnetChart(clickedList);
     }
-    //updateMagnetChart(clickedList);
+    //updateJobMagnetChart(clickedList);
     updateWorldMap(clickedList);
     
 

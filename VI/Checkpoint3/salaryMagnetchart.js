@@ -246,7 +246,7 @@ function createSalaryMagnetChart(salaryData) {
 
 //5 top and 5 bottom ones
 function createSalaryMagnetChart(salaryData) {
-    const width = 400;
+    const width = 500;
     const height = 450;
     const margin = { top: 5, right: 5, bottom: 5, left: 5 };
     const magnetWidth = 90; // Magnet size

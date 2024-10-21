@@ -190,7 +190,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   grid-template-areas:
     "grid-item-world grid-item-magnets"
     "grid-item-line grid-item-radar";*/
-  display: flex;
+  display: grid;
   flex-direction: column; /* Align items vertically */
   justify-content: space-between; /* Create space between the two grids */
   align-items: center; /* Center horizontally */
@@ -299,7 +299,8 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 
 .line-chart-button:hover {
-  background-color:  rgba(178, 53, 71, 0.9); /* Darken background color on hover */
+  background-color:  rgb(96, 93, 93); /* Darken background color on hover */
+  font-weight: bold;
 }
 
 .buttons {

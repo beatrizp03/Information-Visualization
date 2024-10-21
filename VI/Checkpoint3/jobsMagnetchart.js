@@ -436,7 +436,7 @@ function createJobMagnetChart(employmentData, categories) {
     });
 }
 
-function updateMagnetChart(clickedList) {
+function updateJobMagnetChart(clickedList) {
   // Select all country paths
   d3.selectAll(".node")
     .style("fill", function(d) {
