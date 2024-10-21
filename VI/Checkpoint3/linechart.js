@@ -341,8 +341,8 @@ function showCountryButtons(continent_id) {
         countryButton.style.backgroundColor = ''; // Reset background color or set it to default
       }
       
-      //updateDashboard();
-      updateValue();
+      updateDashboard();
+      //updateValue();
     });
     countryContainer.appendChild(countryButton);
   });
