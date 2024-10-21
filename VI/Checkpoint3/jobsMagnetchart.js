@@ -443,6 +443,8 @@ function updateMagnetChart(clickedList) {
         const countryName = d.country;  // Assuming d.id is the country code or name
         // Check if the country is in the clickedList and change its color accordingly
         if (clickedList.some(clicked => clicked.country === countryName)) {
+            d3.select(this).raise();
+            d3.select(this).attr("opacity", 0.6);
             return "purple";  // Change color for clicked countries (e.g., orange/red)
         }
     });
