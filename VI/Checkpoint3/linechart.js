@@ -302,16 +302,15 @@ function showCountryButtons(continent_id) {
       if (this.checked) {
         console.log(`Displaying ${continentName} data`);
         continentlist.push({name: continentName });
-        updateValue();
-        // Logique pour afficher la moyenne du continent
+        updatelinechart();
         
       } else {
         console.log(`Hiding ${continentName} data`);
         continentlist = continentlist.filter(continent => continent.name !== continentName);
-        updateValue();
+        updatelinechart();
+        
       }
       console.log(continentlist);
-      
     });
     
   }
@@ -342,7 +341,7 @@ function showCountryButtons(continent_id) {
         countryButton.style.backgroundColor = ''; // Reset background color or set it to default
       }
       
-      updateValue();
+      updateDashboard();
     });
     countryContainer.appendChild(countryButton);
   });
@@ -361,10 +360,9 @@ function getContinentByCountry(countryCode) {
 }
 //#################################### Create visual idioms ####################################
 
-function createLineChart(data, data_average,continentlist) {
+function createLineChart(data, data_average,clickedList,continentlist) {
 
   // Clean the data
-  const checkbox = document.getElementById('continent-average-checkbox');
   const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
     continent,
     year: parseInt(year, 10), // Convert year to a number
@@ -657,10 +655,13 @@ function createLineChart(data, data_average,continentlist) {
 }
   
 //#################################### Update visual idioms ####################################
+function updatelinechart(){
+  createLineChart(globalData1, globalData3,clickedList,continentlist);
+}
 
 function updateDashboard() {
 
-    createLineChart(globalData1 , globalData3, clickedList);
+    createLineChart(globalData1, globalData3,clickedList,continentlist);
     if(activeChart == "job"){
       updateMagnetChart(clickedList);
     }else{
@@ -738,7 +739,7 @@ function mouseOverFunction(event, d) {
 function showTooltipcontinent(event,continent) {
   var tooltip2 = document.getElementById('tooltip2');
   // Update the content of the tooltip with the continent name
-  tooltip2.textContent = `Average ${continent}`; // Use continent instead of continent.name
+  tooltip2.textContent = `Continent Average : ${continent}`; // Use continent instead of continent.name
 
   // Set the tooltip's position based on mouse coordinates
   tooltip2.style.left = (event.pageX + 10) + 'px'; // X position with some offset
