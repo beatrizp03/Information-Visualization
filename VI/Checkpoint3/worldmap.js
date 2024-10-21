@@ -163,10 +163,10 @@ function updateWorldMap(clickedList) {
     });
 }*/
 
-
 //_______________NEW TRY__________________
 // Function to create the world map visualization
 // Function to create the world map visualization
+let originalColors = {};
 function createWorldMap(employmentData, isInitialLoad = false) {
   const width = 960;
   const height = 450;
@@ -267,7 +267,8 @@ function renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip)
       const employmentRatio = employmentMap[d.id];  // d.id should be the country code
       return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
     })
-    .attr("stroke", "none");
+    .attr("stroke", "none")
+    
 
   // Attach the event listeners for tooltips
   reattachEventListeners(svg, employmentMap, tooltip);
@@ -305,8 +306,47 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       d3.select(this)
         .style("stroke", "none");  // Remove hover border
       tooltip.style("visibility", "hidden");
+    })
+    //add clicked country to clicked list
+    .on("click", function(event, d) {
+      const countryName = d.properties.name;
+      const continent = getContinent(countryName); // Function to get continent by country name
+      const countryCode = getCountryCode(countryName);
+
+      // Check if the clicked country is already in the clicked list
+    const existingEntryIndex = clickedList.findIndex(clicked => 
+      clicked.country === countryCode && clicked.continent === continent
+    );
+
+    if (existingEntryIndex === -1) {
+      //store color
+      const currentColor = d3.select(this).style("fill"); // Get the current fill color
+      originalColors[countryCode] = currentColor; // Store the original color
+
+      // If not found, add to the clicked list
+      clickedList.push({ continent, country: countryCode });
+      console.log("Clicked list (added):", clickedList);
+      
+      // Update styles for the clicked country
+      d3.select(this)
+        .style("fill", "purple") // Change color for clicked country
+        .attr("opacity", 1); // Set high opacity for clicked country
+    } else {
+      // If found, remove the entry from the clicked list
+      clickedList.splice(existingEntryIndex, 1); // Remove the entry at the found index
+      console.log("Clicked list (removed):", clickedList);
+      const originalColor = originalColors[countryCode]; // Get the stored original color
+      d3.select(this)
+        .style("fill", originalColor) // Restore original color
+    }
+
+    // Update the magnet chart based on the current clicked list
+    updateJobMagnetChart(clickedList); //---------------------------------------change to update dashboard once everything is done. 
+
     });
+ 
 }
+
 
 // Function to add the color scale legend
 function addColorScaleLegend(svg, colorScale) {
@@ -359,4 +399,25 @@ function updateWorldMap(clickedList) {
             return "purple";  // Change color for clicked countries (e.g., orange/red)
         }
     });
+}
+function getCountryCode(countryName) {
+  for (const continent in continents) {
+    const countries = continents[continent];
+    const country = countries.find(c => c.name === countryName);
+    if (country) {
+      return country.code; // Return the found country code
+    }
+  }
+  return null; // Return null if the country is not found
+}
+
+function getContinent(countryName) {
+  for (const continent in continents) {
+    const countries = continents[continent];
+    const country = countries.find(c => c.name === countryName);
+    if (country) {
+      return continent; // Return the continent name if country is found
+    }
+  }
+  return null; // Return null if the country is not found
 }

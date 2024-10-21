@@ -121,7 +121,7 @@ const continents = {
   { name: "Poland", code: "POL" },
   { name: "Portugal", code: "PRT" },
   { name: "Romania", code: "ROU" },
-  { name: "Russian Federation", code: "RUS" },
+  { name: "Russia", code: "RUS" },
   { name: "Serbia", code: "SRB" },
   { name: "Slovakia", code: "SVK" },
   { name: "Slovenia", code: "SVN" },
