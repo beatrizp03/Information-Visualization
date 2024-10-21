@@ -194,7 +194,7 @@ const lighestColor = "#F6ADC7";
 
 // Function to create the magnet chart visualization
 function createJobMagnetChart(employmentData, categories) {
-  const width = 400;
+  const width = 500;
   const height = 450;
   const margin = { top: 5, right: 5, bottom: 5, left: 5 };
   const magnetWidth = 90; // Magnet size
@@ -374,9 +374,9 @@ function createJobMagnetChart(employmentData, categories) {
     .enter()
     .append("circle")
     .attr("class", "node")
-    .attr("r", 5)
+    .attr("r", 7.5)
     .attr("fill", lighestColor)
-    .attr("opacity", 0.8) // Set opacity to 0.8
+    .attr("opacity", 0.5) // Set opacity to 0.8
     /*.on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
 
@@ -428,14 +428,10 @@ function createJobMagnetChart(employmentData, categories) {
           .style("visibility", "visible")
           .style("top", (event.pageY + 10) + "px")
           .style("left", (event.pageX + 10) + "px");
-  
-      // Hide tooltip after 3 seconds
-      setTimeout(() => {
-          tooltip.style("visibility", "hidden");
-      }, 3000); // 3 seconds delay
     })
     .on("mouseout", function() {
       d3.select(this).attr("fill", lighestColor); // Revert fill color to default
+      tooltip.style("visibility", "hidden");
       svg.selectAll(".country-label").remove();
     });
 }

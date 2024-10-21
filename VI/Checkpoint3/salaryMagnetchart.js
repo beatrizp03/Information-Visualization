@@ -270,27 +270,27 @@ function createSalaryMagnetChart(salaryData) {
 
     // Step 2: Sort the countries by their average salary
     const sortedCountryAverages = countryAverages.sort((a, b) => b.average_salary_per_month - a.average_salary_per_month);
-
+    console.log(sortedCountryAverages);
     // Step 3: Select the top 5 highest and bottom 5 lowest
     const top5HighestSalaries = sortedCountryAverages.slice(0, 5);
     const top5LowestSalaries = sortedCountryAverages.slice(-5);
 
     // Combine the top 5 highest and lowest into one array
     const salarySubset = [...top5HighestSalaries, ...top5LowestSalaries];
-
-    //console.log("subset ", salarySubset);
+    console.log(salarySubset);
 
     // Calculate the global average
     const salaryValues = salarySubset.map(d => +d.average_salary_per_month);
+    console.log("subset ", salarySubset);
     const highestSalary = d3.max(salaryValues);
     const lowestSalary = d3.min(salaryValues);
     const globalAverageSalary = d3.mean(salaryValues);
 
-    //console.log("higest ", highestSalary,"global average ", globalAverageSalary,"lowest ", lowestSalary);
+    //console.log("highest ", highestSalary,"global average ", globalAverageSalary,"lowest ", lowestSalary);
 
     const magnetPositionMap = {
         "Lowest Salary": { x: width * 0.5, y: height * 0.85, value: lowestSalary },
-        "Higest Salary": { x: width * 0.5, y: height * 0.1, value: highestSalary }
+        "Highest Salary": { x: width * 0.5, y: height * 0.1, value: highestSalary }
     };
 
     const magnetPositionArray = Object.entries(magnetPositionMap).map(([category, position]) => ({
@@ -501,13 +501,10 @@ function createSalaryMagnetChart(salaryData) {
                 .style("visibility", "visible")
                 .style("top", (event.pageY + 10) + "px")
                 .style("left", (event.pageX + 10) + "px");
-        
-            setTimeout(() => {
-                tooltip.style("visibility", "hidden");
-            }, 3000); // Hide tooltip after 3 seconds
         })        
         .on("mouseout", function() {
             d3.select(this).attr("fill", lighestColor);
+            tooltip.style("visibility", "hidden");
             svg.selectAll(".country-label").remove();
         });
 }

@@ -373,9 +373,10 @@ function createLineChart(data, data_average,continentlist) {
 
 
   // Set the dimensions of the SVG container
-  const svgWidth = 815;
-  const svgHeight = 210;
+  const svgWidth = 875;
+  const svgHeight = 230;
   const margin = 60; 
+  const bottom_margin = 60;
   
   // Clear the SVG before appending new elements
   //d3.select(".line-chart").select("svg").remove();
@@ -406,7 +407,7 @@ function createLineChart(data, data_average,continentlist) {
 
   svg.append("text")
     .attr("x", svgWidth / 2) // Center the title horizontally
-    .attr("y", margin - 49) // Position it above the chart
+    .attr("y", margin - 50) // Position it above the chart
     .attr("text-anchor", "middle") // Center the text alignment
     .style("font-size", "16px") // Optional: Adjust font size
     .style("font-weight", "bold") // Optional: Make it bold
@@ -425,7 +426,8 @@ function createLineChart(data, data_average,continentlist) {
     .append("g")
     .attr("class", "yAxis")
     .attr("transform", `translate(${margin*1.5},0)`) 
-    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s"))); 
+    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s")));
+  
 
   // Append x-axis label
   svg
@@ -475,15 +477,24 @@ function createLineChart(data, data_average,continentlist) {
 
 
           // ------------------Calculate the new y-axis domain based on all the data-----------------
-          const allData = Object.values(groupedByContinent).flat();
+          /*const allData = Object.values(groupedByContinent).flat();
           const yDomain = [d3.min(allData, d => d.ratio_employment_to_population -8), 
                           d3.max(allData, d => d.ratio_employment_to_population + 8)];
           yScale.domain(yDomain);
 
           //---------------------redraw all the axis----------------------
-          svg.select(".yAxis") // Make sure you have the y-axis appended previously
-            .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));
-          
+          /*svg.select(".yAxis") // Make sure you have the y-axis appended previously
+            .call(d3.axisLeft(yScale).tickSizeOuter(0).tickFormat(d3.format(".2s")));*/
+          // Append y-axis to the SVG
+          svg
+            .append("g")
+            .attr("class", "yAxis")
+            .attr("transform", `translate(${margin * 1.5},0)`)
+            .call(
+              d3.axisLeft(yScale)
+                .tickSizeOuter(0) // This hides the outermost ticks
+                .tickValues(d3.range(0, 101, 20)) // Creates ticks at 0, 20, 40, 60, 80, 100
+            );
 
           //-------------------------draw the line------------------------------
 
@@ -645,8 +656,6 @@ function createLineChart(data, data_average,continentlist) {
     }
 }
   
-
-
 //#################################### Update visual idioms ####################################
 
 function updateDashboard() {

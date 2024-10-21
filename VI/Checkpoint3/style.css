@@ -181,16 +181,42 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### GRID #######################################*/
 
 .grid-container {
-  display: grid;
-  grid-template-columns: 2.5fr 1fr; /* First column wider than the second */
-  grid-template-rows: 1.5fr 1fr; /* Two equal rows */
-  height: 100vh; /* 100% of viewport height */
+  /*display: grid;
+  grid-template-columns: 2fr 1fr; /* First column wider than the second 
+  grid-template-rows: 1.5fr 1fr; /* Two equal rows 
+  height: 100vh; /* 100% of viewport height 
   padding: 10px;
   gap: 0px 0px;
   grid-template-areas:
     "grid-item-world grid-item-magnets"
-    "grid-item-line grid-item-radar";
+    "grid-item-line grid-item-radar";*/
+  display: flex;
+  flex-direction: column; /* Align items vertically */
+  justify-content: space-between; /* Create space between the two grids */
+  align-items: center; /* Center horizontally */
+  height: 100vh; /* Full viewport height */
+  padding: 10px;
 }
+
+
+.grid-item-top, .grid-item-bottom {
+  display: grid;
+  width: 100%; /* Set a desired width for the grid */
+  gap: 10px; /* Space between grid items */
+}
+
+/* Grid for the top item */
+.grid-item-top {
+  grid-template-columns: 2fr 1fr; /* Two equal columns */
+  /*background-color: lightblue;*/
+}
+
+/* Grid for the bottom item */
+.grid-item-bottom {
+  grid-template-columns:3fr 1fr; /* Two columns with different widths */
+  /*background-color: lightcoral;*/
+}
+
 
 .grid-item-world {
   /*background-color: lightblue;*/
@@ -235,7 +261,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### LINE #######################################*/
 
 .grid-item-line {
-  background-color: rgb(255, 255, 255);
+  /*background-color: lightgreen;*/
   display: grid;
   overflow: hidden;
   margin: 8px;
@@ -375,7 +401,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   font-weight: bold;
   margin-top: 0;
   margin-bottom: 5px;
-  margin-right: 30px;
+  margin-left: 100px;
 }
 
 /* Style for the 'i' button - square with rounded edges */
