@@ -406,15 +406,14 @@ function createLineChart(data, data_average,clickedList,continentlist) {
     .attr("width", svgWidth) 
     .attr("height", svgHeight);
 
-  svg.append("text")
+  /*svg.append("text")
     .attr("x", svgWidth / 2) // Center the title horizontally
     .attr("y", margin - 50) // Position it above the chart
     .attr("text-anchor", "middle") // Center the text alignment
     .style("font-size", "16px") // Optional: Adjust font size
     .style("font-weight", "bold") // Optional: Make it bold
-    .text("Women's Employment Rate by Country and Year");
+    .text("Women's Employment Rate by Country and Year");*/
 
-    
   // Append x-axis to the SVG
   svg
   .append("g")
@@ -452,7 +451,7 @@ function createLineChart(data, data_average,clickedList,continentlist) {
     const tooltip2 = document.createElement("div");
     tooltip2.id = "tooltip2";
     tooltip2.style.position = "absolute";
-    tooltip2.style.fontSize = "14px";
+    tooltip2.style.fontSize = "16px";
     tooltip2.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
     tooltip2.style.color = "white";
     tooltip2.style.padding = "5px";
@@ -648,37 +647,22 @@ function createLineChart(data, data_average,clickedList,continentlist) {
   
 //#################################### Update visual idioms ####################################
 function updatelinechart(){
-  createLineChart(globalData1, globalData3,clickedList,continentlist);
+  updateDatasetLineChart(globalData1, globalData3,clickedList,continentlist);
 }
 
 function updateDashboard() {
 
-    createLineChart(globalData1, globalData3,clickedList,continentlist);
+    updateDatasetLineChart(globalData1, globalData3,clickedList,continentlist);
     if(activeChart == "job"){
       updateJobMagnetChart(clickedList);
     }else{
       updateSalaryMagnetChart(clickedList);
     }
-    //updateJobMagnetChart(clickedList);
     updateWorldMap(clickedList);
     
 
 }
   
-const tooltip = document.createElement("div");
-tooltip.id = "tooltip";
-tooltip.style.position = "absolute";
-tooltip.style.fontSize = "14px";
-tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-tooltip.style.color = "white";
-tooltip.style.padding = "5px";
-tooltip.style.borderRadius = "5px";
-tooltip.style.display = "none";
-tooltip.style.pointerEvents = "none";
-document.body.appendChild(tooltip);
-
-
-
 
 // Create a function to show the tooltip with dynamic content
 function showTooltip(event, countryData) {
@@ -698,6 +682,9 @@ function showTooltip(event, countryData) {
 
   // Set z-index to ensure it stays on top
   tooltip.style.zIndex = 10;
+  tooltip.style.fontSize = "16px";
+  tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
+  tooltip.style.padding = "5px";
   
   // Make the tooltip visible
   tooltip.style.display = 'block';

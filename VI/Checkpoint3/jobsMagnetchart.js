@@ -404,13 +404,14 @@ function createJobMagnetChart(employmentData, categories) {
           "Manufacturing",
           "Market_services",
           "Mining_and_quarrying",
-          "Non_market_services"
+          "Non_market_services", 
+          "Non_classified"
       ];
   
       for (const category of relevantCategories) {
           if (d[category] !== undefined) { // Ensure the key exists in the data
               employmentDataArray.push({
-                  category: category.replace(/_/g, ' '), // Format category name
+                  category: category.replace(/_/g, ' ').replace("Non classified", "No information"), // Format category name
                   value: parseFloat(d[category]).toFixed(2) // Convert to float and format
               });
           }
@@ -642,7 +643,7 @@ function createJobMagnetChart(employmentData, categories) {
     .style("align-items", "center")
     .style("justify-content", "center")
     .style("text-align", "center")
-    .style("font-size", "14px")
+    .style("font-size", "16px")
     .style("color", "white")
     .html(d => d.category.replace(/_/g, '<br/>'));
 

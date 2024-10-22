@@ -163,7 +163,7 @@ function createSalaryMagnetChart(salaryData) {
         //.attr("dy", d => d.category === "Global Average Salary" ? 0 : 0) // Adjust vertical offset as necessary
         .attr("text-anchor", "middle") // Center text horizontally
         .attr("dominant-baseline", "middle") // Center text vertically
-        .style("font-size", "14px")
+        .style("font-size", "16px")
         .style("fill", "white")
         .style("font-weight", d => d.category === "Global Average Salary" ? "bold" : "normal") // Bold for Global Average Salary
         .text(d => d.category); // Display the text
@@ -410,7 +410,7 @@ function createSalaryMagnetChart(salaryData) {
         .attr("x", width * 0.2) // Centered on the line
         .attr("y", height * 0.48) // Slightly above the line
         .attr("text-anchor", "middle")
-        .style("font-size", "14px")
+        .style("font-size", "16px")
         .style("font-weight", "bold")
         .style("fill", "#B53389")
         .text("Global Average Salary");
@@ -497,7 +497,7 @@ function createSalaryMagnetChart(salaryData) {
             const averageCountry = isNaN(d.average_salary_per_month) ? "Data not available" : d.average_salary_per_month;
         
             tooltip
-                .html(`Country: ${countryName}<br>Year Range: ${oldestYear} - ${mostRecentYear}<br>Salary: ${averageCountry}`)
+                .html(`Country: ${countryName}<br>Year Range: ${oldestYear} - ${mostRecentYear}<br>Salary: ${averageCountry.toFixed(2)}`)
                 .style("visibility", "visible")
                 .style("top", (event.pageY + 10) + "px")
                 .style("left", (event.pageX + 10) + "px");

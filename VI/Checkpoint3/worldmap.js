@@ -141,7 +141,7 @@
       .attr("y", (d, i) => i * (legendHeight / 5) + (legendHeight / 20) -20)  // Vertical positioning (center)
       .attr("dy", "10px") // Offset the text 10px lower using dy attribute
       .text(d => d)  // Just display the numbers (e.g., 0, 20, 40, 60, etc.)
-      .style("font-size", "14px")
+      .style("font-size", "16px")
       .style("alignment-baseline", "middle")
       .style("text-anchor", "start");
   }).catch(function(error) {
@@ -167,15 +167,22 @@ function updateWorldMap(clickedList) {
 // Function to create the world map visualization
 // Function to create the world map visualization
 let originalColors = {};
+var mostRecentYear = 2023;
+var leastRecentYear = 2000;
+
 function createWorldMap(employmentData, isInitialLoad = false) {
+  const years = Array.from(new Set(employmentData.map(d => d.year)));
+  leastRecentYear = Math.min(...years);
+  mostRecentYear = Math.max(...years);
+
   const width = 960;
   const height = 450;
 
   // Select or create the SVG container
-  let svg = d3.select(".grid-item-world").select("svg");
+  let svg = d3.select(".world-map").select("svg");
 
   if (svg.empty()) {
-    svg = d3.select(".grid-item-world")
+    svg = d3.select(".world-map")
       .append("svg")
       .attr("width", width)
       .attr("height", height);
@@ -268,6 +275,7 @@ function renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip)
       return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
     })
     .attr("stroke", "none")
+    .attr("stroke-width", "0.4");  
     
 
   // Attach the event listeners for tooltips
@@ -298,13 +306,14 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       const employmentRatio = employmentMap[d.id];
       const countryName = d.properties.name;
 
-      tooltip.html(`${countryName}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
+      tooltip.html(`${countryName}<br>Year Range: ${leastRecentYear} - ${mostRecentYear}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
         .style("top", (event.pageY + 10) + "px")
         .style("left", (event.pageX + 10) + "px");
     })
     .on("mouseout", function(event, d) {
       d3.select(this)
-        .style("stroke", "none");  // Remove hover border
+        .style("stroke", "white")  // Remove hover border
+        .style("stroke-width", "0.4");  // Set border width back to 1
       tooltip.style("visibility", "hidden");
     })
     //add clicked country to clicked list

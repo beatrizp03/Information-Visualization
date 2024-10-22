@@ -33,7 +33,7 @@ function createRadarChart(data) {
         .style('color', '#fff')
         .style('padding', '5px')
         .style('border-radius', '5px')
-        .style('font-size', '12px')
+        .style('font-size', '16px')
         .style('pointer-events', 'none');
 
     // Create SVG and add transformation to rotate the pentagon
@@ -138,7 +138,7 @@ function createRadarChart(data) {
             .attr('y', y)
             .attr('dy', '0.35em')
             .style('text-anchor', 'middle')
-            .style('font-size', '14px')
+            .style('font-size', '16px')
             .text(label)
             .attr('transform', `rotate(18, ${x}, ${y})`);  // Rotate labels back by +18 degrees to keep them upright
     });

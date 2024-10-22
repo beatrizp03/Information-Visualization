@@ -30,6 +30,19 @@ function updateValue() {
   filterDataset(finalValOne,finalValTwo);
 }
 
+function updateDatasetLineChart() {
+  displayValOne.textContent = sliderOne.value; 
+  displayValTwo.textContent = sliderTwo.value; 
+
+  finalValOne = sliderOne.value;
+  finalValTwo = sliderTwo.value;
+
+  let filteredData1 = globalData1.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
+  let filteredData3 = globalData3.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
+ 
+  createLineChart(filteredData1, filteredData3,clickedList,continentlist);
+}
+
 function filterDataset(startYear,endYear) {
 
   let startyear=startYear;
@@ -74,7 +87,6 @@ function filterDataset(startYear,endYear) {
   ).flat();
 
   updateChartsBasedOnActiveButton(employmentDataArray, categories, filteredData4);
-  //createMagnetChart(employmentDataArray, categories);*/
 }
 
 
@@ -91,7 +103,6 @@ function updateSlider(yearmin, yearmax) {
   // Get the percentage positions for both sliders
   const range1Percent = ((yearmin - min) / (max - min)) * 100;
   const range2Percent = ((yearmax - min) / (max - min)) * 100;
-  //console.log(range1Percent)
   // Calculate the left position and width of the filled track
   filledTrack.style.left = `${Math.min(range1Percent, range2Percent)}%`;
   filledTrack.style.width = `${Math.abs(range2Percent - range1Percent)}%`;
@@ -109,10 +120,6 @@ function updateSlider(yearmin, yearmax) {
 
   bubble1.classList.add('visible');
   bubble2.classList.add('visible');
-
-  // Debugging - log the values
-  //console.log(`Thumb 1: ${range1Percent}%, Thumb 2: ${range2Percent}%`);
-  //console.log(`Filled Track Left: ${filledTrack.style.left}, Width: ${filledTrack.style.width}`);
 }
 
 
@@ -164,8 +171,6 @@ function init() {
   // Make the job chart visible by default
   document.querySelector('.job-chart-container').style.display = 'block';
   document.querySelector('.salaries-chart-container').style.display = 'none';
-
-  //createJobMagnetChart(employmentDataArray, categories);
 
   // Event listener for the Job Categories button
   

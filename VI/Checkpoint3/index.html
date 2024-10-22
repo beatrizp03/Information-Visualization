@@ -36,7 +36,10 @@
   </div>
     <div class="grid-container">
       <div class="grid-item-top">
-        <div class="grid-item-world"></div>
+        <div class="grid-item-world">
+          <div class="world-map"></div> <!-- Container for the world map -->
+          <div id="line-title" class="line-title" >Women's Employment Rate by Country and Year</div>
+        </div>
         <div class="grid-item-magnets">
           <div class="switch_chart-buttons">
             <button id="job_chart-btn" class="active">Job Categories</button>
@@ -71,8 +74,8 @@
           </div>
           <div class="line-chart">
             <div id="tooltip" style="position: absolute; opacity: 0; background: white; border: 1px solid black; padding: 5px; border-radius: 4px; pointer-events: none;"></div>
-            <button class="line-chart-button" id="clearselection">Clear selection</button>
           </div>
+          <button class="line-chart-button" id="clearselection">Clear selection</button>
         </div>
         <div class="grid-item-radar">
           <div class="radar-chart-container"></div>
