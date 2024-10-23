@@ -375,7 +375,7 @@ function createLineChart(data, data_average,clickedList,continentlist) {
 
   // Set the dimensions of the SVG container
   const svgWidth = 875;
-  const svgHeight = 230;
+  const svgHeight = 270;
   const margin = 60; 
   const bottom_margin = 60;
   

@@ -466,7 +466,7 @@ function createSalaryMagnetChart(salaryData) {
         .attr("fill", lighestColor)
         .attr("cx", d => d.x || width / 2)
         .attr("cy", d => d.y || height / 2)
-        .attr("opacity", 0.8)
+        .attr("opacity", 0.6)
         /*.on("mouseover", function(event, d) {
             d3.select(this).attr("fill", "purple"); // Change the circle color on hover
         

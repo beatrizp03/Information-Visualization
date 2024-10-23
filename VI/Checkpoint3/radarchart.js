@@ -15,7 +15,7 @@ function createRadarChart(data) {
 
     const width = 330;
     const height = 330;
-    const margin = { top: 50, right: 50, bottom: 50, left: 50 };
+    const margin = { top: 50, right: 25, bottom: 50, left: 90 };
     const radius = Math.min(width, height) / 2 - 50;
     const numberOfLevels = 5; // Number of concentric pentagons
     const levels = d3.range(1, numberOfLevels + 1);
@@ -41,7 +41,7 @@ function createRadarChart(data) {
         .attr('width', width + margin.left + margin.right)
         .attr('height', height + margin.top + margin.bottom)
         .append('g')
-        .attr('transform', `translate(${(width + margin.left) / 2}, ${(height) / 2.5}) rotate(-18)`);  // Rotate by -18 degrees to align one side with the page
+        .attr('transform', `translate(${(width + margin.left) / 2}, ${(height) / 2.15}) rotate(-18)`);  // Rotate by -18 degrees to align one side with the page
   
     // Scale for the data values (employment ratio)
     const radialScale = d3.scaleLinear()

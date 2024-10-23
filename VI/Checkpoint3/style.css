@@ -26,7 +26,7 @@
 }
 
 /*#################################### year range selection ####################################*/
-
+/*
 .button-container {
   position: relative;
   width: 95vmin;
@@ -38,16 +38,54 @@
 }
 
 .container {
+  background-color: #EC739F;
   position: relative;
   width: 50%;
   height: 12px;
   margin-top: 15px;
   display: flex;
-  align-items: center; /* Center items horizontally */
+  align-items: center; /* Center items horizontally 
   justify-content: center;
   flex-direction: column;
-  transform: translateY(-25px); /* Move everything 20px upwards */
+  transform: translateY(-25px); /* Move everything 20px upwards 
+}*/
+
+.button-container {
+  position: relative;
+  width: 95vmin;
+  margin: 0 auto;
+  height: 10px;
+  background-color: #ff0c0c00;
+  padding: 20px 700px 10px 40px; /* Adjust padding to remove unnecessary space */
+  border-radius: 5px;
 }
+
+.main-title-container {
+  background-color: #EC739F;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  width: 1000px;
+  color: black;
+  font-size: 20px;
+  font-weight: bold;
+  transform: translateY(-15px); 
+}
+
+.container {
+  position: absolute; /* Position absolute to place it relative to the .button-container */
+  top: 0; /* Align to the top of .button-container */
+  right: 0; /* Align to the right of .button-container */
+  width: 400px; /* Fixed width */
+  height: 12px;
+  margin-top: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: translateY(-20px); /* Keep the vertical adjustment */
+}
+
 
 input[type="range"] {
   -webkit-appearance: none;
@@ -196,6 +234,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   align-items: center; /* Center horizontally */
   height: 100vh; /* Full viewport height */
   padding: 10px;
+  gap: 10px;
 }
 
 
@@ -219,7 +258,9 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 
 .grid-item-world {
-  /*background-color: lightblue;*/
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
   width: 100%;
   margin: 0 auto;
 }
@@ -261,10 +302,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### LINE #######################################*/
 
 .grid-item-line {
-  /*background-color: lightgreen;*/
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
   display: grid;
   overflow: hidden;
-  margin: 8px;
+  height: 300px;
   grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
   grid-template-areas: 
     "buttons sub-buttons line-chart";
@@ -288,7 +331,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 .line-chart-button {
   position: absolute; /* Position it absolutely within the relative container */
-  top: 526px; /* Adjust the distance from the top */
+  top: 550px; /* Adjust the distance from the top */
   right: 450px; /* Adjust the distance from the right */
   background-color: rgba(91, 91, 95, 0.419); /* Button background color */
   color: white; /* Button text color */
@@ -320,12 +363,14 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 }
 
 .sub-buttons {
-  background-color: blue;
   display: flex;
   flex-direction: column;  
   gap: 1px;
   align-items: left; /* Centers buttons horizontally */
+  height: 300px; /* Set the desired height */
+  overflow-y: auto;
 }
+
 .tick-label {
   display: flex; /* Utiliser flexbox pour aligner la case et le texte */
   align-items: center; /* Centrer verticalement les éléments */
@@ -334,7 +379,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 }
 .menu-btn {
   width: 150px;  
-  height: 25px;   
+  height: 35px;   
   background-color: #faaf0d; 
   color: white; 
   border: none; 
@@ -349,7 +394,9 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### MAGNETS #######################################*/
 
 .grid-item-magnets {
-  /*background-color: lightgray;*/
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
   position: relative; 
   display: flex;
   flex-direction: column;
@@ -395,12 +442,15 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /*####################################### RADAR #######################################*/
 
 .grid-item-radar {
-  display: flex;
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
+  display: grid;
   justify-content: center;
   position: relative; /* Relative positioning to anchor the info button */
   overflow: hidden;
   max-width: 100%;
-  max-height: 100%;
+  max-height: 68%;
   margin: 0;
 }
 
@@ -426,7 +476,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   cursor: pointer;
   position: absolute;
   top: 10px;           /* Position relative to the top of the container */
-  right: 50px;         /* Align the button close to the right edge */
+  right: 25px;         /* Align the button close to the right edge */
   z-index: 1;
 }
 
@@ -484,6 +534,7 @@ body, html {
   justify-content: space-between; /* Space titles evenly */
   padding: 0 30px; /* Padding for spacing from edges */
 }
+
 .map-title, .magnet-title {
   font-weight: bold; /* Bold font */
   padding-top: 13px;
@@ -514,7 +565,7 @@ button {
 
 #country-container {
   width: 140px; /* Fixed width for the country container */
-  max-height: 150px; /* Max height to enable scrolling */
+  max-height: 200px; /* Max height to enable scrolling */
   overflow-y: auto; /* Enable vertical scrolling */
   border: 1px solid #ccc; /* Optional: border for visibility */
   padding: 3px; /* Padding inside the container */
