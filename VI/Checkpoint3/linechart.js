@@ -243,7 +243,7 @@ function clearLines() {
       updateSalaryMagnetChart(clickedList);
     }
     //updateJobMagnetChart(clickedList);
-
+    createRadarChart(globalData1, clickedList);
     updateWorldMap(clickedList);
     // Update the dashboard to reflect cleared selections
   }
@@ -658,9 +658,8 @@ function updateDashboard() {
     }else{
       updateSalaryMagnetChart(clickedList);
     }
+    updateRadarChart(globalData1, clickedList);
     updateWorldMap(clickedList);
-    
-
 }
   
 

@@ -53,7 +53,7 @@ function filterDataset(startYear,endYear) {
   filteredData4 = globalData4.filter(item => item.year >= startyear && item.year <= endyear);
  
   createLineChart(filteredData1, filteredData3,clickedList,continentlist);
-  createRadarChart(filteredData1);
+  createRadarChart(filteredData1, clickedList);
 
   filteredData1 = filteredData1.filter(d => d.level_education == "TOTAL");
   const reducedData1 = filteredData1.map(entry => ({
@@ -186,6 +186,7 @@ function init() {
 
       // Add your logic to switch to the "Job Categories" chart
       createJobMagnetChart(employmentDataArray, categories); // Call function for job chart
+      updateJobMagnetChart(clickedList);
   });
 
   // Event listener for the Salaries button
@@ -201,6 +202,7 @@ function init() {
 
       // Add your logic to switch to the "Salaries" chart
       createSalaryMagnetChart(filteredData4); // Call function for salaries chart
+      updateSalaryMagnetChart(clickedList);
   });
 
   d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
