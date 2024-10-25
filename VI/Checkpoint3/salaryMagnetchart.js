@@ -270,23 +270,19 @@ function createSalaryMagnetChart(salaryData) {
 
     // Step 2: Sort the countries by their average salary
     const sortedCountryAverages = countryAverages.sort((a, b) => b.average_salary_per_month - a.average_salary_per_month);
-    console.log(sortedCountryAverages);
+
     // Step 3: Select the top 5 highest and bottom 5 lowest
     const top5HighestSalaries = sortedCountryAverages.slice(0, 5);
     const top5LowestSalaries = sortedCountryAverages.slice(-5);
 
     // Combine the top 5 highest and lowest into one array
     const salarySubset = [...top5HighestSalaries, ...top5LowestSalaries];
-    console.log(salarySubset);
 
     // Calculate the global average
     const salaryValues = salarySubset.map(d => +d.average_salary_per_month);
-    console.log("subset ", salarySubset);
     const highestSalary = d3.max(salaryValues);
     const lowestSalary = d3.min(salaryValues);
     const globalAverageSalary = d3.mean(salaryValues);
-
-    //console.log("highest ", highestSalary,"global average ", globalAverageSalary,"lowest ", lowestSalary);
 
     const magnetPositionMap = {
         "Lowest Salary": { x: width * 0.5, y: height * 0.85, value: lowestSalary },
@@ -367,6 +363,16 @@ function createSalaryMagnetChart(salaryData) {
                 return constrainedY;
             });
     }
+    // Create the tooltip
+    const tooltip = d3.select("body").append("div")
+        .attr("class", "tooltip")
+        .style("position", "absolute")
+        .style("background", "rgba(0, 0, 0, 0.7)")
+        .style("color", "white")
+        .style("padding", "5px")
+        .style("border-radius", "5px")
+        .style("visibility", "hidden")
+        .style("pointer-events", "none");
 
     // Update magnets' appearance for Highest and Lowest
     svg.selectAll(".magnet")
@@ -380,7 +386,19 @@ function createSalaryMagnetChart(salaryData) {
         .attr("x", d => d.x - magnetWidth / 2)
         .attr("y", d => d.y - magnetHeight / 2)
         .attr("rx", 5)
-        .attr("ry", 5);
+        .attr("ry", 5)
+        .on("mouseover", function(event, d) {
+            const val = d.value;
+            tooltip
+                .html(`Value: ${val.toFixed(2)} $`)
+                .style("visibility", "visible")
+                .style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        })        
+        .on("mouseout", function() {
+            d3.select(this).attr("fill", darkestColor);
+            tooltip.style("visibility", "hidden");
+        });
 
     // Add labels for Highest and Lowest magnets
     svg.selectAll(".magnet-label")
@@ -413,7 +431,19 @@ function createSalaryMagnetChart(salaryData) {
         .style("font-size", "16px")
         .style("font-weight", "bold")
         .style("fill", "#B53389")
-        .text("Global Average Salary");
+        .text("Global Average Salary")
+        .on("mouseover", function(event, d) {
+            const val = globalAverageSalary;
+            tooltip
+                .html(`Value: ${val.toFixed(2)} $`)
+                .style("visibility", "visible")
+                .style("top", (event.pageY + 10) + "px")
+                .style("left", (event.pageX + 10) + "px");
+        })        
+        .on("mouseout", function() {
+            d3.select(this).attr("fill", darkestColor);
+            tooltip.style("visibility", "hidden");
+        });
 
     // Custom magnet force based on category means
     function magnetForce() {
@@ -446,17 +476,6 @@ function createSalaryMagnetChart(salaryData) {
         });
     }
 
-    // Create the tooltip
-    const tooltip = d3.select("body").append("div")
-        .attr("class", "tooltip")
-        .style("position", "absolute")
-        .style("background", "rgba(0, 0, 0, 0.7)")
-        .style("color", "white")
-        .style("padding", "5px")
-        .style("border-radius", "5px")
-        .style("visibility", "hidden")
-        .style("pointer-events", "none");
-
     const nodes = svg.selectAll(".node")
         .data(countryNodes)
         .enter()
@@ -466,32 +485,8 @@ function createSalaryMagnetChart(salaryData) {
         .attr("fill", lighestColor)
         .attr("cx", d => d.x || width / 2)
         .attr("cy", d => d.y || height / 2)
-        .attr("opacity", 0.6)
-        /*.on("mouseover", function(event, d) {
-            d3.select(this).attr("fill", "purple"); // Change the circle color on hover
-        
-            const countryName = d.country;
-        
-            // Constrain x and y values as per your constraints
-            const constrainedX = Math.max(minX, Math.min(d.x, maxX));
-            const constrainedY = Math.max(minY, Math.min(d.y, maxY));
-        
-            // Remove previous labels if any
-            svg.selectAll(".country-label").remove(); 
-        
-            // Append the text label directly above the circle
-            svg.append("text")
-                .attr("class", "country-label")
-                .attr("x", constrainedX) // Align horizontally with the circle's constrained x position
-                .attr("y", constrainedY - 10) // Position slightly above the circle's constrained y position
-                .attr("text-anchor", "middle") // Center the text horizontally
-                .attr("dominant-baseline", "middle") // Align vertically
-                .style("font-size", "12px") // Adjust font size as needed
-                .style("fill", "black") // Set the text color
-                .text(countryName); // Display the country name
-        })   */     
+        .attr("opacity", 0.6)    
         .on("mouseover", function(event, d) {
-            //console.log(d);
             d3.select(this).attr("fill", "purple");
             const countryName = d.country;
             const averageCountry = isNaN(d.average_salary_per_month) ? "Data not available" : d.average_salary_per_month;
@@ -511,7 +506,6 @@ function createSalaryMagnetChart(salaryData) {
             const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
             const continent = getContinent(countryName); // Function to get continent by country name
             const countryCode = getCountryCode(countryName);
-            console.log(clickedList);
             // Check if the clicked country is already in the clicked list
           const existingEntryIndex = clickedList.findIndex(clicked => 
             clicked.country === countryCode && clicked.continent === continent
@@ -523,7 +517,6 @@ function createSalaryMagnetChart(salaryData) {
       
             // If not found, add to the clicked list
             clickedList.push({ continent, country: countryCode });
-            console.log("Clicked list (added):", clickedList);
             
             // Update styles for the clicked country
             d3.select(this)
@@ -532,7 +525,6 @@ function createSalaryMagnetChart(salaryData) {
           } else {
             // If found, remove the entry from the clicked list
             clickedList.splice(existingEntryIndex, 1); // Remove the entry at the found index
-            console.log("Clicked list (removed):", clickedList);
             const originalColor = lighestColor; // Get the stored original color
             d3.select(this)
               .style("fill", originalColor) // Restore original color

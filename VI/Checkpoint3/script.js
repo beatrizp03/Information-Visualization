@@ -1,6 +1,8 @@
 let sliderOne, sliderTwo, minGap, displayValOne, displayValTwo, finalValOne, finalValTwo;
 let globalData1 = [];
 let globalData2 = [];
+let filteredData1;
+let filteredData3;
 let filteredData2;
 let filteredData4;
 let globalData3 = [];
@@ -11,6 +13,7 @@ let categories = [];
 let employmentDataArray = [];
 
 function updateChartsBasedOnActiveButton(employmentDataArray, categories, filteredData4) {
+  console.log("Here");
     if (activeChart === "job") {
         createJobMagnetChart(employmentDataArray, categories); // Update job chart
         //updateJobMagnetChart(clickedList);
@@ -37,8 +40,8 @@ function updateDatasetLineChart() {
   finalValOne = sliderOne.value;
   finalValTwo = sliderTwo.value;
 
-  let filteredData1 = globalData1.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
-  let filteredData3 = globalData3.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
+  filteredData1 = globalData1.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
+  filteredData3 = globalData3.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
  
   createLineChart(filteredData1, filteredData3,clickedList,continentlist);
 }
@@ -47,7 +50,7 @@ function filterDataset(startYear,endYear) {
 
   let startyear=startYear;
   let endyear=endYear
-  let filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
+  filteredData1 = globalData1.filter(item => item.year >= startyear && item.year <= endyear);
   filteredData2 = globalData2.filter(item => item.year >= startyear && item.year <= endyear);
   let filteredData3 = globalData3.filter(item => item.year >= startyear && item.year <= endyear);
   filteredData4 = globalData4.filter(item => item.year >= startyear && item.year <= endyear);
@@ -174,36 +177,46 @@ function init() {
 
   // Event listener for the Job Categories button
   
-  jobChartBtn.addEventListener("click", function() {
-      activeChart = "job";
-      jobChartBtn.classList.add("active");
-      salariesChartBtn.classList.remove("active");
+  // Get the title element
+const titleElement = document.getElementById("magnet-title");
 
-      // Show the job chart and hide the salaries chart
-      document.querySelector('.job-chart-container').style.display = 'block';
-      document.querySelector('.salaries-chart-container').style.display = 'none';
-      console.log("Active chart: ", activeChart); // Print the active chart
+// Event listener for the Job Categories button
+jobChartBtn.addEventListener("click", function() {
+    activeChart = "job";
+    jobChartBtn.classList.add("active");
+    salariesChartBtn.classList.remove("active");
 
-      // Add your logic to switch to the "Job Categories" chart
-      createJobMagnetChart(employmentDataArray, categories); // Call function for job chart
-      updateJobMagnetChart(clickedList);
-  });
+    // Show the job chart and hide the salaries chart
+    document.querySelector('.job-chart-container').style.display = 'block';
+    document.querySelector('.salaries-chart-container').style.display = 'none';
 
-  // Event listener for the Salaries button
-  salariesChartBtn.addEventListener("click", function() {
-      activeChart = "salary";
-      salariesChartBtn.classList.add("active");
-      jobChartBtn.classList.remove("active");
+    // Update the title for Job Categories
+    titleElement.textContent = "Job Categories (%)"; 
 
-      // Show the salaries chart and hide the job chart
-      document.querySelector('.salaries-chart-container').style.display = 'block';
-      document.querySelector('.job-chart-container').style.display = 'none';
-      console.log("Active chart: ", activeChart); // Print the active chart
+    // Call functions related to the job chart
+    createJobMagnetChart(employmentDataArray, categories);
+    updateJobMagnetChart(clickedList);
+});
 
-      // Add your logic to switch to the "Salaries" chart
-      createSalaryMagnetChart(filteredData4); // Call function for salaries chart
-      updateSalaryMagnetChart(clickedList);
-  });
+// Event listener for the Salaries button
+salariesChartBtn.addEventListener("click", function() {
+    activeChart = "salary";
+    salariesChartBtn.classList.add("active");
+    jobChartBtn.classList.remove("active");
+
+    // Show the salaries chart and hide the job chart
+    document.querySelector('.salaries-chart-container').style.display = 'block';
+    document.querySelector('.job-chart-container').style.display = 'none';
+    console.log("Active chart: ", activeChart); // Print the active chart
+
+    // Update the title for Salaries
+    titleElement.textContent = "Salaries ($)"; 
+
+    // Call functions related to the salaries chart
+    createSalaryMagnetChart(filteredData4);
+    updateSalaryMagnetChart(clickedList);
+});
+
 
   d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
     globalData1 = data1.map(d => {

@@ -225,28 +225,34 @@ document.addEventListener('DOMContentLoaded', function() {
 //#################################### clear selection button ####################################
 
 function clearLines() {
-    // Clear visualization elements if needed
-    d3.selectAll(".line").remove(); // Remove all lines
-    d3.selectAll(".dataItem").remove(); // Remove all circles
-  
-    // Clear the clickedList
-    clickedList = []; // Reset the clickedList to an empty array
-    continentlist=[];
-    // Reset the background color of all country buttons
-    document.querySelectorAll('.country-btn').forEach(button => {
-      button.style.backgroundColor = ''; // Reset background color to default
-    });
+  // Clear visualization elements within the line chart container
+  d3.select(".line-chart").selectAll("*").remove(); // Clear all elements within the line chart
 
-    if(activeChart == "job"){
+  // Clear the clickedList and continentlist
+  clickedList = [];
+  continentlist = [];
+
+  // Reset the background color of all country buttons
+  document.querySelectorAll('.country-btn').forEach(button => {
+      button.style.backgroundColor = ''; // Reset background color to default
+  });
+
+  // Reset charts based on the active chart type
+  if (activeChart === "job") {
       updateJobMagnetChart(clickedList);
-    }else{
+  } else {
       updateSalaryMagnetChart(clickedList);
-    }
-    //updateJobMagnetChart(clickedList);
-    createRadarChart(globalData1, clickedList);
-    updateWorldMap(clickedList);
-    // Update the dashboard to reflect cleared selections
   }
+
+  // Reset other charts
+  createRadarChart(globalData1, clickedList);
+  updateWorldMap(clickedList);
+
+  createLineChart(filteredData1, filteredData3, clickedList, continentlist);
+
+  console.log("Cleared selection, default chart redrawn");
+}
+
   // Attach the event listener for "Clear selection" button
 document.addEventListener('DOMContentLoaded', function() {
 document.getElementById("clearselection").addEventListener("click", clearLines);
@@ -494,16 +500,29 @@ function createLineChart(data, data_average,clickedList,continentlist) {
                   .attr('stroke', continentColors[continent]) 
                   .attr('stroke-width', 2) 
                   .attr('d', line) // Generate line
-                  .on('mouseover', function() {
+                  .on('mouseover', function(_, d) {
                     d3.select(this).attr('stroke-width', 3); // Increase stroke width on hover
+                
+                    // Select all other paths and reduce their stroke width
                     svg.selectAll('path')
                         .filter((_, i, nodes) => nodes[i] !== this) // Select all but the hovered line
                         .attr('stroke-width', 1); // Change other lines' stroke width
+                
+                    // Get the continent name and apply highlight to the button
+                    const continentName = continent; // Assuming 'd.continent' has the continent name
+                    d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
+                      .style("font-weight", "bold");// Optional: make text bold
                 })
-                .on('mouseout', function() {
+                .on('mouseout', function(_, d) {
                     d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
                     svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
-                });        
+                
+                    // Reset the button style for the hovered continent
+                    const continentName = continent;
+                    d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
+                      .style("font-weight", "");// Reset font weight
+                });
+                        
 
           });
   }
