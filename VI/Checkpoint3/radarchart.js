@@ -175,6 +175,15 @@ function updateRadarChart(data, clickedList) {
     // Clear existing elements in the radar chart container
     d3.select('.radar-chart-container svg').remove();
 
+    document.getElementById('info-btn').addEventListener('click', function() {
+        const infoBox = document.getElementById('info-box');
+        if (infoBox.style.display === 'block') {
+            infoBox.style.display = 'none';
+        } else {
+            infoBox.style.display = 'block';
+        }
+    });
+
     const width = 310;
     const height = 310;
     const margin = { top: 50, right: 25, bottom: 50, left: 90 };
@@ -237,64 +246,102 @@ function updateRadarChart(data, clickedList) {
     // Filter the data for the countries in clickedCountries
     const filteredDataByCountry = data.filter(d => clickedCountries.includes(d.country));
 
-    // Process each country in clickedList
     clickedList.forEach(countryObj => {
-
         const country = typeof countryObj === 'object' && countryObj.country ? countryObj.country : countryObj;
-
         const countryName = getCountryNameByCode(country);
-
-        // Filter data for the current country
         const countryData = filteredDataByCountry.filter(d => d.country === country);
-
-        // Create an array to store data points for each country
+        if (countryData.length === 0) {
+            // Skip this country if it doesn't exist in the data
+            return;
+        }
         const countryDataPoints = [];
-
-        // Calculate the data points for each education level
+    
         categories.forEach((category, i) => {
-            // Filter data for the current category across all years for this country
             const categoryData = countryData.filter(d => d.level_education === category);
-
-            // Calculate the average employment ratio across all years for this category
-            const value = d3.mean(categoryData, d => d.ratio_employment_to_population) || 0; // Default to 0 if no data
-
+            const value = d3.mean(categoryData, d => d.ratio_employment_to_population) || 0;
             const angle = (Math.PI * 2 / categories.length) * i;
             const x = radialScale(value) * Math.cos(angle);
             const y = radialScale(value) * Math.sin(angle);
-
-            // Push the calculated point for the category into the countryDataPoints array
             countryDataPoints.push({ x, y, value, label: categoryLabels[i], countryName });
         });
-
-        // Draw the polygon for the current country
-        svg.append('polygon')
+    
+        // Draw the polygon with `pointer-events: none` to allow interaction with underlying circles
+        const polygon = svg.append('polygon')
             .attr('points', countryDataPoints.map(d => `${d.x},${d.y}`).join(' '))
-            .attr('fill', 'rgba(236, 115, 159, 0.4)')  // Set the fill color
-            .attr('stroke', '#EC739F') // You can change this as well if needed
-            .attr('stroke-width', 2);
-
-        // Add small circles to each point for the current country
-        svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)  // Use `replace` to handle spaces in country names
+            .attr('fill', 'rgba(236, 115, 159, 0.4)')
+            .attr('stroke', '#EC739F')
+            .attr('stroke-width', 2)
+            .attr('class', `polygon-${country.replace(/\s/g, '-')}`)
+            .style('pointer-events', 'none'); // This makes the polygon non-interactive
+    
+        // Add circles with interactive hover effects
+        const circles = svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)
             .data(countryDataPoints)
             .enter()
             .append('circle')
-            .attr('class', `data-point-${country.replace(/\s/g, '-')}`)  // Use a valid CSS class name
+            .attr('class', `data-point data-point-${country.replace(/\s/g, '-')}`)
             .attr('cx', d => d.x)
             .attr('cy', d => d.y)
             .attr('r', 4)
-            .attr('fill', '#D14B7E')  // Same color function
+            .attr('fill', '#D14B7E')
             .on('mouseover', function(event, d) {
                 tooltip.style('visibility', 'visible')
                     .html(`Country: ${d.countryName}<br>Category: ${d.label}<br>Average Employment Rate: ${d.value.toFixed(2)}%`);
+                
+                svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)
+                    .attr('stroke', 'black')
+                    .attr('stroke-width', 2);
+    
+                svg.select(`.polygon-${country.replace(/\s/g, '-')}`)
+                    .attr('stroke', 'black');
+                
+                polygon.raise();
+                circles.each(function() { d3.select(this).raise(); });
             })
             .on('mousemove', function(event) {
-                tooltip.style('top', (event.pageY - 10) + 'px')
-                    .style('left', (event.pageX + 10) + 'px');
+                // Get the tooltip dimensions
+                const tooltipWidth = tooltip.node().offsetWidth;
+                const tooltipHeight = tooltip.node().offsetHeight;
+            
+                // Get the window dimensions
+                const windowWidth = window.innerWidth;
+                const windowHeight = window.innerHeight;
+            
+                // Calculate the default tooltip position
+                let tooltipX = event.pageX + 10;
+                let tooltipY = event.pageY - 10;
+            
+                // Adjust if tooltip is near the right edge
+                if (tooltipX + tooltipWidth > windowWidth) {
+                    tooltipX = event.pageX - tooltipWidth - 10;
+                }
+            
+                // Adjust if tooltip is near the bottom edge
+                if (tooltipY + tooltipHeight > windowHeight) {
+                    tooltipY = event.pageY - tooltipHeight - 10;
+                }
+            
+                // Adjust if tooltip is near the top edge
+                if (tooltipY < 0) {
+                    tooltipY = event.pageY + 10;
+                }
+            
+                // Apply the calculated position to the tooltip
+                tooltip.style('top', tooltipY + 'px').style('left', tooltipX + 'px');
             })
+            
             .on('mouseout', function() {
                 tooltip.style('visibility', 'hidden');
+    
+                svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)
+                    .attr('stroke', 'none');
+    
+                svg.select(`.polygon-${country.replace(/\s/g, '-')}`)
+                    .attr('stroke', '#EC739F');
             });
     });
+    
+    
 
     // Add labels for the corners of the pentagon (education categories)
     categoryLabels.forEach((label, i) => {

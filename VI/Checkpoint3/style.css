@@ -56,7 +56,7 @@
   margin: 0 auto;
   height: 10px;
   background-color: #ff0c0c00;
-  padding: 20px 700px 10px 40px; /* Adjust padding to remove unnecessary space */
+  padding: 20px 620px 10px 40px; /* Adjust padding to remove unnecessary space */
   border-radius: 5px;
 }
 
@@ -68,8 +68,8 @@
   color: white;
   font-size: 24px;
   font-weight: bold;
-  width: 1250px;
-  margin-left: 75px;
+  width: 1100px;
+  margin-left: 50px;
   border-radius: 10px; 
   border: 5px solid white;
   /*border: 2px solid #D14B7E;*/
@@ -261,15 +261,6 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   /*background-color: lightcoral;*/
 }
 
-
-.grid-item-world {
-  background-color: #F8F8FF; /* Light gray background */
-  border: 2px solid #DCDCDC; /* Lighter gray stroke */
-  border-radius: 10px; /* Rounded edges */
-  width: 100%;
-  margin: 0 auto;
-}
-
 /*####################################### WORLD #######################################*/
 
 /* Scope the SVG and path styles to the map-container */
@@ -287,6 +278,15 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   cursor: pointer;
 }
 
+.grid-item-world {
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
+  width: 100%;
+  height: 97%;
+  margin: 0 auto;
+}
+
 #map-title {
   font-size: 16px;  /* Set the font size */
   margin-top: 15px;  /* Move the element 10px down */
@@ -298,7 +298,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 }
 
 .tooltip {
-  font-size: 16px;
+  font-size: 16px;  
   pointer-events: none;
   transition: opacity 0.2s;
   z-index: 10;
@@ -309,11 +309,11 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 .grid-item-line {
   background-color: #F8F8FF; /* Light gray background */
   border: 2px solid #DCDCDC; /* Lighter gray stroke */
-  margin-top: -10px;
+  margin-top: -9px;
   border-radius: 10px; /* Rounded edges */
   display: grid;
   overflow: hidden;
-  height: 275px;
+  height: 61%;
   grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
   grid-template-areas: 
     "buttons sub-buttons line-chart";
@@ -329,11 +329,6 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   transform: translateX(15px);  /*Move left by 20 pixels */
 }
 
-.line-title {
-  font-size: 16px;
-  font-weight: bold;
-  margin-left: 20px;
-}
 
 .line-chart-button {
   position: absolute; /* Position it absolutely within the relative container */
@@ -353,6 +348,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   font-size: 12px; /* Set font size to 12px */
 }
 
+.line-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 20px;
+  margin-top: -16px;
+}
 
 .line-chart-button:hover {
   background-color:  rgb(96, 93, 93); /* Darken background color on hover */
@@ -409,9 +410,9 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   justify-content: center;    /* Horizontally center */
   align-items: center;        /* Vertically center */
   overflow: visible;          /* Ensure no scroll or hidden overflow */
-  margin: auto;               /* Center the item within the grid */
+  margin: 0 auto;               /* Center the item within the grid */
   width: 100%;                /* Full container width */
-  height: 100%;               /* Full container height */
+  height: 98%;               /* Full container height */
   box-sizing: border-box;      /* Include padding/border in element's width/height */
 }
 
@@ -465,14 +466,19 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   position: relative; /* Relative positioning to anchor the info button */
   overflow: hidden;
   max-width: 100%;
-  max-height: 67%;
-  margin-top: -10px;
+  max-height: 61%;
+  margin-top: -9px;
 }
 
 .radar-title {
   font-size: 16px;
   font-weight: bold;
-  margin-left: 25px;
+  margin-left: 20px;
+  margin-top: -16px;
+}
+
+.radar-chart-container {
+  margin-top: -10px;
 }
 
 /* Style for the 'i' button - square with rounded edges */
@@ -565,7 +571,7 @@ body, html {
   padding-left: 280px;
 }*/
 .magnet-title {
-  padding-left: 100px;
+  padding-left: 80px;
 }
 .button-container {
   /*background-color: lightyellow;*/
