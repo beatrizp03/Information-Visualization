@@ -13,10 +13,10 @@ let employmentDataArray = [];
 function updateChartsBasedOnActiveButton(employmentDataArray, categories, filteredData4) {
     if (activeChart === "job") {
         createJobMagnetChart(employmentDataArray, categories); // Update job chart
-        updateJobMagnetChart(clickedList);
+        //updateJobMagnetChart(clickedList);
     } else if (activeChart === "salary") {
         createSalaryMagnetChart(filteredData4); // Update salary chart
-        updateSalaryMagnetChart(clickedList);
+        //updateSalaryMagnetChart(clickedList);
     }
 }
 

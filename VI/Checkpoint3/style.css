@@ -65,20 +65,23 @@
   align-items: center;
   justify-content: center;
   text-align: center;
-  width: 1000px;
-  color: black;
-  font-size: 20px;
+  color: white;
+  font-size: 24px;
   font-weight: bold;
-  transform: translateY(-15px); 
+  width: 1250px;
+  margin-left: 75px;
+  border-radius: 10px; 
+  border: 5px solid white;
+  /*border: 2px solid #D14B7E;*/
 }
 
 .container {
   position: absolute; /* Position absolute to place it relative to the .button-container */
-  top: 0; /* Align to the top of .button-container */
-  right: 0; /* Align to the right of .button-container */
-  width: 400px; /* Fixed width */
+  top: -5px; /* Align to the top of .button-container */
+  right: -40px; /* Align to the right of .button-container */
+  width: 300px; /* Fixed width */
   height: 12px;
-  margin-top: 30px;
+  margin-top: 0px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -184,10 +187,10 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   color: white; 
   padding: 5px 10px;
   border-radius: 15px; /* Rounded corners */
-  font-size: 12px;
+  font-size: 10px;
   text-align: center;
   transform: translateX(-20px);
-  bottom: -26px; /* Adjust based on the position you want */
+  bottom: -25px; /* Adjust based on the position you want */
   opacity: 0.8; /* Semi-transparent */
   visibility: hidden; /* Hide initially */
 }
@@ -235,6 +238,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   height: 100vh; /* Full viewport height */
   padding: 10px;
   gap: 10px;
+  margin-top: -25px;
 }
 
 
@@ -247,6 +251,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 /* Grid for the top item */
 .grid-item-top {
   grid-template-columns: 2fr 1fr; /* Two equal columns */
+  margin-top: -10px;
   /*background-color: lightblue;*/
 }
 
@@ -284,12 +289,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 #map-title {
   font-size: 16px;  /* Set the font size */
-  margin-top: 10px;  /* Move the element 10px down */
+  margin-top: 15px;  /* Move the element 10px down */
 }
 
 #magnet-title {
   font-size: 16px;  /* Set the font size */
-  margin-top: 10px;  /* Move the element 10px down */
+  margin-top: 15px;  /* Move the element 10px down */
 }
 
 .tooltip {
@@ -304,16 +309,18 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 .grid-item-line {
   background-color: #F8F8FF; /* Light gray background */
   border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  margin-top: -10px;
   border-radius: 10px; /* Rounded edges */
   display: grid;
   overflow: hidden;
-  height: 300px;
+  height: 275px;
   grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
   grid-template-areas: 
     "buttons sub-buttons line-chart";
 }
 
 .line-chart {
+  margin-top: 5px;
   grid-column: 3 / 4;
   display: flex;
   width: 100%; /* Make sure the chart takes full width */
@@ -325,13 +332,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 .line-title {
   font-size: 16px;
   font-weight: bold;
-  margin-top: 20px;
-  margin-left: 540px;
+  margin-left: 20px;
 }
 
 .line-chart-button {
   position: absolute; /* Position it absolutely within the relative container */
-  top: 550px; /* Adjust the distance from the top */
+  top: 560px; /* Adjust the distance from the top */
   right: 450px; /* Adjust the distance from the right */
   background-color: rgba(91, 91, 95, 0.419); /* Button background color */
   color: white; /* Button text color */
@@ -433,6 +439,15 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   transition: background-color 0.3s; /* Add transition for hover effect */
 }
 
+.grid-item-magnets .switch_chart-buttons button:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50,0.8);
+  font-size: 12px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;
+}
+
 .switch_chart-buttons button.active {
   background-color: rgba(178, 53, 71, 0.9);  /* 90% opacity */
   color: white;
@@ -450,16 +465,14 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   position: relative; /* Relative positioning to anchor the info button */
   overflow: hidden;
   max-width: 100%;
-  max-height: 68%;
-  margin: 0;
+  max-height: 67%;
+  margin-top: -10px;
 }
 
 .radar-title {
   font-size: 16px;
   font-weight: bold;
-  margin-top: 0;
-  margin-bottom: 5px;
-  margin-left: 100px;
+  margin-left: 25px;
 }
 
 /* Style for the 'i' button - square with rounded edges */
@@ -478,6 +491,15 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   top: 10px;           /* Position relative to the top of the container */
   right: 25px;         /* Align the button close to the right edge */
   z-index: 1;
+}
+
+.info-btn:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50,0.8);
+  font-size: 18px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;           /* Match text color on hover */
 }
 
 
@@ -503,8 +525,6 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   margin-top: 0;          /* Remove any top margin from paragraph and list */
   margin-bottom: 0;
 }
-
-
 
 /* Style for the container holding both the button and the info box */
 .info-container {
@@ -536,15 +556,16 @@ body, html {
 }
 
 .map-title, .magnet-title {
+  text-align: left;
   font-weight: bold; /* Bold font */
   padding-top: 13px;
-  font-size: 18px;  /* Adjust font size */
+  font-size: 16px;  /* Adjust font size */
 }
-.map-title {
+/*.map-title {
   padding-left: 280px;
-}
+}*/
 .magnet-title {
-  padding-left: 230px;
+  padding-left: 100px;
 }
 .button-container {
   /*background-color: lightyellow;*/

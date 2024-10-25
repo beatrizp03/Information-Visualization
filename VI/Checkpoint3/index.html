@@ -16,11 +16,11 @@
 
   <body onload="init()">
     <div class="titles-container">
-      <!--<div id="map-title" class="map-title" >Women's Employment Rate Globally</div>
-      <div id="magnet-title" class="magnet-title" >Women's Most Employed Job Categories</div>-->
+      <div id="map-title" class="map-title" >Employment Rate (%)</div>
+      <div id="magnet-title" class="magnet-title" >Job Categories (%)</div>
     </div>
+    <div class="main-title-container">Woman's Employment Globally</div>
     <div class="button-container">
-      <div class="main-title-container">MAIN TITLE</div>
       <div class="container">
         <div class="values">
           <span id="range1" >2000</span> <!-- Display for slider 1 -->
@@ -37,8 +37,7 @@
     <div class="grid-container">
       <div class="grid-item-top">
         <div class="grid-item-world">
-          <div class="world-map"></div> <!-- Container for the world map 
-          <div id="line-title" class="line-title" >Women's Employment Rate by Country and Year</div>-->
+          <div class="world-map"></div> <!-- Container for the world map -->
         </div>
         <div class="grid-item-magnets">
           <div class="switch_chart-buttons">
@@ -47,10 +46,11 @@
           </div>
           <div class="job-chart-container"></div>  <!--Container for the magnet charts -->
           <div class="salaries-chart-container"></div>
-          <!--<div id="radar-title" class="radar-title" >Level of Education and Women's Employment Rate</div>-->
         </div>
       </div>
       <div class="grid-item-bottom">
+        <div id="line-title" class="line-title" >Rate by Country, Continent and Year</div>
+        <div id="radar-title" class="radar-title" >Level of Education</div>
         <div class="grid-item-line">
           <!-- Tooltip container, will be dynamically created in JavaScript -->
           <div id="tooltip" style="display:none; position:absolute; background-color: rgba(0,0,0,0.7); color:white; padding:10px; border-radius:5px; pointer-events:none;">
