@@ -232,6 +232,7 @@ function clearLines() {
   // Clear the clickedList and continentlist
   clickedList = [];
   continentlist = [];
+  hoveredcountry="";
 
   // Reset the background color of all country buttons
   document.querySelectorAll('.country-btn').forEach(button => {
@@ -247,9 +248,10 @@ function clearLines() {
 
   // Reset other charts
   createRadarChart(globalData1, clickedList);
-  updateWorldMap(clickedList);
+  updateWorldMap(clickedList,hoveredcountry);
 
-  createLineChart(filteredData1, filteredData3, clickedList, continentlist);
+  //createLineChart(filteredData1, filteredData3, clickedList, continentlist);
+  updateDatasetLineChart() //reset to default
 
   console.log("Cleared selection, default chart redrawn");
 }
@@ -371,7 +373,6 @@ function getContinentByCountry(countryCode) {
 //#################################### Create visual idioms ####################################
 
 function createLineChart(data, data_average,clickedList,continentlist) {
-
   // Clean the data
   const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
     continent,
