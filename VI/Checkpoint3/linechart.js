@@ -467,7 +467,7 @@ function createLineChart(data, data_average,clickedList,continentlist) {
     tooltip2.style.pointerEvents = "none";
     document.body.appendChild(tooltip2);
 
-    if (clickedList.length == 0) {
+    if (clickedList.length == 0 && continentlist.length == 0) {
          //------------------------- --load data----------------------------------
             const groupedByContinent = cleanedData.reduce((acc, current) => {
               const { continent } = current;
@@ -560,20 +560,56 @@ function createLineChart(data, data_average,clickedList,continentlist) {
               // --------------------------Create a color with the calculated shade--------------------------
               // function to generate distinct colors
               function getDistinctShade(baseColor, index, totalCountries) {
-              const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
+                const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
 
-              // Adjustments
-              const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
-              const lightnessAdjustment = 0.5; // Base lightness
-              const minLightness = 0.2; // Minimum lightness
-              const maxLightness = 0.8; // Maximum lightness
+                // Adjustments
+                const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
+                const lightnessAdjustment = 0.5; // Base lightness
+                const minLightness = 0.2; // Minimum lightness
+                const maxLightness = 0.8; // Maximum lightness
 
-              // Calculate lightness based on index, keeping it within min and max lightness bounds
-              const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
+                // Calculate lightness based on index, keeping it within min and max lightness bounds
+                const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
 
-              // Create a new color with the same hue, adjusted saturation and lightness
-              return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
+                // Create a new color with the same hue, adjusted saturation and lightness
+                return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
               }
+
+              //add new continent lines               
+              continentlist.forEach(continent => {
+                const countryData = data_average.filter(d => d.continent === continent.name); // Filtrer les données par continent
+                const line = d3.line()
+                  .x(d => xScale(d.year)) // Remplacez par votre échelle x
+                  .y(d => yScale(d.ratio_employment_to_population)); // Remplacez par votre échelle y
+            
+                svg.append("path")
+                  .datum(countryData) // Utilisez les données filtrées pour le continent
+                  .attr("class", "line continent-line")
+                  .attr("fill", "none")
+                  .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
+                  .attr("stroke-width", 2)
+                  .attr("stroke-dasharray", "5,5")
+                  .attr("d", line)
+                  .attr("opacity", 1)
+                  .on("mouseover", function(event, d) {
+                    console.log('Hovered continent:', continent.name);
+                    
+                    d3.select(this)
+                        .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+                        .attr("stroke-width", 4); // Change stroke width on hover
+
+                    showTooltipcontinent(event, continent.name);
+                })
+                .on("mouseout", function(event, d) {
+                  // Hide the tooltip
+                  hideTooltipcontinent()
+                  // Change stroke style on mouseover
+                  d3.select(this)
+                      .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+                      .attr("stroke-width", 2); // Change stroke width on hover              
+                })
+              });
+
               // Create lines for each country
               dataByCountry.forEach((countryData, index) => {
                 const firstCountryCode = countryData.country;
@@ -598,45 +634,7 @@ function createLineChart(data, data_average,clickedList,continentlist) {
                   .attr("stroke-width", 2)
                   .attr("d", line)
                   .attr("opacity",1); 
-
-                  //add new continent lines 
-              
-                continentlist.forEach(continent => {
-                  const countryData = data_average.filter(d => d.continent === continent.name); // Filtrer les données par continent
-                  const line = d3.line()
-                    .x(d => xScale(d.year)) // Remplacez par votre échelle x
-                    .y(d => yScale(d.ratio_employment_to_population)); // Remplacez par votre échelle y
-              
-                  svg.append("path")
-                    .datum(countryData) // Utilisez les données filtrées pour le continent
-                    .attr("class", "line continent-line")
-                    .attr("fill", "none")
-                    .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
-                    .attr("stroke-width", 2)
-                    .attr("stroke-dasharray", "5,5")
-                    .attr("d", line)
-                    .attr("opacity", 1)
-                    .on("mouseover", function(event, d) {
-                      console.log('Hovered continent:', continent.name);
-                      
-                      d3.select(this)
-                          .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
-                          .attr("stroke-width", 4); // Change stroke width on hover
-
-                      showTooltipcontinent(event, continent.name);
-                  })
-                  .on("mouseout", function(event, d) {
-                    // Hide the tooltip
-                    hideTooltipcontinent()
-                    // Change stroke style on mouseover
-                    d3.select(this)
-                        .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
-                        .attr("stroke-width", 2); // Change stroke width on hover
-                  
-                })
-                })
-              
-
+                        
               // -------------------------draw circles-----------------------------------------
               const allCircles = svg.selectAll("circle.dataItem")
                 .data(countryData.data, d => d.country); // Utiliser countryData.data
