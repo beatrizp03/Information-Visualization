@@ -175,8 +175,8 @@ function createWorldMap(employmentData, isInitialLoad = false) {
   leastRecentYear = Math.min(...years);
   mostRecentYear = Math.max(...years);
 
-  const width = 960;
-  const height = 450;
+  const width = 1100;
+  const height = 500;
 
   // Select or create the SVG container
   let svg = d3.select(".world-map").select("svg");
@@ -186,7 +186,12 @@ function createWorldMap(employmentData, isInitialLoad = false) {
       .append("svg")
       .attr("width", width)
       .attr("height", height);
+
+    // Append a `g` element to hold the map for easier zoom handling
+    svg.append("g").attr("class", "map-group");
   }
+
+  const mapGroup = svg.select(".map-group");
 
   // Projection to move map to the right
   const projection = d3.geoMercator()
@@ -215,6 +220,30 @@ function createWorldMap(employmentData, isInitialLoad = false) {
       .style("pointer-events", "none");
   }
 
+  // Zoom behavior with `zoomed` function
+  const zoom = d3.zoom()
+    .scaleExtent([1, 8])  // Set min and max zoom levels
+    .on("zoom", zoomed);
+
+  svg.call(zoom);  // Attach zoom behavior to SVG
+
+  // Zoom function to handle zoom events
+  function zoomed(event) {
+    const currentScale = event.transform.k;
+  
+    if (currentScale <= 1.05) {
+      // Calculate the dynamic translation based on the deviation from scale 1
+      const offsetX = width * Math.abs(1 - currentScale) / 2.1;
+      const offsetY = height * Math.abs(1 - currentScale) / 1.7;
+      
+      // Reset to a dynamically adjusted center position
+      mapGroup.attr("transform", `translate(${offsetX}, ${offsetY}) scale(1)`);
+    } else {
+      // Apply normal zoom and pan transformations
+      mapGroup.attr("transform", event.transform);
+    }
+  }  
+
   // Load the GeoJSON data for the world map only if this is the initial load
   if (isInitialLoad) {
     d3.json("datasets/world.geojson").then(function(geoData) {
@@ -223,7 +252,7 @@ function createWorldMap(employmentData, isInitialLoad = false) {
       const employmentMap = getEmploymentMap(employmentData);
 
       // Bind GeoJSON data to SVG paths and create countries
-      renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip);
+      renderCountries(mapGroup, geoData, employmentMap, path, colorScale, tooltip);
 
       // Add the color scale legend
       addColorScaleLegend(svg, colorScale);
@@ -233,9 +262,18 @@ function createWorldMap(employmentData, isInitialLoad = false) {
   } else {
     // If this is an update, just update the colors and reattach event listeners
     const employmentMap = getEmploymentMap(employmentData);
-    updateCountryColors(svg, employmentMap, colorScale);
-    reattachEventListeners(svg, employmentMap, tooltip);  // Reattach the updated event listeners
+    updateCountryColors(mapGroup, employmentMap, colorScale);
+    reattachEventListeners(mapGroup, employmentMap, tooltip);  // Reattach the updated event listeners
   }
+
+  // Zoom controls: Zoom in and zoom out buttons
+  d3.select("#zoom-in").on("click", function() {
+    zoom.scaleBy(svg.transition().duration(500), 1.3);  // Increase zoom by 20%
+  });
+
+  d3.select("#zoom-out").on("click", function() {
+    zoom.scaleBy(svg.transition().duration(500), 0.7);  // Decrease zoom by 20%
+  });
 }
 
 // Function to convert employment data into a map (country -> employment rate)
@@ -361,7 +399,7 @@ function addColorScaleLegend(svg, colorScale) {
   const legendWidth = 20;  // Width of each color section
   const legendHeight = 230;  // Height of the entire color scale
   const legendMarginTop = 200; // margin-top for spacing between the boxes
-  const legendMarginLeft = 20; // Margin to place the legend on the left
+  const legendMarginLeft = 0; // Margin to place the legend on the left
 
   // Create the legend group and position it to the left of the map
   const legendGroup = svg.append("g")
