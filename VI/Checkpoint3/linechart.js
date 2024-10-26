@@ -677,7 +677,7 @@ function updateDashboard() {
 
     updateDatasetLineChart(globalData1, globalData3,clickedList,continentlist);
     if(activeChart == "job"){
-      updateJobMagnetChart(clickedList);
+      updateJobMagnetChart(clickedList,hoveredcountry);
     }else{
       updateSalaryMagnetChart(clickedList);
     }

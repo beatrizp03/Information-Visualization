@@ -380,7 +380,8 @@ function createJobMagnetChart(employmentData, categories) {
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple");
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
-  
+      
+    
       // Create an array of employment data for relevant categories
       const employmentDataArray = [];
       const relevantCategories = [
@@ -414,11 +415,16 @@ function createJobMagnetChart(employmentData, categories) {
           .style("visibility", "visible")
           .style("top", (event.pageY + 10) + "px")
           .style("left", (event.pageX + 10) + "px");
-    })
+        
+          
+
+})
     .on("mouseout", function() {
       d3.select(this).attr("fill", lighestColor); // Revert fill color to default
       tooltip.style("visibility", "hidden");
       svg.selectAll(".country-label").remove();
+
+     
     })
     .on("click", function(event,d) {
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
@@ -456,13 +462,23 @@ function createJobMagnetChart(employmentData, categories) {
     })
 }
 
-function updateJobMagnetChart(clickedList) {
+function updateJobMagnetChart(clickedList, hoveredcountry) {
   // Select all country paths
+  console.log("updatemagnetchartjob",hoveredcountry);
   d3.selectAll(".node")
     .style("fill", function(d) {
-        const countryName = d.country;  // Assuming d.id is the country code or name
+        const countryCode = d.country;  // Assuming d.country is the country code 
+        const countryName = getCountryName(countryCode);
+        
+      if (hoveredcountry && countryName === hoveredcountry) {
+        d3.select(this).raise(); // Bring hovered node to the front
+        d3.select(this).attr("opacity", 0.8); // Adjust opacity for hover effect
+        return "purple"; // Change color for hovered country
+
+
+    }
         // Check if the country is in the clickedList and change its color accordingly
-        if (clickedList.some(clicked => clicked.country === countryName)) {
+        else if (clickedList.some(clicked => clicked.country === countryCode)) {
             d3.select(this).raise();
             d3.select(this).attr("opacity", 0.6);
             return "purple";  // Change color for clicked countries (e.g., orange/red)
@@ -470,15 +486,28 @@ function updateJobMagnetChart(clickedList) {
           // Set color to gray for non-selected circles
           //d3.select(this).style("fill", "gray").attr("opacity", 0.5);
           d3.select(this).attr("opacity", 0.6);
-          originalColors[countryName] = "gray";
+          originalColors[countryCode] = "gray";
           return "gray"; 
-        } else {
+        }
+        else {
           // If no circles are selected, reset all to the original color
           //d3.select(this).style("fill", lighestColor).attr("opacity", 0.5);
           d3.select(this).attr("opacity", 0.6);
           return lighestColor; 
         }
+        
     });
+}
+
+function getCountryName(countryCode) {
+  for (const continent in continents) {
+    const countries = continents[continent];
+    const country = countries.find(c => c.code === countryCode);
+    if (country) {
+      return country.name; // Return the found country name
+    }
+  }
+  return null; // Return null if the country is not found
 }
 
 

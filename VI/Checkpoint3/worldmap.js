@@ -333,11 +333,16 @@ function updateCountryColors(svg, employmentMap, colorScale) {
 
 // Function to reattach event listeners (this will ensure tooltips are updated with the correct data)
 function reattachEventListeners(svg, employmentMap, tooltip) {
+  
   svg.selectAll("path")
     .on("mouseover", function(event, d) {
       d3.select(this)
         .style("stroke", "#333")  // Darker border on hover
         .style("stroke-width", "2");  // Thicker border on hover
+        hoveredcountry= d.properties.name;
+        console.log("country hovered : ", hoveredcountry);
+        updateJobMagnetChart(clickedList,hoveredcountry);
+        
       tooltip.style("visibility", "visible");
     })
     .on("mousemove", function(event, d) {
@@ -353,6 +358,8 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
         .style("stroke", "white")  // Remove hover border
         .style("stroke-width", "0.4");  // Set border width back to 1
       tooltip.style("visibility", "hidden");
+      hoveredcountry="";
+      updateJobMagnetChart(clickedList,hoveredcountry); //replace by update dashboard
     })
     //add clicked country to clicked list
     .on("click", function(event, d) {
@@ -433,17 +440,20 @@ function addColorScaleLegend(svg, colorScale) {
     .style("text-anchor", "start");
 }
 
-function updateWorldMap(clickedList) {
+function updateWorldMap(clickedList, hoveredcountry) {
   // Select all country paths
   d3.selectAll("path")
     .style("fill", function(d) {
       const countryName = d.id ? d.id : '';  // If `d.id` is null or undefined, assign an empty string
       // Assuming d.id is the country code or name
-        //console.log(countryName);
+        console.log("map", getCountryName(countryName));
         // Check if the country is in the clickedList and change its color accordingly
         if (clickedList.some(clicked => clicked.country === countryName)) {
-            return "purple";  // Change color for clicked countries (e.g., orange/red)
+            return "purple";
         }
+        else if (getCountryName(countryName) === hoveredcountry) {
+          return "purple";
+      }
     });
 }
 function getCountryCode(countryName) {
@@ -463,6 +473,17 @@ function getContinent(countryName) {
     const country = countries.find(c => c.name === countryName);
     if (country) {
       return continent; // Return the continent name if country is found
+    }
+  }
+  return null; // Return null if the country is not found
+}
+
+function getCountryName(countryCode) {
+  for (const continent in continents) {
+    const countries = continents[continent];
+    const country = countries.find(c => c.code === countryCode);
+    if (country) {
+      return country.name; // Return the found country name
     }
   }
   return null; // Return null if the country is not found
