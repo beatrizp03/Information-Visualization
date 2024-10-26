@@ -175,8 +175,8 @@ function createWorldMap(employmentData, isInitialLoad = false) {
   leastRecentYear = Math.min(...years);
   mostRecentYear = Math.max(...years);
 
-  const width = 1100;
-  const height = 500;
+  const width = 995;
+  const height = 455;
 
   // Select or create the SVG container
   let svg = d3.select(".world-map").select("svg");
@@ -399,7 +399,7 @@ function addColorScaleLegend(svg, colorScale) {
   const legendWidth = 20;  // Width of each color section
   const legendHeight = 230;  // Height of the entire color scale
   const legendMarginTop = 200; // margin-top for spacing between the boxes
-  const legendMarginLeft = 0; // Margin to place the legend on the left
+  const legendMarginLeft = 30; // Margin to place the legend on the left
 
   // Create the legend group and position it to the left of the map
   const legendGroup = svg.append("g")
