@@ -202,6 +202,7 @@ const countryNameMapping = Object.values(continents).flat().reduce((acc, { name,
 }, {});
 
 let clickedList = [];
+const countryColorMap = {};
 const buttons = document.querySelectorAll('.menu-btn');
 var continentlist = [];
 document.addEventListener('DOMContentLoaded', function() {
@@ -525,6 +526,7 @@ function createLineChart(data, data_average,clickedList,continentlist) {
                         
 
           });
+          
   }
   else {
                 //---------------------------------------filter data-------------------------------------
@@ -580,7 +582,9 @@ function createLineChart(data, data_average,clickedList,continentlist) {
 
               // Get a distinct shade for the current country while keeping the continent's hue
               const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
-
+              
+              countryColorMap[firstCountryCode] = lineColor;
+              
               const line = d3.line()
                   .x(d => xScale(d.year))
                   .y(d => yScale(d.ratio_employment_to_population));

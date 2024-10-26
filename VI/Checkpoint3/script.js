@@ -217,6 +217,15 @@ salariesChartBtn.addEventListener("click", function() {
     updateSalaryMagnetChart(clickedList);
 });
 
+document.getElementById('info-btn').addEventListener('click', function() {
+  const infoBox = document.getElementById('info-box');
+  if (infoBox.style.display === 'block') {
+      infoBox.style.display = 'none';
+  } else {
+      infoBox.style.display = 'block';
+  }
+});
+
 
   d3.csv("datasets/dataset1_employment.csv").then(function (data1) {
     globalData1 = data1.map(d => {

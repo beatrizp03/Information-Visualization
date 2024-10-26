@@ -1,22 +1,13 @@
 const customTitles = ['No Information', 'Less Than Basic', 'Basic', 'Intermediate', 'Advanced'];
 
 function createRadarChart(data, clickedList) {
-    
+
     if (clickedList.length !== 0) {
         updateRadarChart(data, clickedList);
         return;
     }
 
     d3.select('.radar-chart-container svg').remove();
-    
-    document.getElementById('info-btn').addEventListener('click', function() {
-        const infoBox = document.getElementById('info-box');
-        if (infoBox.style.display === 'block') {
-            infoBox.style.display = 'none';
-        } else {
-            infoBox.style.display = 'block';
-        }
-    });
 
     const width = 310;
     const height = 310;
@@ -172,17 +163,14 @@ function createRadarChart(data, clickedList) {
 }
 
 function updateRadarChart(data, clickedList) {
+
+    if (clickedList.length === 0) {
+        createRadarChart(data, clickedList);
+        return;
+    }
+
     // Clear existing elements in the radar chart container
     d3.select('.radar-chart-container svg').remove();
-
-    document.getElementById('info-btn').addEventListener('click', function() {
-        const infoBox = document.getElementById('info-box');
-        if (infoBox.style.display === 'block') {
-            infoBox.style.display = 'none';
-        } else {
-            infoBox.style.display = 'block';
-        }
-    });
 
     const width = 310;
     const height = 310;
@@ -250,12 +238,17 @@ function updateRadarChart(data, clickedList) {
         const country = typeof countryObj === 'object' && countryObj.country ? countryObj.country : countryObj;
         const countryName = getCountryNameByCode(country);
         const countryData = filteredDataByCountry.filter(d => d.country === country);
+    
         if (countryData.length === 0) {
             // Skip this country if it doesn't exist in the data
             return;
         }
-        const countryDataPoints = [];
     
+        // Retrieve the color from the countryColorMap based on the country code
+        const countryColor = countryColorMap[country] || 'grey'; // Default to grey if no color is found
+    
+        const countryDataPoints = [];
+        
         categories.forEach((category, i) => {
             const categoryData = countryData.filter(d => d.level_education === category);
             const value = d3.mean(categoryData, d => d.ratio_employment_to_population) || 0;
@@ -264,16 +257,17 @@ function updateRadarChart(data, clickedList) {
             const y = radialScale(value) * Math.sin(angle);
             countryDataPoints.push({ x, y, value, label: categoryLabels[i], countryName });
         });
-    
+        
         // Draw the polygon with `pointer-events: none` to allow interaction with underlying circles
         const polygon = svg.append('polygon')
             .attr('points', countryDataPoints.map(d => `${d.x},${d.y}`).join(' '))
-            .attr('fill', 'rgba(236, 115, 159, 0.4)')
-            .attr('stroke', '#EC739F')
+            .attr('fill', countryColor)            // Set fill color from countryColorMap
+            .attr('fill-opacity', 0.4)             // Adjust transparency if needed
+            .attr('stroke', countryColor)          // Set stroke color from countryColorMap
             .attr('stroke-width', 2)
             .attr('class', `polygon-${country.replace(/\s/g, '-')}`)
-            .style('pointer-events', 'none'); // This makes the polygon non-interactive
-    
+            .style('pointer-events', 'none');      // This makes the polygon non-interactive
+        
         // Add circles with interactive hover effects
         const circles = svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)
             .data(countryDataPoints)
@@ -283,7 +277,7 @@ function updateRadarChart(data, clickedList) {
             .attr('cx', d => d.x)
             .attr('cy', d => d.y)
             .attr('r', 4)
-            .attr('fill', '#D14B7E')
+            .attr('fill', countryColor)            // Set circle color from countryColorMap
             .on('mouseover', function(event, d) {
                 tooltip.style('visibility', 'visible')
                     .html(`Country: ${d.countryName}<br>Category: ${d.label}<br>Average Employment Rate: ${d.value.toFixed(2)}%`);
@@ -337,9 +331,10 @@ function updateRadarChart(data, clickedList) {
                     .attr('stroke', 'none');
     
                 svg.select(`.polygon-${country.replace(/\s/g, '-')}`)
-                    .attr('stroke', '#EC739F');
+                    .attr('stroke', countryColor);   // Reset to original country color on mouse out
             });
     });
+    
     
     
 
