@@ -380,7 +380,9 @@ function createJobMagnetChart(employmentData, categories) {
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple");
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
-      
+      console.log("magnetchart", countryName);
+      hoveredcountry=countryName;
+      updateWorldMap(clickedList,hoveredcountry);
     
       // Create an array of employment data for relevant categories
       const employmentDataArray = [];
@@ -423,6 +425,9 @@ function createJobMagnetChart(employmentData, categories) {
       d3.select(this).attr("fill", lighestColor); // Revert fill color to default
       tooltip.style("visibility", "hidden");
       svg.selectAll(".country-label").remove();
+      hoveredcountry="";
+      updateWorldMap(clickedList,hoveredcountry);
+
 
      
     })

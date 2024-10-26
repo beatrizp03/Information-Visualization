@@ -680,7 +680,7 @@ function updateDashboard() {
       updateSalaryMagnetChart(clickedList);
     }
     updateRadarChart(globalData1, clickedList);
-    updateWorldMap(clickedList);
+    updateWorldMap(clickedList,hoveredcountry);
 }
   
 
