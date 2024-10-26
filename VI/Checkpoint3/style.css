@@ -522,7 +522,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 /* Style for the 'i' button - square with rounded edges */
 .info-btn {
-  background-color: #EC739F;
+  background-color: rgba(178, 53, 71, 0.9);
   color: white;
   font-weight: bold;
   border: none;

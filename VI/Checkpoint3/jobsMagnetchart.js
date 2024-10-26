@@ -377,21 +377,6 @@ function createJobMagnetChart(employmentData, categories) {
     .attr("r", 7.5)
     .attr("fill", lighestColor)
     .attr("opacity", 0.5) // Set opacity to 0.8
-    /*.on("mouseover", function(event, d) {
-      d3.select(this).attr("fill", "purple"); // Change fill color to purple on hover
-
-      const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
-
-      // Create label and keep it visible
-      svg.append("text")
-        .attr("class", "country-label")
-        .attr("x", d.x)
-        .attr("y", d.y - 15)
-        .attr("text-anchor", "middle")
-        .style("font-size", "12px")
-        .style("fill", "black") // Change text color for better visibility
-        .text(countryName);
-    })*/
     .on("mouseover", function(event, d) {
       d3.select(this).attr("fill", "purple");
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
@@ -435,8 +420,6 @@ function createJobMagnetChart(employmentData, categories) {
       tooltip.style("visibility", "hidden");
       svg.selectAll(".country-label").remove();
     })
-
-
     .on("click", function(event,d) {
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
       const continent = getContinent(countryName); // Function to get continent by country name
@@ -469,9 +452,6 @@ function createJobMagnetChart(employmentData, categories) {
         .attr("opacity", 0.5)
     };
 
-    // Update the magnet chart based on the current clicked list
-    //updateWorldMap(clickedList); //---------------------------------------change to update dashboard once everything is done. 
-    //updatelinechart();
     updateDashboard();
     })
 }
@@ -486,6 +466,17 @@ function updateJobMagnetChart(clickedList) {
             d3.select(this).raise();
             d3.select(this).attr("opacity", 0.6);
             return "purple";  // Change color for clicked countries (e.g., orange/red)
+        } else if (clickedList.length > 0) {
+          // Set color to gray for non-selected circles
+          //d3.select(this).style("fill", "gray").attr("opacity", 0.5);
+          d3.select(this).attr("opacity", 0.6);
+          originalColors[countryName] = "gray";
+          return "gray"; 
+        } else {
+          // If no circles are selected, reset all to the original color
+          //d3.select(this).style("fill", lighestColor).attr("opacity", 0.5);
+          d3.select(this).attr("opacity", 0.6);
+          return lighestColor; 
         }
     });
 }
