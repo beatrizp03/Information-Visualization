@@ -378,15 +378,15 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 
 .line-chart-button {
   position: absolute; /* Position it absolutely within the relative container */
-  top: 550px; /* Adjust the distance from the top */
-  right: 435px; /* Adjust the distance from the right */
+  top: -15px; /* Adjust the distance from the top */
+  right: 60px; /* Adjust the distance from the right */
   background-color: rgba(50, 50, 50,0.8); /* Button background color */
   color: white; /* Button text color */
   border: none; /* Remove border */
   border-radius: 5px; /* Rounded corners */
   padding: 4px 10px; /* Padding for the button */
   cursor: pointer; /* Change cursor on hover */
-  z-index: 10; /* Ensure button is above other elements */
+  z-index: 30; /* Ensure button is above other elements */
   font-weight: bold;
   width: 120px; /* Set the button width to 90px */
   height: 25px; /* Set the button height to 20px */

@@ -46,6 +46,18 @@ function updateDatasetLineChart() {
   createLineChart(filteredData1, filteredData3,clickedList,continentlist);
 }
 
+function updateDatasetRadarChart() {
+  displayValOne.textContent = sliderOne.value; 
+  displayValTwo.textContent = sliderTwo.value; 
+
+  finalValOne = sliderOne.value;
+  finalValTwo = sliderTwo.value;
+
+  filteredData1 = globalData1.filter(item => item.year >= finalValOne && item.year <= finalValTwo);
+ 
+  createRadarChart(filteredData1,clickedList);
+}
+
 function filterDataset(startYear,endYear) {
 
   let startyear=startYear;

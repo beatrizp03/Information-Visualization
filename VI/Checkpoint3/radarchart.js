@@ -1,7 +1,7 @@
 const customTitles = ['No Information', 'Less Than Basic', 'Basic', 'Intermediate', 'Advanced'];
 
 function createRadarChart(data, clickedList) {
-
+    console.log('Creating radar chart with data:', data, 'and clickedList:', clickedList);
     if (clickedList.length !== 0) {
         updateRadarChart(data, clickedList);
         return;
@@ -280,7 +280,7 @@ function updateRadarChart(data, clickedList) {
             .attr('fill', countryColor)            // Set circle color from countryColorMap
             .on('mouseover', function(event, d) {
                 tooltip.style('visibility', 'visible')
-                    .html(`Country: ${d.countryName}<br>Category: ${d.label}<br>Average Employment Rate: ${d.value.toFixed(2)}%`);
+                    .html(`Country: ${d.countryName}<br>Year Range: ${leastRecentYear} - ${mostRecentYear}<br>Category: ${d.label}<br>Employment Rate: ${d.value.toFixed(2)}%`);
                 
                 svg.selectAll(`.data-point-${country.replace(/\s/g, '-')}`)
                     .attr('stroke', 'black')

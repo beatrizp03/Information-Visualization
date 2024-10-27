@@ -226,7 +226,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function clearLines() {
   // Clear visualization elements within the line chart container
-  d3.select(".line-chart").selectAll("*").remove(); // Clear all elements within the line chart
+  d3.select(".line-chart").select("svg").remove(); // Clear all elements within the line chart
 
   // Clear the clickedList and continentlist
   clickedList = [];
@@ -245,11 +245,9 @@ function clearLines() {
   }
 
   // Reset other charts
-  createRadarChart(globalData1, clickedList);
   updateWorldMap(clickedList);
-
-  //createLineChart(filteredData1, filteredData3, clickedList, continentlist);
-  updateDatasetLineChart() //reset to default
+  updateDatasetLineChart(); //reset to default
+  updateDatasetRadarChart();
 
   console.log("Cleared selection, default chart redrawn");
 }

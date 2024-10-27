@@ -377,7 +377,7 @@ function createJobMagnetChart(employmentData, categories) {
       d3.select(this)
         .attr("stroke", "black")
         .attr("stroke-width", 2);
-        
+
       const countryName = (countries.find(country => country.code === d.country)?.country) || d.country;
     
       // Create an array of employment data for relevant categories
@@ -470,7 +470,7 @@ function updateJobMagnetChart(clickedList) {
             return "purple";  // Change color for clicked countries (e.g., orange/red)
         } else if (clickedList.length > 0) {
           // Set color to gray for non-selected circles
-          d3.select(this).attr("opacity", 0.6);
+          d3.select(this).attr("opacity", 0.3);
           originalColors[countryName] = "gray";
           return "gray"; 
         }

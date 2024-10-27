@@ -184,7 +184,7 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       const employmentRatio = employmentMap[d.id];
       const countryName = d.properties.name;
 
-      tooltip.html(`${countryName}<br>Year Range: ${leastRecentYear} - ${mostRecentYear}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
+      tooltip.html(`Country: ${countryName}<br>Year Range: ${leastRecentYear} - ${mostRecentYear}<br>Employment Rate: ${employmentRatio ? employmentRatio.toFixed(2) + "%" : "No Data"}`)
         .style("top", (event.pageY + 10) + "px")
         .style("left", (event.pageX + 10) + "px");
     })
