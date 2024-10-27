@@ -76,7 +76,7 @@
   margin-left: 50px;
   border-radius: 10px; 
   border: 5px solid white;
-  font-family: Times;
+  
   /*border: 2px solid #D14B7E;*/
 }
 
@@ -311,7 +311,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   pointer-events: none;
   transition: opacity 0.2s;
   z-index: 10;
-  font-family: Times;
+  
 }
 
 .zoom-controls {
@@ -366,7 +366,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 }
 
 .line-chart {
-  margin-top: 5px;
+  margin-top: 25px;
   grid-column: 3 / 4;
   display: flex;
   width: 100%; /* Make sure the chart takes full width */
@@ -379,7 +379,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
 .line-chart-button {
   position: absolute; /* Position it absolutely within the relative container */
   top: 550px; /* Adjust the distance from the top */
-  right: 450px; /* Adjust the distance from the right */
+  right: 435px; /* Adjust the distance from the right */
   background-color: rgba(50, 50, 50,0.8); /* Button background color */
   color: white; /* Button text color */
   border: none; /* Remove border */
@@ -391,7 +391,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   width: 120px; /* Set the button width to 90px */
   height: 25px; /* Set the button height to 20px */
   font-size: 12px; /* Set font size to 12px */
-  font-family: Times;
+  
 }
 
 .line-title {
@@ -399,7 +399,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   font-weight: bold;
   margin-left: 20px;
   margin-top: -16px;
-  font-family: Times;
+  
 }
 
 .line-chart-button:hover {
@@ -409,7 +409,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
   white-space: nowrap;
   font-weight: bold;
-  font-family: Times;
+  
 }
 
 .buttons {
@@ -505,7 +505,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   background-color: rgba(178, 53, 71, 0.9);  /* 90% opacity */
   color: white;
   font-weight: bold;
-  font-family: Times;
+  
 }
 
 /*####################################### RADAR #######################################*/
@@ -521,7 +521,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   max-width: 100%;
   max-height: 61%;
   margin-top: -9px;
-  font-family: Times;
+  
 }
 
 .radar-title {
@@ -529,12 +529,12 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   font-weight: bold;
   margin-left: 20px;
   margin-top: -16px;
-  font-family: Times;
+  
 }
 
 .radar-chart-container {
   margin-top: -10px;
-  font-family: Times;
+  
 }
 
 /* Style for the 'i' button - square with rounded edges */
@@ -553,7 +553,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   top: 10px;           /* Position relative to the top of the container */
   right: 25px;         /* Align the button close to the right edge */
   z-index: 1;
-  font-family: Times;
+  
 }
 
 .info-btn:hover {
@@ -594,7 +594,7 @@ input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
   position: absolute;
   right: 0; /* Ensure the info button container is aligned to the right */
   top: 10px;
-  font-family: Times;
+  
 }
 
 
@@ -607,7 +607,7 @@ body, html {
   height: 100%;
   overflow: hidden; /* Prevent scrolling */
   box-sizing: border-box;
-  font-family: Times;
+  
 }
 
 .titles-container {
@@ -618,7 +618,7 @@ body, html {
   grid-template-columns: 2fr 2fr;
   justify-content: space-between; /* Space titles evenly */
   padding: 0 30px; /* Padding for spacing from edges */
-  font-family: Times;
+  
 }
 
 .map-title, .magnet-title {
@@ -626,14 +626,14 @@ body, html {
   font-weight: bold; /* Bold font */
   padding-top: 13px;
   font-size: 16px;  /* Adjust font size */
-  font-family: Times;
+  
 }
 /*.map-title {
   padding-left: 280px;
 }*/
 .magnet-title {
   padding-left: 80px;
-  font-family: Times;
+  
 }
 .button-container {
   /*background-color: lightyellow;*/
@@ -648,7 +648,7 @@ body, html {
 
 button {
   font-size: 18px;
-  font-family: Times;
+  
 }
 
 /*####################################### COUNTRIES #######################################*/
@@ -676,37 +676,37 @@ button {
   cursor: pointer; /* Pointer on hover */
   font-size: 11px; /* Font size */
   text-align: center; /* Center text */
-  font-family: Times;
+  
 }
 
 .menu-btn.africa {
   background-color: var(--color-africa); 
-  font-family: Times;
+  
 }
 
 .menu-btn.europe {
   background-color: var(--color-europe);
-  font-family: Times;
+  
 }
 
 .menu-btn.asia {
   background-color: var(--color-asia);
-  font-family: Times; 
+   
 }
 
 .menu-btn.northamerica {
   background-color: var(--color-north-america); 
-  font-family: Times;
+  
 }
 
 .menu-btn.southamerica {
   background-color: var(--color-south-america); 
-  font-family: Times;
+  
 }
 
 .menu-btn.oceania {
   background-color: var(--color-oceania); 
-  font-family: Times;
+  
 }
 
 .menu-btn:hover {

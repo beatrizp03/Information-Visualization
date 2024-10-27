@@ -1,10 +1,10 @@
 let sliderOne, sliderTwo, minGap, displayValOne, displayValTwo, finalValOne, finalValTwo;
 let globalData1 = [];
 let globalData2 = [];
-let filteredData1;
-let filteredData3;
-let filteredData2;
-let filteredData4;
+let filteredData1 = [];
+let filteredData3 = [];
+let filteredData2 = [];
+let filteredData4 = [];
 let globalData3 = [];
 let globalData4 = [];
 

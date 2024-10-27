@@ -232,7 +232,6 @@ function clearLines() {
   // Clear the clickedList and continentlist
   clickedList = [];
   continentlist = [];
-  hoveredcountry="";
 
   // Reset the background color of all country buttons
   document.querySelectorAll('.country-btn').forEach(button => {
@@ -248,7 +247,7 @@ function clearLines() {
 
   // Reset other charts
   createRadarChart(globalData1, clickedList);
-  updateWorldMap(clickedList,hoveredcountry);
+  updateWorldMap(clickedList);
 
   //createLineChart(filteredData1, filteredData3, clickedList, continentlist);
   updateDatasetLineChart() //reset to default
@@ -438,7 +437,7 @@ function createLineChart(data, data_average, clickedList, continentlist) {
   // Append axis labels
   svg.append("text")
       .attr("x", svgWidth / 2)
-      .attr("y", svgHeight - margin / 3)
+      .attr("y", svgHeight - margin * 0.65)
       .attr("text-anchor", "middle")
       .text("Year");
 
@@ -675,12 +674,12 @@ function updateDashboard() {
 
     updateDatasetLineChart(globalData1, globalData3,clickedList,continentlist);
     if(activeChart == "job"){
-      updateJobMagnetChart(clickedList,hoveredcountry);
+      updateJobMagnetChart(clickedList);
     }else{
       updateSalaryMagnetChart(clickedList);
     }
-    updateRadarChart(globalData1, clickedList);
-    updateWorldMap(clickedList,hoveredcountry);
+    updateRadarChart(filteredData1, clickedList);
+    updateWorldMap(clickedList);
 }
   
 

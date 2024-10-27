@@ -309,6 +309,11 @@ function renderCountries(svg, geoData, employmentMap, path, colorScale, tooltip)
     .append("path")
     .attr("d", path)
     .attr("fill", function(d) {
+      if(d.id === "SDS"){
+        d.id = "SSD";
+      } else if(d.id === "OSA"){
+        d.id = "KOS";
+      }
       const employmentRatio = employmentMap[d.id];  // d.id should be the country code
       return employmentRatio ? colorScale(employmentRatio) : "#ccc";  // Gray for countries with no data
     })
@@ -339,9 +344,6 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       d3.select(this)
         .style("stroke", "#333")  // Darker border on hover
         .style("stroke-width", "2");  // Thicker border on hover
-        hoveredcountry= d.properties.name;
-        console.log("country hovered : ", hoveredcountry);
-        updateJobMagnetChart(clickedList,hoveredcountry);
         
       tooltip.style("visibility", "visible");
     })
@@ -358,8 +360,6 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
         .style("stroke", "white")  // Remove hover border
         .style("stroke-width", "0.4");  // Set border width back to 1
       tooltip.style("visibility", "hidden");
-      hoveredcountry="";
-      updateJobMagnetChart(clickedList,hoveredcountry); //replace by update dashboard
     })
     //add clicked country to clicked list
     .on("click", function(event, d) {
@@ -440,18 +440,20 @@ function addColorScaleLegend(svg, colorScale) {
     .style("text-anchor", "start");
 }
 
-function updateWorldMap(clickedList, hoveredcountry) {
+function updateWorldMap(clickedList) {
   // Select all country paths
   d3.selectAll("path")
     .style("fill", function(d) {
+      if(d.id === "SDS"){
+        d.id = "SSD";
+      } else if(d.id === "OSA"){
+        d.id = "KOS";
+      }
       const countryName = d.id ? d.id : ''; 
         // Check if the country is in the clickedList and change its color accordingly
         if (clickedList.some(clicked => clicked.country === countryName)) {
             return "purple";
         }
-        else if (getCountryName(countryName) === hoveredcountry) {
-          return "purple";
-      }
     });
 }
 function getCountryCode(countryName) {
