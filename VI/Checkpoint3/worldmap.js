@@ -107,6 +107,11 @@ function createWorldMap(employmentData, isInitialLoad = false) {
   d3.select("#zoom-out").on("click", function() {
     zoom.scaleBy(svg.transition().duration(500), 0.7);  // Decrease zoom by 20%
   });
+  
+  // Reset zoom on "Clear selection" button click
+  d3.select("#clearselection").on("click", function() {
+    svg.transition().duration(500).call(zoom.transform, d3.zoomIdentity);  // Reset zoom
+  });
 }
 
 // Function to convert employment data into a map (country -> employment rate)
