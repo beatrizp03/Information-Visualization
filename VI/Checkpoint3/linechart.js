@@ -399,10 +399,9 @@ function createLineChart(data, data_average, clickedList, continentlist) {
           ...cleanedData.filter(d => continentlist.some(continent => continent.name === d.continent)),
           ...data.filter(d => clickedList.some(clicked => clicked.country === d.country && d.level_education === "TOTAL"))
         ];
-
   // Calculate min and max y-values and round them to the nearest 20
-  const dataMinY = d3.min(allSelectedData, d => d.ratio_employment_to_population);
-  const dataMaxY = d3.max(allSelectedData, d => d.ratio_employment_to_population);
+  const dataMinY = d3.min(allSelectedData, d => +d.ratio_employment_to_population);
+  const dataMaxY = d3.max(allSelectedData, d => +d.ratio_employment_to_population); // Use `+` to coerce to a number
   const minY = Math.floor(dataMinY / 20) * 20; // Round down to nearest 20
   const maxY = Math.ceil(dataMaxY / 20) * 20;   // Round up to nearest 20
 
@@ -466,202 +465,199 @@ function createLineChart(data, data_average, clickedList, continentlist) {
     document.body.appendChild(tooltip2);
     
     if (clickedList.length == 0 && continentlist.length == 0) {
-         //------------------------- --load data----------------------------------
-            const groupedByContinent = cleanedData.reduce((acc, current) => {
-              const { continent } = current;
-              if (!acc[continent]) {acc[continent] = [];}
-                  acc[continent].push(current);
-                  return acc;
-            }, {});
+      //------------------------- --load data----------------------------------
+      const groupedByContinent = cleanedData.reduce((acc, current) => {
+        const { continent } = current;
+        if (!acc[continent]) {acc[continent] = [];}
+            acc[continent].push(current);
+            return acc;
+      }, {});
 
-          //--------------------- Create a line generator function------------------------
-          const line = d3
-            .line()
-            .x((d) => xScale(d.year)) 
-            .y((d) => yScale(d.ratio_employment_to_population)); 
+    //--------------------- Create a line generator function------------------------
+    const line = d3
+      .line()
+      .x((d) => xScale(d.year)) 
+      .y((d) => yScale(d.ratio_employment_to_population)); 
 
-          svg
-            .append("g")
-            .attr("class", "yAxis")
-            .attr("transform", `translate(${margin * 1.5},0)`)
-            .call(
-              d3.axisLeft(yScale)
-                .tickSizeOuter(0) // This hides the outermost ticks
-                .tickValues(d3.range(0, 101, 20)) // Creates ticks at 0, 20, 40, 60, 80, 100
-            );
+    svg
+      .append("g")
+      .attr("class", "yAxis")
+      .attr("transform", `translate(${margin * 1.5},0)`)
+      .call(
+        d3.axisLeft(yScale)
+          .tickSizeOuter(0) // This hides the outermost ticks
+          .tickValues(d3.range(0, 101, 20)) // Creates ticks at 0, 20, 40, 60, 80, 100
+      );
 
-          //-------------------------draw the line------------------------------
+    //-------------------------draw the line------------------------------
 
-          Object.entries(groupedByContinent).forEach(([continent, data]) => {
-              svg.append('path')
-                  .datum(data) // Bind data for this continent
-                  .attr('fill', 'none') // No fill
-                  .attr('stroke', continentColors[continent]) 
-                  .attr('stroke-width', 2) 
-                  .attr('d', line) // Generate line
-                  .on('mouseover', function(_, d) {
-                    d3.select(this).attr('stroke-width', 3); // Increase stroke width on hover
-                
-                    // Select all other paths and reduce their stroke width
-                    svg.selectAll('path')
-                        .filter((_, i, nodes) => nodes[i] !== this) // Select all but the hovered line
-                        .attr('stroke-width', 1); // Change other lines' stroke width
-                
-                    // Get the continent name and apply highlight to the button
-                    const continentName = continent; // Assuming 'd.continent' has the continent name
-                    d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
-                      .style("font-weight", "bold");// Optional: make text bold
-                })
-                .on('mouseout', function(_, d) {
-                    d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
-                    svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
-                
-                    // Reset the button style for the hovered continent
-                    const continentName = continent;
-                    d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
-                      .style("font-weight", "");// Reset font weight
-                });
-                        
-
-          });
+    Object.entries(groupedByContinent).forEach(([continent, data]) => {
+      svg.append('path')
+          .datum(data) // Bind data for this continent
+          .attr('fill', 'none') // No fill
+          .attr('stroke', continentColors[continent]) 
+          .attr('stroke-width', 2) 
+          .attr('d', line) // Generate line
+          .on('mouseover', function(_, d) {
+            d3.select(this).attr('stroke-width', 3); // Increase stroke width on hover
+        
+            // Select all other paths and reduce their stroke width
+            svg.selectAll('path')
+                .filter((_, i, nodes) => nodes[i] !== this) // Select all but the hovered line
+                .attr('stroke-width', 1); // Change other lines' stroke width
+        
+            // Get the continent name and apply highlight to the button
+            const continentName = continent; // Assuming 'd.continent' has the continent name
+            d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
+              .style("font-weight", "bold");// Optional: make text bold
+        })
+        .on('mouseout', function(_, d) {
+            d3.select(this).attr('stroke-width', 2); // Reset stroke width of hovered line
+            svg.selectAll('path').attr('stroke-width', 2); // Reset all lines' stroke width
+        
+            // Reset the button style for the hovered continent
+            const continentName = continent;
+            d3.select(`.menu-btn.${continentName.toLowerCase().replace(" ", "")}`)
+              .style("font-weight", "");// Reset font weight
+        });
+    });
           
   }
   else {
-                //---------------------------------------filter data-------------------------------------
-                const total_data = data.filter(d =>d.level_education == "TOTAL");
+      //---------------------------------------filter data-------------------------------------
+      const total_data = data.filter(d =>d.level_education == "TOTAL");
 
-                const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
-                    country,
-                    year: Number(year),
-                    ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
-                }));
+      const reducedData = total_data.map(({ country, year, ratio_employment_to_population }) => ({
+          country,
+          year: Number(year),
+          ratio_employment_to_population: Number(ratio_employment_to_population) // Convert to number
+      }));
 
-                const groupedByContinent = cleanedData.reduce((acc, current) => {
-                  const { continent } = current;
-                  if (!acc[continent]) {
-                      acc[continent] = []; }
-                  acc[continent].push(current);
-                  return acc;
-                }, {});
-              
-                let final_data = reducedData.filter(d => clickedList.some(clicked => clicked.country === d.country)
-                );
-                
-                const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);// Get the full range of years from the dataset
-                const uniqueCountries = Array.from(new Set(final_data.map(d => d.country))); // Get unique countries and group data by country
-                const dataByCountry = uniqueCountries.map(country => ({
-                    country,
-                    data: final_data.filter(d => d.country === country)
-                }));
-                
-              
-              // --------------------------Create a color with the calculated shade--------------------------
-              // function to generate distinct colors
-              function getDistinctShade(baseColor, index, totalCountries) {
-                const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
+      const groupedByContinent = cleanedData.reduce((acc, current) => {
+        const { continent } = current;
+        if (!acc[continent]) {
+            acc[continent] = []; }
+        acc[continent].push(current);
+        return acc;
+      }, {});
+    
+      let final_data = reducedData.filter(d => clickedList.some(clicked => clicked.country === d.country)
+      );
+      
+      const allYears = Array.from(new Set(data.map(d => Number(d.year)))).sort((a, b) => a - b);// Get the full range of years from the dataset
+      const uniqueCountries = Array.from(new Set(final_data.map(d => d.country))); // Get unique countries and group data by country
+      const dataByCountry = uniqueCountries.map(country => ({
+          country,
+          data: final_data.filter(d => d.country === country)
+      }));
+      
+    
+    // --------------------------Create a color with the calculated shade--------------------------
+    // function to generate distinct colors
+    function getDistinctShade(baseColor, index, totalCountries) {
+      const hslColor = d3.hsl(baseColor); // Convert the base color to HSL
 
-                // Adjustments
-                const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
-                const lightnessAdjustment = 0.5; // Base lightness
-                const minLightness = 0.2; // Minimum lightness
-                const maxLightness = 0.8; // Maximum lightness
+      // Adjustments
+      const saturationAdjustment = 0.7; // Keep saturation to 70% of the base color
+      const lightnessAdjustment = 0.5; // Base lightness
+      const minLightness = 0.2; // Minimum lightness
+      const maxLightness = 0.8; // Maximum lightness
 
-                // Calculate lightness based on index, keeping it within min and max lightness bounds
-                const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
+      // Calculate lightness based on index, keeping it within min and max lightness bounds
+      const lightness = Math.min(Math.max(lightnessAdjustment + (index / totalCountries) * (1 - lightnessAdjustment), minLightness), maxLightness);
 
-                // Create a new color with the same hue, adjusted saturation and lightness
-                return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
-              }
-
-              //add new continent lines               
-              continentlist.forEach(continent => {
-                const countryData = data_average.filter(d => d.continent === continent.name); // Filtrer les données par continent
-                const line = d3.line()
-                  .x(d => xScale(d.year)) // Remplacez par votre échelle x
-                  .y(d => yScale(d.ratio_employment_to_population)); // Remplacez par votre échelle y
-            
-                svg.append("path")
-                  .datum(countryData) // Utilisez les données filtrées pour le continent
-                  .attr("class", "line continent-line")
-                  .attr("fill", "none")
-                  .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
-                  .attr("stroke-width", 2)
-                  .attr("stroke-dasharray", "5,5")
-                  .attr("d", line)
-                  .attr("opacity", 1)
-                  .on("mouseover", function(event, d) {
-                    console.log('Hovered continent:', continent.name);
-                    
-                    d3.select(this)
-                        .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
-                        .attr("stroke-width", 4); // Change stroke width on hover
-
-                    showTooltipcontinent(event, continent.name);
-                })
-                .on("mouseout", function(event, d) {
-                  // Hide the tooltip
-                  hideTooltipcontinent()
-                  // Change stroke style on mouseover
-                  d3.select(this)
-                      .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
-                      .attr("stroke-width", 2); // Change stroke width on hover              
-                })
-              });
-
-              // Create lines for each country
-              dataByCountry.forEach((countryData, index) => {
-                const firstCountryCode = countryData.country;
-                const continent = getContinentByCountry(firstCountryCode);
-                const baseColor = continentColors[continent] || 'grey';
-
-              // Get a distinct shade for the current country while keeping the continent's hue
-              const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
-              
-              countryColorMap[firstCountryCode] = lineColor;
-              
-              const line = d3.line()
-                  .x(d => xScale(d.year))
-                  .y(d => yScale(d.ratio_employment_to_population));
-
-              // ----------------------------draw lines------------------------------------
-              svg.append("path")
-                  .datum(countryData.data)
-                  .attr("class", "line")
-                  .attr("fill", "none")
-                  .attr("stroke", lineColor)
-                  .attr("stroke-width", 2)
-                  .attr("d", line)
-                  .attr("opacity",1); 
-                        
-              // -------------------------draw circles-----------------------------------------
-              const allCircles = svg.selectAll("circle.dataItem")
-                .data(countryData.data, d => d.country); // Utiliser countryData.data
-
-              allCircles.enter()
-                .append("circle")
-                .attr("class", "dataItem")
-                .attr("r", 3.2)
-                .attr("cx", d => xScale(d.year))
-                .attr("cy", d => yScale(d.ratio_employment_to_population))
-                .style("fill", lineColor) // Définir la couleur de remplissage sur la couleur de ligne
-                .style("stroke", lineColor) // Définir la couleur de contour sur la couleur de ligne
-                .style("stroke-width", 1)
-                .style("opacity", 1) // Démarrer avec une opacité de 1
-                .on("mouseover", mouseOverFunction)
-                .on("mouseleave", mouseLeaveFunction);
-
-              // Transition to make circles visible
-              allCircles.transition().duration(1000).style("opacity", 1);
-
-              // Mettre à jour les cercles existants
-              allCircles
-                  .attr("cx", d => xScale(d.year))
-                  .attr("cy", d => yScale(d.ratio_employment_to_population))
-                  .style("fill", lineColor) // Mettre à jour la couleur de remplissage
-                  .style("stroke", lineColor); // Mettre à jour la couleur de contour 
-                });
-
+      // Create a new color with the same hue, adjusted saturation and lightness
+      return d3.hsl(hslColor.h, hslColor.s * saturationAdjustment, lightness).toString();
     }
+
+    //add new continent lines               
+    continentlist.forEach(continent => {
+      const countryData = data_average.filter(d => d.continent === continent.name); // Filtrer les données par continent
+      const line = d3.line()
+        .x(d => xScale(d.year)) // Remplacez par votre échelle x
+        .y(d => yScale(d.ratio_employment_to_population)); // Remplacez par votre échelle y
+
+      svg.append("path")
+        .datum(countryData) // Utilisez les données filtrées pour le continent
+        .attr("class", "line continent-line")
+        .attr("fill", "none")
+        .attr("stroke", continentColors[continent.name]) // Définissez votre couleur ici
+        .attr("stroke-width", 2)
+        .attr("stroke-dasharray", "5,5")
+        .attr("d", line)
+        .attr("opacity", 1)
+        .on("mouseover", function(event, d) {
+          console.log('Hovered continent:', continent.name);
+          
+          d3.select(this)
+              .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+              .attr("stroke-width", 4); // Change stroke width on hover
+
+          showTooltipcontinent(event, continent.name);
+      })
+      .on("mouseout", function(event, d) {
+        // Hide the tooltip
+        hideTooltipcontinent()
+        // Change stroke style on mouseover
+        d3.select(this)
+            .attr("stroke", continentColors[continent.name]) // Change to your desired hover color
+            .attr("stroke-width", 2); // Change stroke width on hover              
+      })
+    });
+
+    // Create lines for each country
+    dataByCountry.forEach((countryData, index) => {
+      const firstCountryCode = countryData.country;
+      const continent = getContinentByCountry(firstCountryCode);
+      const baseColor = continentColors[continent] || 'grey';
+
+    // Get a distinct shade for the current country while keeping the continent's hue
+    const lineColor = getDistinctShade(baseColor, index, dataByCountry.length);
+    
+    countryColorMap[firstCountryCode] = lineColor;
+    
+    const line = d3.line()
+        .x(d => xScale(d.year))
+        .y(d => yScale(d.ratio_employment_to_population));
+
+    // ----------------------------draw lines------------------------------------
+    svg.append("path")
+        .datum(countryData.data)
+        .attr("class", "line")
+        .attr("fill", "none")
+        .attr("stroke", lineColor)
+        .attr("stroke-width", 2)
+        .attr("d", line)
+        .attr("opacity",1); 
+              
+    // -------------------------draw circles-----------------------------------------
+    const allCircles = svg.selectAll("circle.dataItem")
+      .data(countryData.data, d => d.country); // Utiliser countryData.data
+
+    allCircles.enter()
+      .append("circle")
+      .attr("class", "dataItem")
+      .attr("r", 3.2)
+      .attr("cx", d => xScale(d.year))
+      .attr("cy", d => yScale(d.ratio_employment_to_population))
+      .style("fill", lineColor) // Définir la couleur de remplissage sur la couleur de ligne
+      .style("stroke", lineColor) // Définir la couleur de contour sur la couleur de ligne
+      .style("stroke-width", 1)
+      .style("opacity", 1) // Démarrer avec une opacité de 1
+      .on("mouseover", mouseOverFunction)
+      .on("mouseleave", mouseLeaveFunction);
+
+    // Transition to make circles visible
+    allCircles.transition().duration(1000).style("opacity", 1);
+
+    // Mettre à jour les cercles existants
+    allCircles
+        .attr("cx", d => xScale(d.year))
+        .attr("cy", d => yScale(d.ratio_employment_to_population))
+        .style("fill", lineColor) // Mettre à jour la couleur de remplissage
+        .style("stroke", lineColor); // Mettre à jour la couleur de contour 
+      });
+  }
 }
   
 //#################################### Update visual idioms ####################################

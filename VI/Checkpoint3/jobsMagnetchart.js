@@ -182,15 +182,11 @@ const countries = [
   { code: "ZWE", country: "Zimbabwe" },
 ];
 
-/*const colorScale = d3.scaleQuantize()
-  .domain([0, 100])  // Employment ratio between 0 and 100%
-  .range(d3.schemeBlues[9]);  // Blues color scheme for different ranges*/
 
 // To get the darkest blue color
 const darkestColor = "#9D1C50";
 const lighestColor = "#F6ADC7";
 
-// #B3C7FF (lightest) #80A3FF #4D7FFF #6E6BFF (darkest) #0056FF 
 
 // Function to create the magnet chart visualization
 function createJobMagnetChart(employmentData, categories) {
