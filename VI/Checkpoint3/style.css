@@ -25,6 +25,10 @@
   --color-oceania: rgba(165, 125, 198, 0.8); /* Soft purple with transparency */
 }
 
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
 /*#################################### year range selection ####################################*/
 /*
 .button-container {

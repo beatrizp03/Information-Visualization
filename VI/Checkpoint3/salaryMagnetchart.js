@@ -3,7 +3,7 @@ function createSalaryMagnetChart(salaryData) {
     const width = 500;
     const height = 450;
     const margin = { top: 5, right: 5, bottom: 5, left: 5 };
-    const magnetWidth = 90; // Magnet size
+    const magnetWidth = 100; // Magnet size
     const magnetHeight = 50;
 
     // Remove previous circles if needed
@@ -302,13 +302,11 @@ function updateSalaryMagnetChart(clickedList) {
               return "purple";  // Change color for clicked countries (e.g., orange/red)
           } else if (clickedList.length > 0) {
             // Set color to gray for non-selected circles
-            //d3.select(this).style("fill", "gray").attr("opacity", 0.5);
             d3.select(this).attr("opacity", 0.6);
             originalColors[countryName] = "gray";
             return "gray"; 
           } else {
             // If no circles are selected, reset all to the original color
-            //d3.select(this).style("fill", lighestColor).attr("opacity", 0.5);
             d3.select(this).attr("opacity", 0.6);
             return lighestColor; 
           }
