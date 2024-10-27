@@ -372,91 +372,87 @@ function getContinentByCountry(countryCode) {
 }
 //#################################### Create visual idioms ####################################
 
-function createLineChart(data, data_average,clickedList,continentlist) {
-    // Clean and parse the data as before
-    const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
-        continent,
-        year: parseInt(year, 10),
-        ratio_employment_to_population: parseFloat(ratio_employment_to_population)
-    }));
+function createLineChart(data, data_average, clickedList, continentlist) {
+  // Clean and parse the data
+  const cleanedData = data_average.map(({ [""]: _, continent, year, ratio_employment_to_population }) => ({
+      continent,
+      year: parseInt(year, 10),
+      ratio_employment_to_population: parseFloat(ratio_employment_to_population)
+  }));
 
-    // Set dimensions and other constants as before
-    const svgWidth = 875;
-    const svgHeight = 250;
-    const margin = 60; 
-    const bottom_margin = 60;
+  // Set dimensions and margins
+  const svgWidth = 875;
+  const svgHeight = 250;
+  const margin = 60; 
+  const bottom_margin = 80;
 
-    // Clear the SVG before appending new elements
-    d3.select(".line-chart").select("svg").remove();
+  // Clear the SVG container
+  d3.select(".line-chart").select("svg").remove();
 
-    // Set up xScale as before
-    const xScale = d3.scalePoint()
-        .domain(cleanedData.map(d => d.year).reverse().sort((a, b) => a - b))
-        .range([margin * 1.5, svgWidth - margin]);
+  // Set up xScale based on the unique years in cleanedData
+  const xScale = d3.scalePoint()
+      .domain([...new Set(cleanedData.map(d => d.year))].sort((a, b) => a - b))
+      .range([margin * 1.5, svgWidth - margin]);
 
-    // Step 1: Calculate the min and max values for the selected lines
-    const allSelectedData = clickedList.length === 0 && continentlist.length === 0
-        ? cleanedData // Default to cleanedData if no specific selection
-        : [
-            ...cleanedData.filter(d => continentlist.some(continent => continent.name === d.continent)),
-            ...data.filter(d => clickedList.some(clicked => clicked.country === d.country && d.level_education === "TOTAL"))
-          ];
+  // Filter data based on clickedList and continentlist
+  const allSelectedData = clickedList.length === 0 && continentlist.length === 0
+      ? cleanedData // Default to cleanedData if no specific selection
+      : [
+          ...cleanedData.filter(d => continentlist.some(continent => continent.name === d.continent)),
+          ...data.filter(d => clickedList.some(clicked => clicked.country === d.country && d.level_education === "TOTAL"))
+        ];
 
-    const minY = d3.min(allSelectedData, d => d.ratio_employment_to_population);
-    const maxY = d3.max(allSelectedData, d => d.ratio_employment_to_population);
+  // Calculate min and max y-values and round them to the nearest 20
+  const dataMinY = d3.min(allSelectedData, d => d.ratio_employment_to_population);
+  const dataMaxY = d3.max(allSelectedData, d => d.ratio_employment_to_population);
+  const minY = Math.floor(dataMinY / 20) * 20; // Round down to nearest 20
+  const maxY = Math.ceil(dataMaxY / 20) * 20;   // Round up to nearest 20
 
-    // Step 2: Update yScale with a dynamic domain based on min and max values
+  // Set up yScale with the rounded min and max, and intervals of 20
   const yScale = d3.scaleLinear()
-  .domain([minY, maxY]).nice()
-  .range([svgHeight - margin*1.4, margin * 0.09]);
+      .domain([minY, maxY])
+      .range([svgHeight - bottom_margin, margin*0.09]);
 
-  // Append the SVG and set up axes
+  // Append the SVG container and set up y-axis
   const svg = d3.select(".line-chart")
-  .append("svg")
-  .attr("width", svgWidth)
-  .attr("height", svgHeight);
+      .append("svg")
+      .attr("width", svgWidth)
+      .attr("height", svgHeight);
 
-  // Append y-axis with dynamically calculated tick values
+  // Append y-axis with intervals of 20
   svg.append("g")
-  .attr("class", "yAxis")
-  .attr("transform", `translate(${margin * 1.5}, 0)`)
-  .call(d3.axisLeft(yScale)
-      .tickSizeOuter(0)
-      .tickValues(d3.range(Math.floor(minY / 10) * 10, Math.ceil(maxY / 10) * 10 + 1, 10))
-      .tickFormat(d3.format(".2s"))
-  );
+      .attr("class", "yAxis")
+      .attr("transform", `translate(${margin * 1.5}, 0)`)
+      .call(d3.axisLeft(yScale)
+          .tickSizeOuter(0)
+          .tickValues(d3.range(minY, maxY + 1, 20)) // Create ticks at intervals of 20
+          .tickFormat(d3.format(".0f")) // Display whole numbers
+      );
 
-  // Append x-axis as before, and ensure there's only one x-axis call
+  // Append x-axis
   svg.append("g")
-  .attr("class", "xAxis")
-  .attr("transform", `translate(0,${svgHeight - margin})`)
-  .call(d3.axisBottom(xScale));
+      .attr("class", "xAxis")
+      .attr("transform", `translate(0,${svgHeight - bottom_margin})`)
+      .call(d3.axisBottom(xScale));
 
-  // Append y-axis to the SVG
-  svg
-    .append("g")
-    .attr("class", "yAxis")
-    .attr("transform", `translate(${margin*1.5},0)`) 
-    .call(d3.axisLeft(yScale).tickSizeOuter(0).tickValues(d3.range(0, 101, 20)).tickFormat(d3.format(".2s")));
-  
+  // Append axis labels
+  svg.append("text")
+      .attr("x", svgWidth / 2)
+      .attr("y", svgHeight - margin / 3)
+      .attr("text-anchor", "middle")
+      .text("Year");
 
-  // Append x-axis label
-  svg
-    .append("text")
-    .attr("x", svgWidth / 2) // Center horizontally
-    .attr("y", svgHeight - margin / 3) 
-    .attr("text-anchor", "middle") 
-    .text("Year"); 
+  svg.append("text")
+      .attr("x", -svgHeight / 2 + margin / 2)
+      .attr("y", margin)
+      .attr("text-anchor", "middle")
+      .attr("transform", "rotate(-90)")
+      .text("Employment Rate");
 
-  // Append y-axis label
-  svg
-    .append("text")
-    .attr("x", -svgHeight / 2 + margin / 2) // Position vertically and center
-    .attr("y", margin*1) 
-    .attr("text-anchor", "middle")
-    .attr("transform", "rotate(-90)") 
-    .text("Employment Rate"); 
-
+  // Define line generator
+  const line = d3.line()
+      .x(d => xScale(d.year))
+      .y(d => yScale(d.ratio_employment_to_population));
 
     //----------------------------------creating tooltip2----------------
     const tooltip2 = document.createElement("div");
