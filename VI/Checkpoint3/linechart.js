@@ -164,7 +164,6 @@ const continents = {
   { name: "Papua New Guinea", code: "PNG" },
   { name: "Samoa", code: "WSM" },
   { name: "Solomon Islands", code: "SLB" },
-  { name: "Tokelau", code: "TKL" },
   { name: "Tonga", code: "TON" },
   { name: "Tuvalu", code: "TUV" },
   { name: "Vanuatu", code: "VUT" },
@@ -465,7 +464,7 @@ function createLineChart(data, data_average, clickedList, continentlist) {
     tooltip2.style.display = "none";
     tooltip2.style.pointerEvents = "none";
     document.body.appendChild(tooltip2);
-
+    
     if (clickedList.length == 0 && continentlist.length == 0) {
          //------------------------- --load data----------------------------------
             const groupedByContinent = cleanedData.reduce((acc, current) => {

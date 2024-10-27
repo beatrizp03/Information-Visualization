@@ -376,15 +376,22 @@ function reattachEventListeners(svg, employmentMap, tooltip) {
       //store color
       const currentColor = d3.select(this).style("fill"); // Get the current fill color
       originalColors[countryCode] = currentColor; // Store the original color
+      console.log("Original colors:", currentColor );
+      if(currentColor !== "rgb(204, 204, 204)"){
+        // If not found, add to the clicked list
+        clickedList.push({ continent, country: countryCode });
+        console.log("Clicked list (added):", clickedList);
+        
+        // Update styles for the clicked country
+        d3.select(this)
+          .style("fill", "purple") // Change color for clicked country
+          .attr("opacity", 1); // Set high opacity for clicked country
+      } else {
+        //country with no data
+        alert("No data available for this country");
+      }
 
-      // If not found, add to the clicked list
-      clickedList.push({ continent, country: countryCode });
-      console.log("Clicked list (added):", clickedList);
       
-      // Update styles for the clicked country
-      d3.select(this)
-        .style("fill", "purple") // Change color for clicked country
-        .attr("opacity", 1); // Set high opacity for clicked country
     } else {
       // If found, remove the entry from the clicked list
       clickedList.splice(existingEntryIndex, 1); // Remove the entry at the found index
