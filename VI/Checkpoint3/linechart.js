@@ -678,36 +678,62 @@ function updateDashboard() {
 
 // Create a function to show the tooltip with dynamic content
 function showTooltip(event, countryData) {
-  var tooltip = document.getElementById('tooltip');
-  var tooltipCountry = document.getElementById('tooltip-country');
-  var tooltipYear = document.getElementById('tooltip-year');
-  var tooltipRatio = document.getElementById('tooltip-ratio');
+  const tooltip = d3.select('#tooltip'); // Assuming tooltip is selected with D3 here
+  const tooltipCountry = document.getElementById('tooltip-country');
+  const tooltipYear = document.getElementById('tooltip-year');
+  const tooltipRatio = document.getElementById('tooltip-ratio');
   
   // Set the tooltip content
   tooltipCountry.textContent = countryNameMapping[countryData.country];  // Country name
-  tooltipYear.textContent = countryData.year;  // Continent name
+  tooltipYear.textContent = countryData.year;  // Year
   tooltipRatio.textContent = countryData.ratio_employment_to_population.toFixed(2);  // Ratio value
 
-  // Set the tooltip's position based on mouse coordinates
-  tooltip.style.left = event.pageX + 10 + 'px';  // X position with some offset
-  tooltip.style.top = event.pageY + 10 + 'px';   // Y position with some offset
+  // Get tooltip dimensions after setting content
+  const tooltipWidth = tooltip.node().offsetWidth;
+  const tooltipHeight = tooltip.node().offsetHeight;
 
-  // Set z-index to ensure it stays on top
-  tooltip.style.zIndex = 10;
-  tooltip.style.fontSize = "16px";
-  tooltip.style.backgroundColor = "rgba(0, 0, 0, 0.7)";
-  tooltip.style.padding = "5px";
-  
-  // Make the tooltip visible
-  tooltip.style.display = 'block';
+  // Get the window dimensions
+  const windowWidth = window.innerWidth;
+  const windowHeight = window.innerHeight;
+
+  // Calculate the default tooltip position with some offset
+  let tooltipX = event.pageX + 10;
+  let tooltipY = event.pageY - 10;
+
+  // Adjust if tooltip is near the right edge
+  if (tooltipX + tooltipWidth > windowWidth) {
+    tooltipX = event.pageX - tooltipWidth - 10;
+  }
+
+  // Adjust if tooltip is near the bottom edge
+  if (tooltipY + tooltipHeight > windowHeight) {
+    tooltipY = event.pageY - tooltipHeight - 10;
+  }
+
+  // Adjust if tooltip is near the top edge
+  if (tooltipY < 0) {
+    tooltipY = event.pageY + 10;
+  }
+
+  // Apply the calculated position to the tooltip
+  tooltip.style('top', `${tooltipY}px`).style('left', `${tooltipX}px`);
+
+  // Styling for the tooltip
+  tooltip.style('display', 'block')
+         .style('z-index', 10)
+         .style('font-size', '16px')
+         .style('background-color', 'rgba(0, 0, 0, 0.7)')
+         .style('color', '#fff')
+         .style('padding', '5px')
+         .style('border-radius', '5px');
 }
 
 // Mouseout function to hide the tooltip
 function hideTooltip() {
-  var tooltip = document.getElementById('tooltip');
-
-    tooltip.style.display = 'none';  // Hide tooltip
+  const tooltip = document.getElementById('tooltip');
+  tooltip.style.display = 'none';  // Hide tooltip
 }
+
 
 function mouseOverFunction(event, d) {
   // Get the country code for the hovered line
