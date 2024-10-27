@@ -150,7 +150,6 @@ function createSalaryMagnetChart(salaryData) {
                 .style("left", (event.pageX + 10) + "px");
         })        
         .on("mouseout", function() {
-            d3.select(this).attr("fill", darkestColor);
             tooltip.style("visibility", "hidden");
         });
 
@@ -241,7 +240,9 @@ function createSalaryMagnetChart(salaryData) {
         .attr("cy", d => d.y || height / 2)
         .attr("opacity", 0.6)    
         .on("mouseover", function(event, d) {
-            d3.select(this).attr("fill", "purple");
+            d3.select(this)
+                .attr("stroke", "black")
+                .attr("stroke-width", 2);
             const countryName = d.country;
             const averageCountry = isNaN(d.average_salary_per_month) ? "Data not available" : d.average_salary_per_month;
         
@@ -252,7 +253,9 @@ function createSalaryMagnetChart(salaryData) {
                 .style("left", (event.pageX + 10) + "px");
         })        
         .on("mouseout", function() {
-            d3.select(this).attr("fill", lighestColor);
+            d3.select(this)
+                .attr("fill", lighestColor)
+                .attr("stroke", "none");
             tooltip.style("visibility", "hidden");
             svg.selectAll(".country-label").remove();
         })
