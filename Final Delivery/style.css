@@ -1,0 +1,724 @@
+/*.container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: 1fr 1fr;
+  gap: 0px 0px;
+  grid-template-areas:
+    "BarChart ScatterPlot"
+    "LineChart LineChart";
+}*/
+/*.BarChart {
+  grid-area: BarChart;
+}
+.LineChart {
+  grid-area: LineChart;
+}
+.ScatterPlot {
+  grid-area: ScatterPlot;
+}*/
+:root {
+  --color-africa: rgba(207, 175, 141, 0.8); /* Softer earthy brown with transparency */
+  --color-asia: rgba(203, 191, 21, 0.707); /* Bright but softer yellow with transparency */
+  --color-europe: rgba(163, 200, 224, 0.8); /* Soft blue with transparency */
+  --color-north-america: rgba(215, 76, 46, 0.8); /* Muted vibrant red with transparency */
+  --color-south-america: rgba(75, 143, 60, 0.8); /* Softer green with transparency */
+  --color-oceania: rgba(165, 125, 198, 0.8); /* Soft purple with transparency */
+}
+
+* {
+  font-family: 'Roboto', sans-serif;
+}
+
+/*#################################### year range selection ####################################*/
+/*
+.button-container {
+  position: relative;
+  width: 95vmin;
+  margin: 0 auto;
+  height: 10px;
+  background-color: #ff0c0c00;
+  padding: 20px 220px 10px 40px;
+  border-radius: 5px;
+}
+
+.container {
+  background-color: #EC739F;
+  position: relative;
+  width: 50%;
+  height: 12px;
+  margin-top: 15px;
+  display: flex;
+  align-items: center; /* Center items horizontally 
+  justify-content: center;
+  flex-direction: column;
+  transform: translateY(-25px); /* Move everything 20px upwards 
+}*/
+
+.button-container {
+  position: relative;
+  width: 95vmin;
+  margin: 0 auto;
+  height: 10px;
+  background-color: #ff0c0c00;
+  padding: 20px 620px 10px 40px; /* Adjust padding to remove unnecessary space */
+  border-radius: 5px;
+}
+
+.main-title-container {
+  background-color: #EC739F;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  width: 1100px;
+  margin-left: 50px;
+  border-radius: 10px; 
+  border: 5px solid white;
+  
+  /*border: 2px solid #D14B7E;*/
+}
+
+.container {
+  position: absolute; /* Position absolute to place it relative to the .button-container */
+  top: -5px; /* Align to the top of .button-container */
+  right: -40px; /* Align to the right of .button-container */
+  width: 300px; /* Fixed width */
+  height: 12px;
+  margin-top: 0px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  transform: translateY(-20px); /* Keep the vertical adjustment */
+}
+
+
+input[type="range"] {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  width: 100%; /* Full width sliders */
+  outline: none;
+  position: absolute;
+  margin: auto;
+  top: 0px;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0); /* background color */
+  pointer-events: none;
+  z-index: 1;
+}
+
+.slider-track {
+  width: 100%;
+  height: 6px;
+  position: absolute;
+  margin: auto;
+  background-color: rgba(62, 42, 42, 0.7); /* line color */
+  top: 0px;
+  bottom: 0;
+  border-radius: 7px;
+  z-index: 1;
+}
+.slider-track-filled {
+  position: absolute;
+  height: 6px;
+  transform: translateY(3.5px);
+  background-color: rgba(178, 53, 71, 0.9); /* color of the line between the thumbs */
+  top: 0;
+  bottom: 0;
+  border-radius: 5px;
+  z-index: 1;
+}
+
+input[type="range"]::-webkit-slider-runnable-track {
+  -webkit-appearance: none;
+  height: 5px;
+}
+
+input[type="range"]::-moz-range-track {
+  -moz-appearance: none;
+  height: 5px;
+}
+
+input[type="range"]::-ms-track {
+  appearance: none;
+  height: 5px;
+}
+
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  height: 1em;
+  width: 1em;
+  background-color: rgba(178, 53, 71, 0.9); /* thumb color */
+
+  cursor: pointer;
+  margin-top: -4px;
+  pointer-events: auto;
+  border-radius: 50%;
+}
+
+input[type="range"]::-moz-range-thumb {
+  height: 1em;
+  width: 1em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: #a1a1a1;
+  pointer-events: auto;
+}
+
+input[type="range"]::-ms-thumb {
+  height: 1em;
+  width: 1em;
+  cursor: pointer;
+  border-radius: 50%;
+  background-color: rgba(178, 53, 71, 0.9);
+  pointer-events: auto;
+}
+
+input[type="range"]:active::-webkit-slider-thumb {  /*when hovered*/
+  background-color: #99999c;
+  border: 2px solid rgba(99, 14, 14, 0.7);
+
+}
+
+#range1, #range2 {
+  color: white; /* Change text color to white */
+}
+
+.bubble {
+  position: absolute;
+  background-color: rgb(109, 67, 67); 
+  color: white; 
+  padding: 5px 10px;
+  border-radius: 15px; /* Rounded corners */
+  font-size: 10px;
+  text-align: center;
+  transform: translateX(-20px);
+  bottom: -25px; /* Adjust based on the position you want */
+  opacity: 0.8; /* Semi-transparent */
+  visibility: hidden; /* Hide initially */
+}
+
+.bubble::after {
+  content: '';
+  position: absolute;
+  width: 10px; /* Adjust width of the tail */
+  height:10px; /* Adjust height of the tail */
+  background-color: rgb(109, 67, 67); /* Same as bubble background */
+  transform: rotate(190deg); /* Adjust the rotation angle if needed */
+  visibility: hidden; /* Initially hidden */
+  left: 50%; /* Center the tail */
+  top: 90%; /* Position tail above the bubble */
+  margin-left: -5px; /* Adjust left margin to center the tail */
+  border-top-right-radius: 40px 30px;
+  transform: translateY(-23px);
+  z-index: -1;
+}
+
+.bubble.visible {
+  visibility: visible; /* Show bubble */
+}
+.bubble.visible::after {
+  visibility: visible; /* Show tail when bubble is visible */
+}
+
+
+/*####################################### GRID #######################################*/
+
+.grid-container {
+  /*display: grid;
+  grid-template-columns: 2fr 1fr; /* First column wider than the second 
+  grid-template-rows: 1.5fr 1fr; /* Two equal rows 
+  height: 100vh; /* 100% of viewport height 
+  padding: 10px;
+  gap: 0px 0px;
+  grid-template-areas:
+    "grid-item-world grid-item-magnets"
+    "grid-item-line grid-item-radar";*/
+  display: grid;
+  flex-direction: column; /* Align items vertically */
+  justify-content: space-between; /* Create space between the two grids */
+  align-items: center; /* Center horizontally */
+  height: 100vh; /* Full viewport height */
+  padding: 10px;
+  gap: 10px;
+  margin-top: -25px;
+}
+
+
+.grid-item-top, .grid-item-bottom {
+  display: grid;
+  width: 100%; /* Set a desired width for the grid */
+  gap: 10px; /* Space between grid items */
+}
+
+/* Grid for the top item */
+.grid-item-top {
+  grid-template-columns: 2fr 1fr; /* Two equal columns */
+  margin-top: -10px;
+  /*background-color: lightblue;*/
+}
+
+/* Grid for the bottom item */
+.grid-item-bottom {
+  grid-template-columns:3fr 1fr; /* Two columns with different widths */
+  /*background-color: lightcoral;*/
+}
+
+/*####################################### WORLD #######################################*/
+
+/* Scope the SVG and path styles to the map-container */
+.world-map svg {
+  display: grid;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+.world-map path {
+  stroke: #fff;
+  stroke-width: 0.5;
+}
+
+.world-map path:hover {
+  cursor: pointer;
+}
+
+.grid-item-world {
+  position: relative;  /* Allows absolute positioning of child elements */
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
+  width: 995px;
+  height: 455px;
+  margin: 0 auto;
+  z-index: 1;
+}
+
+#map-title {
+  font-size: 16px;  /* Set the font size */
+  margin-top: 15px;  /* Move the element 10px down */
+}
+
+#magnet-title {
+  font-size: 16px;  /* Set the font size */
+  margin-top: 15px;  /* Move the element 10px down */
+}
+
+.tooltip {
+  font-size: 16px;  
+  pointer-events: none;
+  transition: opacity 0.2s;
+  z-index: 10;
+  
+}
+
+.zoom-controls {
+  position: absolute; /* Position relative to .grid-item-world */
+  top: 55px; /* Position at the top */
+  right: 12px; /* Position at the right */
+  display: flex;
+  flex-direction: column;
+  z-index: 2; /* Ensures the buttons stay on top of other elements */
+}
+
+.zoom-controls button {
+  background-color: rgba(178, 53, 71, 0.9);
+  color: white;
+  border: none;
+  padding: 5px 10px;
+  width: 25px; /* Adjust width for better clickability */
+  height: 25px; /* Adjust height for better clickability */
+  text-align: center;
+  font-weight: bold;
+  border-radius: 5px;
+  margin: 2px;
+  cursor: pointer;
+  font-size: 14px;
+  display: flex;
+  justify-content: center; /* Center text horizontally */
+  align-items: center; /* Center text vertically */
+}
+
+.zoom-controls button:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50, 0.8);
+  font-size: 18px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+/*####################################### LINE #######################################*/
+
+.grid-item-line {
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  margin-top: -9px;
+  border-radius: 10px; /* Rounded edges */
+  display: grid;
+  overflow: hidden;
+  height: 61%;
+  grid-template-columns: 1fr 1fr 2fr; /* First two columns equal width, third column double width */
+  grid-template-areas: 
+    "buttons sub-buttons line-chart";
+}
+
+.line-chart {
+  margin-top: 25px;
+  grid-column: 3 / 4;
+  display: flex;
+  width: 100%; /* Make sure the chart takes full width */
+  max-width: 200%;
+  max-height: 80%;
+  transform: translateX(15px);  /*Move left by 20 pixels */
+}
+
+
+.line-chart-button {
+  position: absolute; /* Position it absolutely within the relative container */
+  top: -15px; /* Adjust the distance from the top */
+  right: 60px; /* Adjust the distance from the right */
+  background-color: rgba(50, 50, 50,0.8); /* Button background color */
+  color: white; /* Button text color */
+  border: none; /* Remove border */
+  border-radius: 5px; /* Rounded corners */
+  padding: 4px 10px; /* Padding for the button */
+  cursor: pointer; /* Change cursor on hover */
+  z-index: 30; /* Ensure button is above other elements */
+  font-weight: bold;
+  width: 120px; /* Set the button width to 90px */
+  height: 25px; /* Set the button height to 20px */
+  font-size: 12px; /* Set font size to 12px */
+  
+}
+
+.line-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 20px;
+  margin-top: -16px;
+  
+}
+
+.line-chart-button:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50, 0.8);
+  font-size: 12px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;
+  
+}
+
+.buttons {
+  /*background-color: rgba(128, 128, 128, 0.377);*/
+  display: flex;
+  width: 120px;
+  flex-direction: column;  
+  gap: 1px;
+  align-items: left; /* Centers buttons horizontally */
+}
+
+.sub-buttons {
+  display: flex;
+  flex-direction: column;  
+  gap: 1px;
+  align-items: left; /* Centers buttons horizontally */
+  height: 300px; /* Set the desired height */
+  overflow-y: auto;
+}
+
+.tick-label {
+  display: flex; /* Utiliser flexbox pour aligner la case et le texte */
+  align-items: center; /* Centrer verticalement les éléments */
+  margin-bottom: 5px; /* Espacement en bas de la case à cocher */
+  font-size: 10px;
+}
+.menu-btn {
+  width: 150px;  
+  height: 35px;   
+  background-color: #faaf0d; 
+  color: white; 
+  border: none; 
+  border-radius: 2.5px; 
+  cursor: pointer;  
+  text-align: center; 
+  align-items: center; 
+  transition: all 0.2s ease; /* Smooth transition for effects */
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2); /* Subtle shadow for depth */
+}
+
+/*####################################### MAGNETS #######################################*/
+
+.grid-item-magnets {
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
+  position: relative; 
+  display: flex;
+  flex-direction: column;
+  justify-content: center;    /* Horizontally center */
+  align-items: center;        /* Vertically center */
+  overflow: visible;          /* Ensure no scroll or hidden overflow */
+  margin: 0 auto;               /* Center the item within the grid */
+  width: 100%;                /* Full container width */
+  height: 98%;               /* Full container height */
+  box-sizing: border-box;      /* Include padding/border in element's width/height */
+}
+
+.grid-item-magnets .switch_chart-buttons {
+  position: absolute; /* Position the button container absolutely */
+  top: 10px; /* Adjust this value as needed */
+  left: 10px; /* Adjust this value as needed */
+  z-index: 10; /* Ensure it appears above other content */
+  padding: 5px; /* Optional: add some padding */
+  border-radius: 5px; /* Optional: round the corners */
+  display: flex; /* Use flexbox to arrange buttons */
+  flex-direction: column; /* Stack buttons vertically */
+}
+
+.grid-item-magnets .switch_chart-buttons button {
+  width: 100px; /* Set the button width to 90px */
+  height: 20px; /* Set the button height to 20px */
+  font-size: 12px; /* Set font size to 12px */
+  margin: 1px 0;
+  background-color: rgba(50, 50, 50,0.8); /* Set background color to blue */
+  color: white; /* Set text color to white */
+  border: none; /* Remove default border */
+  border-radius: 3px; /* Add border radius for rounded corners */
+  cursor: pointer; /* Change cursor to pointer on hover */
+  transition: background-color 0.3s; /* Add transition for hover effect */
+}
+
+.grid-item-magnets .switch_chart-buttons button:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50,0.8);
+  font-size: 12px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;
+}
+
+.switch_chart-buttons button.active {
+  background-color: rgba(178, 53, 71, 0.9);  /* 90% opacity */
+  color: white;
+  font-weight: bold;
+  
+}
+
+/*####################################### RADAR #######################################*/
+
+.grid-item-radar {
+  background-color: #F8F8FF; /* Light gray background */
+  border: 2px solid #DCDCDC; /* Lighter gray stroke */
+  border-radius: 10px; /* Rounded edges */
+  display: grid;
+  justify-content: center;
+  position: relative; /* Relative positioning to anchor the info button */
+  overflow: hidden;
+  max-width: 100%;
+  max-height: 61%;
+  margin-top: -9px;
+  
+}
+
+.radar-title {
+  font-size: 16px;
+  font-weight: bold;
+  margin-left: 20px;
+  margin-top: -16px;
+  
+}
+
+.radar-chart-container {
+  margin-top: -10px;
+  
+}
+
+/* Style for the 'i' button - square with rounded edges */
+.info-btn {
+  background-color: rgba(178, 53, 71, 0.9);
+  color: white;
+  font-weight: bold;
+  border: none;
+  border-radius: 8px;  /* Rounded edges */
+  width: 30px;         /* Square dimensions */
+  height: 30px;
+  font-size: 18px;
+  text-align: center;
+  cursor: pointer;
+  position: absolute;
+  top: 10px;           /* Position relative to the top of the container */
+  right: 25px;         /* Align the button close to the right edge */
+  z-index: 1;
+  
+}
+
+.info-btn:hover {
+  background-color: #FFE6EE; /* Slightly darker background on hover */
+  color: rgba(50, 50, 50,0.8);
+  font-size: 18px;
+  border: 2px solid rgba(178, 53, 71, 0.9); /* Highlight border color */
+  white-space: nowrap;
+  font-weight: bold;           /* Match text color on hover */
+}
+
+
+/* Style for the info box */
+.info-box {
+  display: none;
+  background-color: white;
+  color: black;
+  border: 2px solid #ccc;
+  padding: 5px;            /* Overall padding for the box */
+  padding-top: 2px;        /* Reduce the space at the top of the box */
+  position: absolute;
+  top: -10px;              /* Aligns the box vertically with the button */
+  right: 80px;             /* Position it to the right of the button */
+  width: 270px;
+  z-index: 30;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  border-radius: 2px;
+}
+
+.info-box p, 
+.info-box ul {
+  margin-top: 0;          /* Remove any top margin from paragraph and list */
+  margin-bottom: 0;
+}
+
+/* Style for the container holding both the button and the info box */
+.info-container {
+  position: absolute;
+  right: 0; /* Ensure the info button container is aligned to the right */
+  top: 10px;
+  
+}
+
+
+/*####################################### OTHERS #######################################*/
+
+html,
+body, html {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  overflow: hidden; /* Prevent scrolling */
+  box-sizing: border-box;
+  
+}
+
+.titles-container {
+  position: absolute;  /* Stacks the titles above the slider */
+  top: 10px;  /* Adjust this value to move titles up/down */
+  width: 120%;  /* Ensures titles span the entire width */
+  display: grid;
+  grid-template-columns: 2fr 2fr;
+  justify-content: space-between; /* Space titles evenly */
+  padding: 0 30px; /* Padding for spacing from edges */
+  
+}
+
+.map-title, .magnet-title {
+  text-align: left;
+  font-weight: bold; /* Bold font */
+  padding-top: 13px;
+  font-size: 16px;  /* Adjust font size */
+  
+}
+/*.map-title {
+  padding-left: 280px;
+}*/
+.magnet-title {
+  padding-left: 80px;
+  
+}
+.button-container {
+  /*background-color: lightyellow;*/
+  display: flex;
+  justify-content: right;
+  align-items: right;
+  height: 2vh; /* Full viewport height */
+}
+.button-container button {
+  margin: 0 10px; /* Optional, for spacing between buttons */
+}
+
+button {
+  font-size: 18px;
+  
+}
+
+/*####################################### COUNTRIES #######################################*/
+
+#country-container {
+  width: 140px; /* Fixed width for the country container */
+  max-height: 200px; /* Max height to enable scrolling */
+  overflow-y: auto; /* Enable vertical scrolling */
+  border: 1px solid #ccc; /* Optional: border for visibility */
+  padding: 3px; /* Padding inside the container */
+  background-color: #f9f9f9; /* Background color */
+  transform: translateX(30px);
+  
+}
+
+.country-btn {
+  display: block; /* Button as block element */
+  width: 100%; /* Full width of the container */
+  margin: 2px 0; /* Vertical spacing */
+  padding: 3px; /* Padding for buttons */
+  background-color: rgba(182, 179, 179, 0.885); /* Button color */
+  color: black; /* Button text color */
+  border: none; /* Remove default button border */
+  border-radius: 5px; /* Rounded corners */
+  cursor: pointer; /* Pointer on hover */
+  font-size: 11px; /* Font size */
+  text-align: center; /* Center text */
+  
+}
+
+.menu-btn.africa {
+  background-color: var(--color-africa); 
+  
+}
+
+.menu-btn.europe {
+  background-color: var(--color-europe);
+  
+}
+
+.menu-btn.asia {
+  background-color: var(--color-asia);
+   
+}
+
+.menu-btn.northamerica {
+  background-color: var(--color-north-america); 
+  
+}
+
+.menu-btn.southamerica {
+  background-color: var(--color-south-america); 
+  
+}
+
+.menu-btn.oceania {
+  background-color: var(--color-oceania); 
+  
+}
+
+.menu-btn:hover {
+  opacity: 0.8; /* Full opacity on hover */
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
+.country-btn:hover {
+  opacity: 1; /* Full opacity on hover */
+  filter: brightness(1.1);
+  transform: scale(1.02); /* Slightly scale up */
+  transition: transform 0.2s ease; /* Smooth transition */
+}
+
+
